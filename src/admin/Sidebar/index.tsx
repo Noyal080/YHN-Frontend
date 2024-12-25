@@ -29,10 +29,7 @@ import {
 import { LuImagePlay, LuLayoutDashboard, LuQuote } from "react-icons/lu";
 import { Avatar } from "@/components/ui/avatar";
 import { Tooltip } from "@/components/ui/tooltip";
-
-interface SidebarProps {
-  onToggle: (expanded: boolean) => void;
-}
+import { SidebarProps } from "@/utils";
 
 const Sidebar: React.FC<SidebarProps> = ({ onToggle }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(true);

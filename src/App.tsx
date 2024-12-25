@@ -1,14 +1,15 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import "./App.css";
 import AdminDashboard from "./admin/Dashboard";
-import AdminLayout from "./admin/Layout";
+
+import SliderSection from "./admin/Home/Slider";
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<AdminDashboard />} />
-        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/slider" element={<SliderSection />} />
       </Routes>
     </Router>
   );
