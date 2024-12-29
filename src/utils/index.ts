@@ -13,6 +13,12 @@ export interface SidebarProps {
     onToggle: (expanded: boolean) => void;
 }
 
+export interface NavbarProps {
+    breadcrumbItems : BreadcrumbProps [],
+    title: string;
+    isSidebarExpanded ?: boolean
+}
+
 interface Column {
     key: string;
     label: string;

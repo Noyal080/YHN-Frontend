@@ -1,6 +1,8 @@
 import { CommonTableProps } from "@/utils";
 import {
   Box,
+  CardBody,
+  CardRoot,
   Flex,
   Heading,
   IconButton,
@@ -22,54 +24,56 @@ const CommonTable: React.FC<CommonTableProps> = ({
   onDelete,
 }) => {
   return (
-    <Box p={4} borderWidth={1} borderRadius="lg" boxShadow="sm" bg="white">
-      {/* Table Title */}
-      <Heading size="md" mb={4}>
-        {title}
-      </Heading>
+    <CardRoot variant={"elevated"}>
+      <CardBody>
+        {/* Table Title */}
+        <Heading size="xl" mb={4}>
+          {title}
+        </Heading>
 
-      {/* Table */}
-      <TableRoot>
-        <TableHeader>
-          <TableRow>
-            {columns.map((column) => (
-              <TableColumnHeader key={column.key}>
-                {column.label}
-              </TableColumnHeader>
-            ))}
-            <TableColumnHeader textAlign="center">Actions</TableColumnHeader>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {rows.map((row, rowIndex) => (
-            <TableRow key={rowIndex}>
+        {/* Table */}
+        <TableRoot variant={"outline"}>
+          <TableHeader>
+            <TableRow>
               {columns.map((column) => (
-                <TableCell key={column.key}>{row[column.key]}</TableCell>
+                <TableColumnHeader key={column.key}>
+                  {column.label}
+                </TableColumnHeader>
               ))}
-              <TableCell>
-                <Flex justifyContent="center" gap={2}>
-                  <IconButton
-                    aria-label="Edit"
-                    size="sm"
-                    onClick={() => onEdit(row)}
-                  >
-                    <LuPencil />
-                  </IconButton>
-                  <IconButton
-                    aria-label="Delete"
-                    size="sm"
-                    colorScheme="red"
-                    onClick={() => onDelete(row)}
-                  >
-                    <FiTrash />
-                  </IconButton>
-                </Flex>
-              </TableCell>
+              <TableColumnHeader textAlign="center">Actions</TableColumnHeader>
             </TableRow>
-          ))}
-        </TableBody>
-      </TableRoot>
-    </Box>
+          </TableHeader>
+          <TableBody>
+            {rows.map((row, rowIndex) => (
+              <TableRow key={rowIndex}>
+                {columns.map((column) => (
+                  <TableCell key={column.key}>{row[column.key]}</TableCell>
+                ))}
+                <TableCell>
+                  <Flex justifyContent="center" gap={2}>
+                    <IconButton
+                      aria-label="Edit"
+                      size="sm"
+                      onClick={() => onEdit(row)}
+                    >
+                      <LuPencil />
+                    </IconButton>
+                    <IconButton
+                      aria-label="Delete"
+                      size="sm"
+                      colorScheme="red"
+                      onClick={() => onDelete(row)}
+                    >
+                      <FiTrash />
+                    </IconButton>
+                  </Flex>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </TableRoot>
+      </CardBody>
+    </CardRoot>
   );
 };
 

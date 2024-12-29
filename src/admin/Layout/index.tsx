@@ -2,89 +2,33 @@ import React, { useState } from "react";
 import { Box, BreadcrumbItem, Flex, Text } from "@chakra-ui/react";
 
 import Sidebar from "../Sidebar";
-import { BreadcrumbLink, BreadcrumbRoot } from "@/components/ui/breadcrumb";
 import { AdminLayoutProps } from "@/utils";
-import { Avatar } from "@/components/ui/avatar";
+import AdminNavbar from "../Navbar";
 
 const AdminLayout: React.FC<AdminLayoutProps> = ({
   children,
   breadcrumbItems,
   title,
 }) => {
-  const [isSidebarExpanded, setIsSidebarExpanded] = useState<boolean>(true);
-
-  // Example breadcrumb and header (Replace with your own dynamic logic)
+  const [sidebarWidth, setSidebarWidth] = useState<string>("300px");
 
   const handleSidebarToggle = (expanded: boolean) => {
-    setIsSidebarExpanded(expanded);
+    setSidebarWidth(expanded ? "300px" : "80px");
   };
 
   return (
-    <Flex flexDirection="column" h="screen" overflow="hidden">
-      {/* Top Bar */}
+    <Flex h="100vh">
+      <Box width={sidebarWidth} transition="width 0.3s ease" flexShrink={0}>
+        <Sidebar onToggle={handleSidebarToggle} />
+      </Box>
 
-      <Sidebar onToggle={handleSidebarToggle} />
-      {/* Sidebar */}
-      <Flex>
-        <Flex
-          as="header"
-          bg="gray.100"
-          p={4}
-          // alignItems="center"
-          // justifyContent="space-between"
-          boxShadow="sm"
-          zIndex={10}
-          w="100%"
-          position="fixed"
-          top={0}
-          right={0}
-          left={isSidebarExpanded ? "300px" : "80px"}
-          transition="left 0.3s ease"
-        >
-          <Flex
-            alignItems="center"
-            justifyContent={"space-between"}
-            w={isSidebarExpanded ? "80%" : "92%"}
-          >
-            <Box>
-              <Text fontSize={"xl"} fontWeight="bold" mb={0}>
-                {title}
-              </Text>
-              <BreadcrumbRoot variant="underline">
-                {breadcrumbItems.map((item, index) => (
-                  <BreadcrumbItem key={index}>
-                    <BreadcrumbLink href={item.link}>
-                      {item.label}
-                    </BreadcrumbLink>
-                  </BreadcrumbItem>
-                ))}
-              </BreadcrumbRoot>
-            </Box>
-          </Flex>
-          <Flex justifyContent="flex-end" width="80px">
-            <Avatar
-              name="Segun Adebayo"
-              src="https://bit.ly/sage-adebayo"
-              variant={"outline"}
-              // marginRight={isSidebarExpanded ? "150px" : "50px"}
-            />
-          </Flex>
-          {/* Avatar */}
-          {/* Profile Dropdown */}
-        </Flex>
-        {/* Main Content */}
-        <Box
-          flex={1}
-          ml={isSidebarExpanded ? "300px" : "80px"}
-          mt="64px"
-          transition="margin-left 0.3s ease"
-          px={6}
-          py={7}
-          overflow={"auto"}
-          h={"full"}
-          w={"full"}
-        >
-          {/* Page Content */}
+      {/* Main Content Area */}
+      <Flex flex={1} flexDirection="column" overflow="hidden">
+        {/* Navbar */}
+
+        <AdminNavbar title={title} breadcrumbItems={breadcrumbItems} />
+
+        <Box flex={1} px={4} py={4} overflow="auto">
           {children}
         </Box>
       </Flex>

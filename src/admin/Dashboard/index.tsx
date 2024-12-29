@@ -3,10 +3,7 @@ import AdminLayout from "../Layout";
 const AdminDashboard = () => {
   const breadcrumbItems = [{ label: "Dashboard", link: "/" }];
   return (
-    <AdminLayout
-      breadcrumbItems={breadcrumbItems}
-      dynamicHeader="Admin HomePage"
-    >
+    <AdminLayout breadcrumbItems={breadcrumbItems} title="Admin HomePage">
       <h1> Admin Dashboard</h1>
     </AdminLayout>
   );
