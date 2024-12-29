@@ -1,11 +1,13 @@
 import { CommonTableProps } from "@/utils";
 import {
   Box,
+  Button,
   CardBody,
   CardRoot,
   Flex,
   Heading,
   IconButton,
+  Input,
   TableBody,
   TableCell,
   TableColumnHeader,
@@ -22,14 +24,34 @@ const CommonTable: React.FC<CommonTableProps> = ({
   rows,
   onEdit,
   onDelete,
+  onSearch,
+  onAdd,
+  filterComponent,
 }) => {
   return (
     <CardRoot variant={"elevated"}>
       <CardBody>
-        {/* Table Title */}
-        <Heading size="xl" mb={4}>
-          {title}
-        </Heading>
+        <Flex justifyContent="space-between" alignItems="center" mb={4}>
+          <Flex flex={1} alignItems="center" gap={4}>
+            {/* Title */}
+            <Heading size="xl">{title}</Heading>
+
+            {/* Search Bar */}
+            <Input
+              placeholder="Search..."
+              maxW="300px"
+              onChange={(e) => onSearch?.(e.target.value)}
+            />
+          </Flex>
+
+          {/* Add Button */}
+          <Button colorScheme="blue" onClick={onAdd}>
+            Add
+          </Button>
+        </Flex>
+
+        {/* Filter Component */}
+        <Box mb={4}>{filterComponent}</Box>
 
         {/* Table */}
         <TableRoot variant={"outline"}>
@@ -40,7 +62,11 @@ const CommonTable: React.FC<CommonTableProps> = ({
                   {column.label}
                 </TableColumnHeader>
               ))}
-              <TableColumnHeader textAlign="center">Actions</TableColumnHeader>
+              {(onEdit || onDelete) && (
+                <TableColumnHeader textAlign="center">
+                  Actions
+                </TableColumnHeader>
+              )}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -49,25 +75,31 @@ const CommonTable: React.FC<CommonTableProps> = ({
                 {columns.map((column) => (
                   <TableCell key={column.key}>{row[column.key]}</TableCell>
                 ))}
-                <TableCell>
-                  <Flex justifyContent="center" gap={2}>
-                    <IconButton
-                      aria-label="Edit"
-                      size="sm"
-                      onClick={() => onEdit(row)}
-                    >
-                      <LuPencil />
-                    </IconButton>
-                    <IconButton
-                      aria-label="Delete"
-                      size="sm"
-                      colorScheme="red"
-                      onClick={() => onDelete(row)}
-                    >
-                      <FiTrash />
-                    </IconButton>
-                  </Flex>
-                </TableCell>
+                {(onEdit || onDelete) && (
+                  <TableCell>
+                    <Flex justifyContent="center" gap={2}>
+                      {onEdit && (
+                        <IconButton
+                          aria-label="Edit"
+                          size="sm"
+                          onClick={() => onEdit(row)}
+                        >
+                          <LuPencil />
+                        </IconButton>
+                      )}
+                      {onDelete && (
+                        <IconButton
+                          aria-label="Delete"
+                          size="sm"
+                          colorScheme="red"
+                          onClick={() => onDelete(row)}
+                        >
+                          <FiTrash />
+                        </IconButton>
+                      )}
+                    </Flex>
+                  </TableCell>
+                )}
               </TableRow>
             ))}
           </TableBody>

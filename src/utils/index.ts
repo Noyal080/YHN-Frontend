@@ -32,7 +32,10 @@ export interface CommonTableProps {
     title: string;
     columns: Column[];
     rows: Row[];
-    onEdit: (row: Row) => void;
-    onDelete: (row: Row) => void;
+    onEdit?: (row: Row) => void;
+    onDelete?: (row: Row) => void;
+    onSearch?: (query: string) => void;
+    onAdd?: () => void;
+    filterComponent?: React.ReactNode;
   }
 

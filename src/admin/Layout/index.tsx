@@ -25,9 +25,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
       {/* Main Content Area */}
       <Flex flex={1} flexDirection="column" overflow="hidden">
         {/* Navbar */}
-
         <AdminNavbar title={title} breadcrumbItems={breadcrumbItems} />
-
         <Box flex={1} px={4} py={4} overflow="auto">
           {children}
         </Box>

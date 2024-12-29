@@ -35,6 +35,9 @@ const SliderSection = () => {
         rows={rows}
         onEdit={handleEdit}
         onDelete={handleDelete}
+        onSearch={(query) => console.log("Search", query)}
+        onAdd={() => console.log("Add")}
+        filterComponent={<div>Custom Filter Component</div>}
       />
     </AdminLayout>
   );
