@@ -27,6 +27,7 @@ const CommonTable: React.FC<CommonTableProps> = ({
   onSearch,
   onAdd,
   filterComponent,
+  isDraggable,
 }) => {
   return (
     <CardRoot variant={"elevated"}>

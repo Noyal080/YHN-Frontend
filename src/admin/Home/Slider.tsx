@@ -16,7 +16,6 @@ const SliderSection = () => {
 
   const handleEdit = (row: any) => {
     alert(`Edit row with ID: ${row.id}`);
-    // Add your edit logic here
   };
 
   const handleDelete = (row: any) => {
@@ -38,6 +37,7 @@ const SliderSection = () => {
         onSearch={(query) => console.log("Search", query)}
         onAdd={() => console.log("Add")}
         filterComponent={<div>Custom Filter Component</div>}
+        isDraggable
       />
     </AdminLayout>
   );

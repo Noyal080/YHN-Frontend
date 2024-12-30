@@ -30,14 +30,16 @@ import { LuImagePlay, LuLayoutDashboard, LuQuote } from "react-icons/lu";
 import { Avatar } from "@/components/ui/avatar";
 import { Tooltip } from "@/components/ui/tooltip";
 import { SidebarProps } from "@/utils";
+import { useNavigate } from "react-router-dom";
 
 const Sidebar: React.FC<SidebarProps> = ({ onToggle }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(true);
   const [activeLink, setActiveLink] = useState<string>("Dashboard");
   const [openDropdown, setOpenDropdown] = useState<number[]>([]);
-
-  const handleLinkClick = (link: string) => {
-    setActiveLink(link);
+  const navigate = useNavigate();
+  const handleLinkClick = (label: string, link: string) => {
+    setActiveLink(label);
+    navigate(link);
   };
 
   const toggleSidebar = () => {
@@ -59,15 +61,16 @@ const Sidebar: React.FC<SidebarProps> = ({ onToggle }) => {
       id: 1,
       label: "Dashboard",
       icon: LuLayoutDashboard,
+      link: "/admin/dashboard",
     },
     {
       id: 2,
       label: "Home",
       icon: FiHome,
       children: [
-        { label: "Slider", icon: LuImagePlay },
-        { label: "Message Request", icon: FiMail },
-        { label: "Partner Slider", icon: FiUsers },
+        { label: "Slider", icon: LuImagePlay, link: "/admin/slider" },
+        { label: "Message Request", icon: FiMail, link: "/admin/messages" },
+        { label: "Partner Slider", icon: FiUsers, link: "/admin/partners" },
       ],
     },
     {
@@ -75,36 +78,40 @@ const Sidebar: React.FC<SidebarProps> = ({ onToggle }) => {
       label: "About Us",
       icon: FiInfo,
       children: [
-        { label: "Who are we", icon: FiUser },
-        { label: "Board of Directors", icon: FiSettings },
-        { label: "Our Team", icon: FiUsers },
-        { label: "Testimonial", icon: LuQuote },
-        { label: "Donation", icon: FiDollarSign },
-        { label: "Volunteer / Careers", icon: FiBriefcase },
+        { label: "Who are we", icon: FiUser, link: "/admin/about" },
+        {
+          label: "Board of Directors",
+          icon: FiSettings,
+          link: "/admin/founder",
+        },
+        { label: "Our Team", icon: FiUsers, link: "/admin/team" },
+        {
+          label: "Testimonial",
+          icon: LuQuote,
+          link: "/admin/testimonials",
+        },
+        {
+          label: "Donation",
+          icon: FiDollarSign,
+          link: "/admin/donation",
+        },
+        {
+          label: "Volunteer / Careers",
+          icon: FiBriefcase,
+          link: "/admin/careers",
+        },
       ],
     },
-    {
-      id: 4,
-      label: "Projects",
-      icon: FiFolder,
-    },
-    {
-      id: 5,
-      label: "Events",
-      icon: FiCalendar,
-    },
-    {
-      id: 6,
-      label: "Services",
-      icon: FiSettings,
-    },
+    { id: 4, label: "Projects", icon: FiFolder, link: "/admin/projects" },
+    { id: 5, label: "Events", icon: FiCalendar, link: "/admin/events" },
+    { id: 6, label: "Services", icon: FiSettings, link: "/admin/services" },
     {
       id: 7,
       label: "Gallery",
       icon: FiImage,
       children: [
-        { label: "Photo", icon: FiCamera },
-        { label: "Video", icon: FiVideo },
+        { label: "Photo", icon: FiCamera, link: "/admin/gallery/photos" },
+        { label: "Video", icon: FiVideo, link: "/admin/gallery/videos" },
       ],
     },
   ];
@@ -137,7 +144,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onToggle }) => {
               onClick={() =>
                 item.children
                   ? toggleDropdown(item.id)
-                  : handleLinkClick(item.label)
+                  : handleLinkClick(item.label, item.link)
               }
               _hover={{ color: "teal.300" }}
               p={2}
@@ -171,14 +178,13 @@ const Sidebar: React.FC<SidebarProps> = ({ onToggle }) => {
                     positioning={{ placement: "right" }}
                   >
                     <Link
-                      href="#"
                       color={
                         activeLink === child.label ? "teal.400" : "gray.300"
                       }
                       fontWeight={
                         activeLink === child.label ? "bold" : "normal"
                       }
-                      onClick={() => handleLinkClick(child.label)}
+                      onClick={() => handleLinkClick(child.label, child.link)}
                       _hover={{ color: "teal.300" }}
                       p={2}
                       borderRadius="md"

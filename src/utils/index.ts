@@ -37,5 +37,6 @@ export interface CommonTableProps {
     onSearch?: (query: string) => void;
     onAdd?: () => void;
     filterComponent?: React.ReactNode;
+    isDraggable?: boolean;
   }
 
