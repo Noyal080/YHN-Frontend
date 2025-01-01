@@ -1,25 +1,25 @@
-import React, { useState } from "react";
-import { Box, BreadcrumbItem, Flex, Text } from "@chakra-ui/react";
+import React from "react";
+import { Box, Flex } from "@chakra-ui/react";
 
 import Sidebar from "../Sidebar";
 import { AdminLayoutProps } from "@/utils";
 import AdminNavbar from "../Navbar";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const AdminLayout: React.FC<AdminLayoutProps> = ({
   children,
   breadcrumbItems,
   title,
+  activeSidebarItem,
 }) => {
-  const [sidebarWidth, setSidebarWidth] = useState<string>("300px");
-
-  const handleSidebarToggle = (expanded: boolean) => {
-    setSidebarWidth(expanded ? "300px" : "80px");
-  };
+  const { isExpanded } = useSelector((state: RootState) => state.sidebar);
+  const sidebarWidth = isExpanded ? "300px" : "80px";
 
   return (
     <Flex h="100vh">
       <Box width={sidebarWidth} transition="width 0.3s ease" flexShrink={0}>
-        <Sidebar onToggle={handleSidebarToggle} />
+        <Sidebar activeSidebarItem={activeSidebarItem} />
       </Box>
 
       {/* Main Content Area */}

@@ -27,7 +27,11 @@ const SliderSection = () => {
     }
   };
   return (
-    <AdminLayout title="Slider Section" breadcrumbItems={[]}>
+    <AdminLayout
+      title="Slider Section"
+      breadcrumbItems={[]}
+      activeSidebarItem="Slider"
+    >
       <CommonTable
         title="User List"
         columns={columns}

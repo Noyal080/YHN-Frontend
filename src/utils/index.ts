@@ -1,7 +1,8 @@
 export interface AdminLayoutProps {
     children: React.ReactNode;
-    breadcrumbItems : BreadcrumbProps [],
-    title: string
+    breadcrumbItems: BreadcrumbProps [],
+    title: string,
+    activeSidebarItem: string
 }
 
 interface BreadcrumbProps{
@@ -10,7 +11,9 @@ interface BreadcrumbProps{
 }
 
 export interface SidebarProps {
-    onToggle: (expanded: boolean) => void;
+    // onToggle: () => void;
+    activeSidebarItem: string
+
 }
 
 export interface NavbarProps {

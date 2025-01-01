@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Box,
   VStack,
@@ -31,29 +31,27 @@ import { Avatar } from "@/components/ui/avatar";
 import { Tooltip } from "@/components/ui/tooltip";
 import { SidebarProps } from "@/utils";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleDropdown, toggleSidebar } from "@/redux/sidebarSlice";
+import { RootState } from "@/redux/store";
 
-const Sidebar: React.FC<SidebarProps> = ({ onToggle }) => {
-  const [isExpanded, setIsExpanded] = useState<boolean>(true);
-  const [activeLink, setActiveLink] = useState<string>("Dashboard");
-  const [openDropdown, setOpenDropdown] = useState<number[]>([]);
+const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
+  const dispatch = useDispatch();
+  const { isExpanded, openDropdowns } = useSelector(
+    (state: RootState) => state.sidebar
+  );
+
   const navigate = useNavigate();
-  const handleLinkClick = (label: string, link: string) => {
-    setActiveLink(label);
+  const handleLinkClick = (link: string) => {
     navigate(link);
   };
 
-  const toggleSidebar = () => {
-    const newExpandedState = !isExpanded;
-    setIsExpanded(newExpandedState);
-    onToggle(newExpandedState);
+  const handleSidebarToggle = () => {
+    dispatch(toggleSidebar());
   };
 
-  const toggleDropdown = (id: number) => {
-    setOpenDropdown((prevState) =>
-      prevState.includes(id)
-        ? prevState.filter((item) => item !== id)
-        : [...prevState, id]
-    );
+  const handleSidebarDropdown = (id: number) => {
+    dispatch(toggleDropdown(id));
   };
 
   const menuItems = [
@@ -117,7 +115,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onToggle }) => {
   ];
 
   const renderMenuItem = (item: any) => {
-    const isOpen = openDropdown.includes(item.id);
+    const isOpen = openDropdowns.includes(item.id);
 
     const menuItemContent = (
       <Flex align="center">
@@ -143,16 +141,16 @@ const Sidebar: React.FC<SidebarProps> = ({ onToggle }) => {
               justifyContent="space-between"
               onClick={() =>
                 item.children
-                  ? toggleDropdown(item.id)
-                  : handleLinkClick(item.label, item.link)
+                  ? handleSidebarDropdown(item.id)
+                  : handleLinkClick(item.link)
               }
               _hover={{ color: "teal.300" }}
               p={2}
               borderRadius="md"
               transition="background 0.2s"
               cursor="pointer"
-              color={activeLink === item.label ? "teal.400" : "gray.300"}
-              fontWeight={activeLink === item.label ? "bold" : "normal"}
+              color={item.label === activeSidebarItem ? "teal.400" : "gray.300"}
+              fontWeight={item.label === activeSidebarItem ? "bold" : "normal"}
             >
               {menuItemContent}
               {item.children && isExpanded && (
@@ -179,12 +177,14 @@ const Sidebar: React.FC<SidebarProps> = ({ onToggle }) => {
                   >
                     <Link
                       color={
-                        activeLink === child.label ? "teal.400" : "gray.300"
+                        child.label === activeSidebarItem
+                          ? "teal.400"
+                          : "gray.300"
                       }
                       fontWeight={
-                        activeLink === child.label ? "bold" : "normal"
+                        child.label === activeSidebarItem ? "bold" : "normal"
                       }
-                      onClick={() => handleLinkClick(child.label, child.link)}
+                      onClick={() => handleLinkClick(child.link)}
                       _hover={{ color: "teal.300" }}
                       p={2}
                       borderRadius="md"
@@ -249,7 +249,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onToggle }) => {
       {/* Expand/Collapse Button */}
       <IconButton
         aria-label="Toggle Sidebar"
-        onClick={toggleSidebar}
+        onClick={handleSidebarToggle}
         size="sm"
         variant="ghost"
         color="gray.300"
