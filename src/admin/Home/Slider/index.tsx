@@ -1,5 +1,5 @@
 import CommonTable from "@/common/CommonTable";
-import AdminLayout from "../Layout";
+import AdminLayout from "../../Layout";
 import { useState } from "react";
 
 const SliderSection = () => {
@@ -10,8 +10,7 @@ const SliderSection = () => {
   ];
 
   const [rows, setRows] = useState([
-    { id: 1, name: "John Doe", email: "john@example.com" },
-    { id: 2, name: "Jane Smith", email: "jane@example.com" },
+    { id: 1, name: "John Doe", email: "johndoe@gmail.com" },
   ]);
 
   const [entriesPerPage, setEntriesPerPage] = useState("10");
@@ -47,6 +46,7 @@ const SliderSection = () => {
         count={100}
         entriesPerPage={entriesPerPage}
         setEntriesPerPage={setEntriesPerPage}
+        addName="Add Slider"
       />
     </AdminLayout>
   );

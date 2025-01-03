@@ -3,7 +3,16 @@ import { BreadcrumbLink, BreadcrumbRoot } from "@/components/ui/breadcrumb";
 import { Avatar } from "@/components/ui/avatar";
 import { NavbarProps } from "@/utils";
 
+import {
+  MenuContent,
+  MenuItem,
+  MenuRoot,
+  MenuTrigger,
+} from "@/components/ui/menu";
+import { useNavigate } from "react-router-dom";
+
 const AdminNavbar: React.FC<NavbarProps> = ({ title, breadcrumbItems }) => {
+  const navigate = useNavigate();
   return (
     <Flex
       as="header"
@@ -25,12 +34,23 @@ const AdminNavbar: React.FC<NavbarProps> = ({ title, breadcrumbItems }) => {
           ))}
         </BreadcrumbRoot>
       </Box>
-      <Flex alignItems="center">
-        <Avatar
-          name="Segun Adebayo"
-          src="https://bit.ly/sage-adebayo"
-          variant="outline"
-        />
+      <Flex alignItems="center" mr={10}>
+        <MenuRoot size={"md"} positioning={{ placement: "bottom" }}>
+          <MenuTrigger>
+            <Avatar
+              name="Segun Adebayo"
+              src="https://bit.ly/sage-adebayo"
+              variant="outline"
+              cursor={"pointer"}
+            />
+          </MenuTrigger>
+          <MenuContent>
+            <MenuItem value="prog" onClick={() => navigate("/admin/slider")}>
+              {" "}
+              My Profile{" "}
+            </MenuItem>
+          </MenuContent>
+        </MenuRoot>
       </Flex>
     </Flex>
   );

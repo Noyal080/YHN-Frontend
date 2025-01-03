@@ -1,14 +1,22 @@
-import { Box } from "@chakra-ui/react";
+import { Button } from "@/components/ui/button";
 import AdminLayout from "../Layout";
-
 import { useState } from "react";
+import CommonModal from "@/common/CommonModal";
+
 const AddForm = () => {
-  const [editorReady, setEditorReady] = useState(false);
-  console.log(editorReady);
+  // const { showToast } = useCommonToast();
+  const [open, setOpen] = useState(false);
 
   return (
     <AdminLayout title="Add Form" breadcrumbItems={[]} activeSidebarItem="form">
-      <Box borderWidth={1} borderRadius="md" p={2}></Box>
+      <Button onClick={() => setOpen(true)}> Click me</Button>
+      <CommonModal
+        open={open}
+        onOpenChange={() => setOpen(!open)}
+        title="Add Form"
+      >
+        Hrllo
+      </CommonModal>
     </AdminLayout>
   );
 };

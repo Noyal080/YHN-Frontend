@@ -6,7 +6,6 @@ import {
 } from "react-router-dom";
 import "./App.css";
 import AdminDashboard from "./admin/Dashboard";
-// import "ckeditor5/ckeditor5.css";
 import SliderSection from "./admin/Home/Slider";
 import AddForm from "./admin/Home/form";
 import { useEffect } from "react";

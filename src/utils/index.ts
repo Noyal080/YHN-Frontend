@@ -28,7 +28,8 @@ interface Column {
 }
   
 interface Row {
-    [key: string]: any; // Dynamic row content
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    [key: string]: any; 
 }
   
 export interface CommonTableProps {
@@ -39,11 +40,26 @@ export interface CommonTableProps {
     onDelete?: (row: Row) => void;
     onSearch?: (query: string) => void;
     onAdd?: () => void;
+    addName?: string;
     filterComponent?: React.ReactNode;
     isDraggable?: boolean;
     count?: number;
     onPageChange?: () => void;
     entriesPerPage: string;
     setEntriesPerPage: (value: string) => void;
-  }
+}
+export interface CommonToastProps {
+    type : 'success' | 'error' | 'warning' | 'info'
+    description: string;
+    loading ?: boolean
+}
+
+export interface CommonModalProps {
+    open: boolean;
+    onOpenChange: () => void;
+    children: React.ReactNode;
+    title: string
+}
+
+
 
