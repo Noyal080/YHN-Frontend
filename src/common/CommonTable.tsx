@@ -7,6 +7,7 @@ import {
   createListCollection,
   Flex,
   Heading,
+  HStack,
   IconButton,
   Input,
   Select,
@@ -26,6 +27,12 @@ import {
   SelectRoot,
   SelectTrigger,
 } from "@/components/ui/select";
+import {
+  PaginationItems,
+  PaginationNextTrigger,
+  PaginationPrevTrigger,
+  PaginationRoot,
+} from "@/components/ui/pagination";
 
 const options = createListCollection({
   items: [
@@ -46,7 +53,13 @@ const CommonTable: React.FC<CommonTableProps> = ({
   onAdd,
   filterComponent,
   isDraggable,
+  count,
+  entriesPerPage,
+  setEntriesPerPage,
 }) => {
+  const handleEntriesChange = (value: string) => {
+    setEntriesPerPage(value);
+  };
   return (
     <CardRoot variant={"elevated"}>
       <CardBody>
@@ -134,38 +147,32 @@ const CommonTable: React.FC<CommonTableProps> = ({
           {/* Show Entries */}
           <Flex alignItems="center" gap={2}>
             <Text>Show</Text>
-            <SelectRoot
-              collection={options}
-              size={"sm"}
-              width={"100px"}
-              defaultValue={["100"]}
-            >
-              <SelectTrigger />
-              <SelectContent>
-                {options.items.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </SelectContent>
-            </SelectRoot>
-
-            {/* <Select
-              maxW="100px"
+            <select
+              defaultValue={entriesPerPage}
               value={entriesPerPage}
-              onChange={(e) => {
-                setEntriesPerPage(parseInt(e.target.value, 10));
-                setCurrentPage(1); // Reset to first page
-              }}
+              onChange={(e) => handleEntriesChange(e.target.value)}
+              className="block w-24 py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm"
             >
-              {[10, 25, 50, 100].map((option) => (
-                <option key={option} value={option}>
-                  {option}
+              {options.items.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
                 </option>
               ))}
-            </Select> */}
+            </select>
+
             <Text>entries</Text>
           </Flex>
+          {count && (
+            <Flex alignItems="center" gap={2}>
+              <PaginationRoot count={count} pageSize={10}>
+                <HStack>
+                  <PaginationPrevTrigger />
+                  <PaginationItems />
+                  <PaginationNextTrigger />
+                </HStack>
+              </PaginationRoot>
+            </Flex>
+          )}
         </Flex>
       </CardFooter>
     </CardRoot>

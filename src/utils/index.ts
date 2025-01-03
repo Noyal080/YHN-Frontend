@@ -41,5 +41,9 @@ export interface CommonTableProps {
     onAdd?: () => void;
     filterComponent?: React.ReactNode;
     isDraggable?: boolean;
+    count?: number;
+    onPageChange?: () => void;
+    entriesPerPage: string;
+    setEntriesPerPage: (value: string) => void;
   }
 

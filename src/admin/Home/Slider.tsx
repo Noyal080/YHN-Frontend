@@ -14,6 +14,8 @@ const SliderSection = () => {
     { id: 2, name: "Jane Smith", email: "jane@example.com" },
   ]);
 
+  const [entriesPerPage, setEntriesPerPage] = useState("10");
+
   const handleEdit = (row: any) => {
     alert(`Edit row with ID: ${row.id}`);
   };
@@ -42,6 +44,9 @@ const SliderSection = () => {
         onAdd={() => console.log("Add")}
         filterComponent={<div>Custom Filter Component</div>}
         isDraggable
+        count={100}
+        entriesPerPage={entriesPerPage}
+        setEntriesPerPage={setEntriesPerPage}
       />
     </AdminLayout>
   );
