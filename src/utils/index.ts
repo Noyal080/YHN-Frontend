@@ -22,32 +22,7 @@ export interface NavbarProps {
     isSidebarExpanded ?: boolean
 }
 
-interface Column {
-    key: string;
-    label: string;
-}
-  
-interface Row {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [key: string]: any; 
-}
-  
-export interface CommonTableProps {
-    title: string;
-    columns: Column[];
-    rows: Row[];
-    onEdit?: (row: Row) => void;
-    onDelete?: (row: Row) => void;
-    onSearch?: (query: string) => void;
-    onAdd?: () => void;
-    addName?: string;
-    filterComponent?: React.ReactNode;
-    isDraggable?: boolean;
-    count?: number;
-    onPageChange?: () => void;
-    entriesPerPage: string;
-    setEntriesPerPage: (value: string) => void;
-}
+
 export interface CommonToastProps {
     type : 'success' | 'error' | 'warning' | 'info'
     description: string;
@@ -59,6 +34,28 @@ export interface CommonModalProps {
     onOpenChange: () => void;
     children: React.ReactNode;
     title: string
+}
+
+export interface Column<T> {
+  key: keyof T;
+  label: string;
+}
+
+export interface CommonTableProps<T> {
+  title: string;
+  columns: Column<T>[];
+  rows: T[];
+  onEdit?: (row: T) => void;
+  onDelete?: (row: T) => void;
+  onSearch?: (query: string) => void;
+  onAdd?: () => void;
+  addName?: string;
+  filterComponent?: React.ReactNode;
+  isDraggable?: boolean;
+  count?: number;
+  onPageChange?: () => void;
+  entriesPerPage: string;
+  setEntriesPerPage: (value: string) => void;
 }
 
 

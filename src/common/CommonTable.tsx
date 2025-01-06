@@ -1,4 +1,3 @@
-import { CommonTableProps } from "@/utils";
 import {
   Box,
   CardBody,
@@ -38,6 +37,7 @@ import {
 import { useState } from "react";
 import { EmptyState } from "@/components/ui/empty-state";
 import { HiSwatch } from "react-icons/hi2";
+import { CommonTableProps } from "@/utils";
 
 const options = createListCollection({
   items: [
@@ -48,7 +48,7 @@ const options = createListCollection({
   ],
 });
 
-const CommonTable: React.FC<CommonTableProps> = ({
+const CommonTable = <T,>({
   title,
   columns,
   rows,
@@ -62,13 +62,14 @@ const CommonTable: React.FC<CommonTableProps> = ({
   entriesPerPage,
   setEntriesPerPage,
   addName,
-}) => {
-  const [sortKey, setSortKey] = useState<string | null>(null);
+}: CommonTableProps<T>) => {
+  const [sortKey, setSortKey] = useState<keyof T | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>(
     null
   );
+  console.log(isDraggable);
 
-  const handleSort = (key: string) => {
+  const handleSort = (key: keyof T) => {
     if (sortKey === key) {
       // Toggle sort direction or reset
       setSortDirection((prev) =>
@@ -148,13 +149,13 @@ const CommonTable: React.FC<CommonTableProps> = ({
             <TableRow>
               {columns.map((column) => (
                 <TableColumnHeader
-                  key={column.key}
+                  key={String(column.key)}
                   onClick={() => handleSort(column.key)}
                   cursor="pointer"
                   alignItems="center"
                 >
                   <Flex align={"center"}>
-                    <Text mr={2}>{column.label} </Text>
+                    <Text mr={4}>{column.label} </Text>
                     {sortKey === column.key && sortDirection === "asc" && (
                       <FiChevronUp />
                     )}
@@ -187,7 +188,9 @@ const CommonTable: React.FC<CommonTableProps> = ({
               sortedRows.map((row, rowIndex) => (
                 <TableRow key={rowIndex}>
                   {columns.map((column) => (
-                    <TableCell key={column.key}>{row[column.key]}</TableCell>
+                    <TableCell key={String(column.key)}>
+                      {String(row[column.key])}
+                    </TableCell>
                   ))}
                   {(onEdit || onDelete) && (
                     <TableCell>
