@@ -1,44 +1,43 @@
 export interface AdminLayoutProps {
-    children: React.ReactNode;
-    breadcrumbItems: BreadcrumbProps [],
-    title: string,
-    activeSidebarItem: string
+  children: React.ReactNode;
+  breadcrumbItems: BreadcrumbProps[];
+  title: string;
+  activeSidebarItem: string;
 }
 
-interface BreadcrumbProps{
-    label : string;
-    link :string
+interface BreadcrumbProps {
+  label: string;
+  link: string;
 }
 
 export interface SidebarProps {
-    // onToggle: () => void;
-    activeSidebarItem: string
-
+  // onToggle: () => void;
+  activeSidebarItem: string;
 }
 
 export interface NavbarProps {
-    breadcrumbItems : BreadcrumbProps [],
-    title: string;
-    isSidebarExpanded ?: boolean
+  breadcrumbItems: BreadcrumbProps[];
+  title: string;
+  isSidebarExpanded?: boolean;
 }
 
-
 export interface CommonToastProps {
-    type : 'success' | 'error' | 'warning' | 'info'
-    description: string;
-    loading ?: boolean
+  type: "success" | "error" | "warning" | "info";
+  description: string;
+  loading?: boolean;
 }
 
 export interface CommonModalProps {
-    open: boolean;
-    onOpenChange: () => void;
-    children: React.ReactNode;
-    title: string
+  open: boolean;
+  onOpenChange: () => void;
+  children: React.ReactNode;
+  title: string;
 }
 
 export interface Column<T> {
   key: keyof T;
   label: string;
+  render?: (row: T) => React.ReactNode;
 }
 
 export interface CommonTableProps<T> {
@@ -49,7 +48,7 @@ export interface CommonTableProps<T> {
   onDelete?: (row: T) => void;
   onSearch?: (query: string) => void;
   onAdd?: () => void;
-  addName?: string;
+  addName: string;
   filterComponent?: React.ReactNode;
   isDraggable?: boolean;
   count?: number;
@@ -58,5 +57,10 @@ export interface CommonTableProps<T> {
   setEntriesPerPage: (value: string) => void;
 }
 
-
-
+export interface TableHeadProps {
+  title: string;
+  onSearch?: (query: string) => void;
+  filterComponent?: React.ReactNode;
+  onAdd?: () => void;
+  addName: string;
+}

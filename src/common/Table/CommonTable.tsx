@@ -1,14 +1,11 @@
 import {
-  Box,
   CardBody,
   CardFooter,
   CardRoot,
   createListCollection,
   Flex,
-  Heading,
   HStack,
   IconButton,
-  Input,
   TableBody,
   TableCell,
   TableColumnHeader,
@@ -17,15 +14,8 @@ import {
   TableRow,
   Text,
 } from "@chakra-ui/react";
-import {
-  FiChevronDown,
-  FiChevronUp,
-  FiPlus,
-  FiSettings,
-  FiTrash,
-} from "react-icons/fi";
+import { FiChevronDown, FiChevronUp, FiTrash } from "react-icons/fi";
 import { LuPencil } from "react-icons/lu";
-import CommonButton from "./Buttons";
 
 import {
   PaginationItems,
@@ -38,6 +28,7 @@ import { useState } from "react";
 import { EmptyState } from "@/components/ui/empty-state";
 import { HiSwatch } from "react-icons/hi2";
 import { CommonTableProps } from "@/utils";
+import TableHead from "./TableHeader";
 
 const options = createListCollection({
   items: [
@@ -65,7 +56,7 @@ const CommonTable = <T,>({
 }: CommonTableProps<T>) => {
   const [sortKey, setSortKey] = useState<keyof T | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>(
-    null
+    "asc"
   );
   console.log(isDraggable);
 
@@ -100,49 +91,13 @@ const CommonTable = <T,>({
   return (
     <CardRoot variant={"elevated"}>
       <CardBody>
-        <Flex justifyContent="space-between" alignItems="center" mb={4}>
-          <Flex flex={1} alignItems="center" gap={4}>
-            <Heading size="xl">{title}</Heading>
-          </Flex>
-          <Input
-            placeholder="Search..."
-            maxW="300px"
-            onChange={(e) => onSearch?.(e.target.value)}
-            mr={4}
-            size={"sm"}
-            border={"1px solid"}
-          />
-          <IconButton
-            aria-label="Delete"
-            size="sm"
-            colorPalette={"black"}
-            variant="surface"
-          >
-            <FiSettings />
-          </IconButton>
-        </Flex>
-
-        <Flex justifyContent="space-between" alignItems="center" mb={4}>
-          {/* Render the filter component if provided */}
-          {filterComponent ? (
-            <Box flex={1}>{filterComponent}</Box>
-          ) : (
-            <Box flex={1}></Box>
-          )}
-
-          {/* Add Button */}
-          {onAdd && (
-            <CommonButton
-              label={addName || "Add"}
-              icon={<FiPlus />}
-              onPress={() => onAdd()}
-              alignContent="end"
-              size="sm"
-              variant="surface"
-              colorPalette="gray"
-            />
-          )}
-        </Flex>
+        <TableHead
+          title={title}
+          onSearch={onSearch}
+          filterComponent={filterComponent}
+          onAdd={onAdd}
+          addName={addName}
+        />
 
         <TableRoot variant={"outline"}>
           <TableHeader>
@@ -189,7 +144,9 @@ const CommonTable = <T,>({
                 <TableRow key={rowIndex}>
                   {columns.map((column) => (
                     <TableCell key={String(column.key)}>
-                      {String(row[column.key])}
+                      {column.render
+                        ? column.render(row)
+                        : String(row[column.key])}
                     </TableCell>
                   ))}
                   {(onEdit || onDelete) && (

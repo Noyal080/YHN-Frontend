@@ -8,5 +8,6 @@ export type SliderType = {
             link : string;
         }
     };
+    status: boolean;
     text : string
 }

@@ -1,19 +1,39 @@
-import CommonTable from "@/common/CommonTable";
+import CommonTable from "@/common/Table/CommonTable";
 import AdminLayout from "../../Layout";
 import { useState } from "react";
 import { SliderType } from "@/utils/types";
 import { Column } from "@/utils";
+import { Switch } from "@/components/ui/switch";
+import { Image } from "@chakra-ui/react";
 
 const SliderSection = () => {
   const columns: Column<{
     id: number;
     priorityOrder: number;
     "content.image": string;
+    status: boolean;
     text: string;
   }>[] = [
     { key: "id", label: "#" },
     { key: "priorityOrder", label: "Priority Order" },
-    { key: "content.image", label: "Image" },
+    {
+      key: "content.image",
+      label: "Image",
+      render: (row) => (
+        <Image
+          rounded="md"
+          h="200px"
+          w="300px"
+          fit="contain"
+          src={row["content.image"]}
+        />
+      ),
+    },
+    {
+      key: "status",
+      label: "Status",
+      render: (row) => <Switch checked={row.status || false} />,
+    },
     { key: "text", label: "Text" },
   ];
 
@@ -21,31 +41,41 @@ const SliderSection = () => {
     {
       id: 1,
       priorityOrder: 1,
-      content: { image: "image_url_1" },
+      content: {
+        image: "https://placehold.co/600x400",
+      },
+      status: true,
       text: "Sample Text 1",
     },
     {
       id: 2,
       priorityOrder: 2,
-      content: { image: "image_url_2" },
+      content: {
+        image: "https://placehold.co/300x200",
+      },
+      status: false,
       text: "Sample Text 2",
     },
     {
       id: 3,
       priorityOrder: 3,
-      content: { image: "image_url_3" },
+      content: { image: "https://placehold.co/600x400" },
+      status: false,
       text: "Sample Text 3",
     },
     {
       id: 4,
       priorityOrder: 4,
-      content: { image: "image_url_4" },
+      content: { image: "https://placehold.co/600x400/000000/FFF" },
+      status: true,
       text: "Sample Text 4",
     },
+
     {
       id: 5,
       priorityOrder: 5,
-      content: { image: "image_url_5" },
+      content: { image: "https://placehold.co/600x400/png" },
+      status: true,
       text: "Sample Text 5",
     },
   ]);
