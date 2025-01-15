@@ -11,12 +11,9 @@
   },
   "dependencies": {
     "@chakra-ui/react": "^3.2.3",
-    "@ckeditor/ckeditor5-react": "^9.4.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@reduxjs/toolkit": "^2.5.0",
-    "ckeditor5": "^44.1.0",
-    "ckeditor5-premium-features": "^44.1.0",
     "framer-motion": "^11.15.0",
     "next-themes": "^0.4.4",
     "react": "^18.3.1",

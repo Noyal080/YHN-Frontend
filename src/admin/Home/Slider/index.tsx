@@ -5,6 +5,7 @@ import { SliderType } from "@/utils/types";
 import { Column } from "@/utils";
 import { Switch } from "@/components/ui/switch";
 import { Image } from "@chakra-ui/react";
+import SliderFilter from "./SliderFilter";
 
 const SliderSection = () => {
   const columns: Column<{
@@ -32,7 +33,12 @@ const SliderSection = () => {
     {
       key: "status",
       label: "Status",
-      render: (row) => <Switch checked={row.status || false} />,
+      render: (row) => (
+        <Switch
+          checked={row.status || false}
+          onCheckedChange={() => console.log(`${row.id} checked`)}
+        />
+      ),
     },
     { key: "text", label: "Text" },
   ];
@@ -109,7 +115,7 @@ const SliderSection = () => {
         onDelete={handleDelete}
         onSearch={(query) => console.log("Search", query)}
         onAdd={() => console.log("Add")}
-        filterComponent={<div>Custom Filter Component</div>}
+        filterComponent={<SliderFilter />}
         isDraggable
         count={100}
         entriesPerPage={entriesPerPage}
