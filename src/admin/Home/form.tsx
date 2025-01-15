@@ -1,8 +1,7 @@
-import { Button } from "@/components/ui/button";
 import AdminLayout from "../Layout";
 import { useState } from "react";
-import CommonModal from "@/common/CommonModal";
 
+import { Button } from "@/components/ui/button";
 const AddForm = () => {
   // const { showToast } = useCommonToast();
   const [open, setOpen] = useState(false);
@@ -10,13 +9,7 @@ const AddForm = () => {
   return (
     <AdminLayout title="Add Form" breadcrumbItems={[]} activeSidebarItem="form">
       <Button onClick={() => setOpen(true)}> Click me</Button>
-      <CommonModal
-        open={open}
-        onOpenChange={() => setOpen(!open)}
-        title="Add Form"
-      >
-        Hrllo
-      </CommonModal>
+      {open && <h1> hi </h1>}
     </AdminLayout>
   );
 };
