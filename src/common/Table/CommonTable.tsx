@@ -27,7 +27,7 @@ import {
 import { useState } from "react";
 import { EmptyState } from "@/components/ui/empty-state";
 import { HiSwatch } from "react-icons/hi2";
-import { CommonTableProps } from "@/utils";
+import { Column, CommonTableProps } from "@/utils";
 import TableHead from "./TableHeader";
 
 const options = createListCollection({
@@ -58,7 +58,17 @@ const CommonTable = <T,>({
   const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>(
     "asc"
   );
-  console.log(isDraggable);
+  const [visibleColumns, setVisibleColumns] = useState<Column<T>[]>(columns);
+
+  const handleColumnVisibilityChange = (key: keyof T, visible: boolean) => {
+    // Update the visibility of the selected column
+    setVisibleColumns((prevColumns) =>
+      prevColumns.map((col) =>
+        col.key === key ? { ...col, visible: visible } : col
+      )
+    );
+  };
+  console.log(isDraggable, visibleColumns);
 
   const handleSort = (key: keyof T) => {
     if (sortKey === key) {
@@ -92,6 +102,8 @@ const CommonTable = <T,>({
     <CardRoot variant={"elevated"}>
       <CardBody>
         <TableHead
+          columns={visibleColumns}
+          handleColumnVisibilityChange={handleColumnVisibilityChange}
           title={title}
           onSearch={onSearch}
           filterComponent={filterComponent}
@@ -102,24 +114,26 @@ const CommonTable = <T,>({
         <TableRoot variant={"outline"}>
           <TableHeader>
             <TableRow>
-              {columns.map((column) => (
-                <TableColumnHeader
-                  key={String(column.key)}
-                  onClick={() => handleSort(column.key)}
-                  cursor="pointer"
-                  alignItems="center"
-                >
-                  <Flex align={"center"}>
-                    <Text mr={4}>{column.label} </Text>
-                    {sortKey === column.key && sortDirection === "asc" && (
-                      <FiChevronUp />
-                    )}
-                    {sortKey === column.key && sortDirection === "desc" && (
-                      <FiChevronDown />
-                    )}
-                  </Flex>
-                </TableColumnHeader>
-              ))}
+              {visibleColumns
+                .filter((column) => column.visible) // Only render visible columns
+                .map((column) => (
+                  <TableColumnHeader
+                    key={String(column.key)}
+                    onClick={() => handleSort(column.key)}
+                    cursor="pointer"
+                    alignItems="center"
+                  >
+                    <Flex align={"center"}>
+                      <Text mr={4}>{column.label}</Text>
+                      {sortKey === column.key && sortDirection === "asc" && (
+                        <FiChevronUp />
+                      )}
+                      {sortKey === column.key && sortDirection === "desc" && (
+                        <FiChevronDown />
+                      )}
+                    </Flex>
+                  </TableColumnHeader>
+                ))}
               {(onEdit || onDelete) && (
                 <TableColumnHeader textAlign="center">
                   Actions
@@ -130,7 +144,11 @@ const CommonTable = <T,>({
           <TableBody>
             {sortedRows.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={columns.length + 1}>
+                <TableCell
+                  colSpan={
+                    visibleColumns.filter((column) => column.visible).length + 1
+                  }
+                >
                   <EmptyState
                     icon={<HiSwatch />}
                     title="No data found"
@@ -142,13 +160,15 @@ const CommonTable = <T,>({
             ) : (
               sortedRows.map((row, rowIndex) => (
                 <TableRow key={rowIndex}>
-                  {columns.map((column) => (
-                    <TableCell key={String(column.key)}>
-                      {column.render
-                        ? column.render(row)
-                        : String(row[column.key])}
-                    </TableCell>
-                  ))}
+                  {visibleColumns
+                    .filter((column) => column.visible) // Only render visible columns
+                    .map((column) => (
+                      <TableCell key={String(column.key)}>
+                        {column.render
+                          ? column.render(row)
+                          : String(row[column.key])}
+                      </TableCell>
+                    ))}
                   {(onEdit || onDelete) && (
                     <TableCell>
                       <Flex justifyContent="center" gap={2}>

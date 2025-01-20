@@ -6,20 +6,28 @@ import { Column } from "@/utils";
 import { Switch } from "@/components/ui/switch";
 import { Image } from "@chakra-ui/react";
 import SliderFilter from "./SliderFilter";
+import { useNavigate } from "react-router-dom";
 
 const SliderSection = () => {
   const columns: Column<{
     id: number;
+    title: string;
     priorityOrder: number;
     "content.image": string;
     status: boolean;
-    text: string;
+    "content.text": string;
+    "content.button"?: {
+      label: string;
+      link: string;
+    };
   }>[] = [
-    { key: "id", label: "#" },
-    { key: "priorityOrder", label: "Priority Order" },
+    { key: "id", label: "#", visible: true },
+    { key: "title", label: "Title", visible: true },
+    { key: "priorityOrder", label: "Priority Order", visible: true },
     {
       key: "content.image",
       label: "Image",
+      visible: false,
       render: (row) => (
         <Image
           rounded="md"
@@ -33,63 +41,86 @@ const SliderSection = () => {
     {
       key: "status",
       label: "Status",
+      visible: true,
       render: (row) => (
         <Switch
-          checked={row.status || false}
+          checked={row.status}
           onCheckedChange={() => console.log(`${row.id} checked`)}
         />
       ),
     },
-    { key: "text", label: "Text" },
+    { key: "content.text", label: "Text", visible: true },
+    {
+      key: "content.button",
+      label: "Button",
+      visible: false,
+      render: (row) =>
+        row["content.button"] ? (
+          <>
+            <span>{row["content.button"].label}</span>
+          </>
+        ) : (
+          "No Button"
+        ),
+    },
   ];
+  const navigate = useNavigate();
 
   const [rows, setRows] = useState<SliderType[]>([
     {
       id: 1,
+      title: "",
       priorityOrder: 1,
       content: {
         image: "https://placehold.co/600x400",
+        text: "Sample Text 1",
       },
       status: true,
-      text: "Sample Text 1",
     },
     {
       id: 2,
+      title: "",
       priorityOrder: 2,
       content: {
         image: "https://placehold.co/300x200",
+        text: "Sample Text 2",
       },
       status: false,
-      text: "Sample Text 2",
     },
     {
       id: 3,
+      title: "",
       priorityOrder: 3,
-      content: { image: "https://placehold.co/600x400" },
+      content: { image: "https://placehold.co/600x400", text: "Sample Text 3" },
       status: false,
-      text: "Sample Text 3",
     },
     {
       id: 4,
+      title: "",
       priorityOrder: 4,
-      content: { image: "https://placehold.co/600x400/000000/FFF" },
+      content: {
+        image: "https://placehold.co/600x400/000000/FFF",
+        text: "Sample Text 4",
+      },
       status: true,
-      text: "Sample Text 4",
     },
 
     {
       id: 5,
+      title: "",
       priorityOrder: 5,
-      content: { image: "https://placehold.co/600x400/png" },
+      content: {
+        image: "https://placehold.co/600x400/png",
+        text: "Sample Text 5",
+      },
       status: true,
-      text: "Sample Text 5",
     },
   ]);
 
   const [entriesPerPage, setEntriesPerPage] = useState("10");
 
   const handleEdit = (row: SliderType) => {
-    alert(`Edit row with ID: ${row.id}`);
+    navigate(`/admin/slider/edit/${row.id}`);
   };
 
   const handleDelete = (row: SliderType) => {
@@ -101,7 +132,12 @@ const SliderSection = () => {
   return (
     <AdminLayout
       title="Slider Section"
-      breadcrumbItems={[]}
+      breadcrumbItems={[
+        { label: "Dashboard", link: "/admin" },
+        {
+          label: "Slider",
+        },
+      ]}
       activeSidebarItem="Slider"
     >
       <CommonTable
@@ -110,11 +146,12 @@ const SliderSection = () => {
         rows={rows.map((row) => ({
           ...row,
           "content.image": row.content.image,
+          "content.text": row.content.text,
         }))}
         onEdit={handleEdit}
         onDelete={handleDelete}
         onSearch={(query) => console.log("Search", query)}
-        onAdd={() => console.log("Add")}
+        onAdd={() => navigate("/admin/slider/add")}
         filterComponent={<SliderFilter />}
         isDraggable
         count={100}

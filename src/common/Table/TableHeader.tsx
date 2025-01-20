@@ -1,16 +1,37 @@
-import { Box, Flex, Heading, IconButton, Input } from "@chakra-ui/react";
+import {
+  Box,
+  CheckboxGroup,
+  FieldsetContent,
+  FieldsetLegend,
+  FieldsetRoot,
+  Flex,
+  Heading,
+  IconButton,
+  Input,
+} from "@chakra-ui/react";
 import { FiPlus, FiSettings } from "react-icons/fi";
 import CommonButton from "../Buttons";
-import React from "react";
 import { TableHeadProps } from "@/utils";
+import { useState } from "react";
+import {
+  PopoverBody,
+  PopoverContent,
+  PopoverRoot,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Checkbox } from "@/components/ui/checkbox";
 
-const TableHead: React.FC<TableHeadProps> = ({
+const TableHead = <T,>({
+  columns,
+  handleColumnVisibilityChange,
   title,
   onSearch,
   filterComponent,
   onAdd,
   addName,
-}) => {
+}: TableHeadProps<T>) => {
+  const [open, setOpen] = useState<boolean>(false);
+
   return (
     <>
       <Flex justifyContent="space-between" alignItems="center" mb={4}>
@@ -25,14 +46,43 @@ const TableHead: React.FC<TableHeadProps> = ({
           size={"sm"}
           border={"1px solid"}
         />
-        <IconButton
-          aria-label="Delete"
-          size="sm"
-          colorPalette={"black"}
-          variant="surface"
-        >
-          <FiSettings />
-        </IconButton>
+        <PopoverRoot open={open} onOpenChange={(e) => setOpen(e.open)}>
+          <PopoverTrigger>
+            <IconButton
+              aria-label="Delete"
+              size="sm"
+              colorPalette={"black"}
+              variant="surface"
+            >
+              <FiSettings />
+            </IconButton>
+          </PopoverTrigger>
+          <PopoverContent>
+            <PopoverBody>
+              <FieldsetRoot>
+                <CheckboxGroup>
+                  <FieldsetLegend> Select Columns </FieldsetLegend>
+                  <FieldsetContent>
+                    {columns.map((column) => (
+                      <Checkbox
+                        variant={"subtle"}
+                        checked={column.visible}
+                        onCheckedChange={() =>
+                          handleColumnVisibilityChange(
+                            column.key,
+                            !column.visible
+                          )
+                        }
+                      >
+                        {column.label}
+                      </Checkbox>
+                    ))}
+                  </FieldsetContent>
+                </CheckboxGroup>
+              </FieldsetRoot>
+            </PopoverBody>
+          </PopoverContent>
+        </PopoverRoot>
       </Flex>
 
       <Flex justifyContent="space-between" alignItems="center" mb={4}>

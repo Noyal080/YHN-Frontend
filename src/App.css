@@ -3,6 +3,9 @@
 		margin: 0 !important;
 	}
 }
+.ck-editor__editable {
+    min-height: 200px;
+}
 
 .main-container {
 	font-family: 'Lato';

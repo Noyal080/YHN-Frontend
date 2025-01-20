@@ -7,7 +7,7 @@ export interface AdminLayoutProps {
 
 interface BreadcrumbProps {
   label: string;
-  link: string;
+  link?: string;
 }
 
 export interface SidebarProps {
@@ -37,11 +37,13 @@ export interface CommonModalProps {
 export interface Column<T> {
   key: keyof T;
   label: string;
+  visible : boolean
   render?: (row: T) => React.ReactNode;
 }
 
 export interface CommonTableProps<T> {
   title: string;
+
   columns: Column<T>[];
   rows: T[];
   onEdit?: (row: T) => void;
@@ -57,10 +59,12 @@ export interface CommonTableProps<T> {
   setEntriesPerPage: (value: string) => void;
 }
 
-export interface TableHeadProps {
+export interface TableHeadProps <T> {
   title: string;
   onSearch?: (query: string) => void;
   filterComponent?: React.ReactNode;
   onAdd?: () => void;
   addName: string;
+  columns : Column<T>[]
+  handleColumnVisibilityChange: (columnKey: keyof T , visible : boolean) => void;
 }

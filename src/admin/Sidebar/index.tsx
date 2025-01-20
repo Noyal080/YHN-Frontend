@@ -9,6 +9,8 @@ import {
   CollapsibleRoot,
   CollapsibleContent,
   CollapsibleTrigger,
+  Container,
+  Image,
 } from "@chakra-ui/react";
 import {
   FiUsers,
@@ -27,14 +29,14 @@ import {
   FiVideo,
 } from "react-icons/fi";
 import { LuImagePlay, LuLayoutDashboard, LuQuote } from "react-icons/lu";
-import { Avatar } from "@/components/ui/avatar";
 import { Tooltip } from "@/components/ui/tooltip";
 import { SidebarProps } from "@/utils";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleDropdown, toggleSidebar } from "@/redux/sidebarSlice";
 import { RootState } from "@/redux/store";
-
+import Logo from "../../assets/YHN_Logo.jpg";
+import SmallLogo from "../../assets/LogoSmall.png";
 const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
   const dispatch = useDispatch();
   const { isExpanded, openDropdowns } = useSelector(
@@ -66,9 +68,19 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
       label: "Home Section",
       icon: FiHome,
       children: [
-        { label: "Slider", icon: LuImagePlay, link: "/admin/slider" },
-        { label: "Message Request", icon: FiMail, link: "/admin/messages" },
-        { label: "Partner Slider", icon: FiUsers, link: "/admin/partners" },
+        { id: 21, label: "Slider", icon: LuImagePlay, link: "/admin/slider" },
+        {
+          id: 22,
+          label: "Message Request",
+          icon: FiMail,
+          link: "/admin/messages",
+        },
+        {
+          id: 23,
+          label: "Partner Slider",
+          icon: FiUsers,
+          link: "/admin/partners",
+        },
       ],
     },
     {
@@ -76,24 +88,28 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
       label: "About Us",
       icon: FiInfo,
       children: [
-        { label: "Who are we", icon: FiUser, link: "/admin/about" },
+        { id: 31, label: "Who are we", icon: FiUser, link: "/admin/about" },
         {
+          id: 32,
           label: "Board of Directors",
           icon: FiSettings,
           link: "/admin/founder",
         },
-        { label: "Our Team", icon: FiUsers, link: "/admin/team" },
+        { id: 33, label: "Our Team", icon: FiUsers, link: "/admin/team" },
         {
+          id: 34,
           label: "Testimonial",
           icon: LuQuote,
           link: "/admin/testimonials",
         },
         {
+          id: 35,
           label: "Donation",
           icon: FiDollarSign,
           link: "/admin/donation",
         },
         {
+          id: 36,
           label: "Volunteer / Careers",
           icon: FiBriefcase,
           link: "/admin/careers",
@@ -108,13 +124,31 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
       label: "Gallery",
       icon: FiImage,
       children: [
-        { label: "Photo", icon: FiCamera, link: "/admin/gallery/photos" },
-        { label: "Video", icon: FiVideo, link: "/admin/gallery/videos" },
+        {
+          id: 71,
+          label: "Photo",
+          icon: FiCamera,
+          link: "/admin/gallery/photos",
+        },
+        {
+          id: 72,
+          label: "Video",
+          icon: FiVideo,
+          link: "/admin/gallery/videos",
+        },
       ],
     },
   ];
 
-  const renderMenuItem = (item: any) => {
+  interface MenuItem {
+    id: number;
+    label: string;
+    icon: React.ElementType;
+    link?: string;
+    children?: MenuItem[];
+  }
+
+  const renderMenuItem = (item: MenuItem) => {
     const isOpen = openDropdowns.includes(item.id);
 
     const menuItemContent = (
@@ -142,15 +176,19 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
               onClick={() =>
                 item.children
                   ? handleSidebarDropdown(item.id)
-                  : handleLinkClick(item.link)
+                  : item?.link
+                  ? handleLinkClick(item?.link)
+                  : null
               }
-              _hover={{ color: "teal.300" }}
+              _hover={{ color: "teal.600" }}
               p={2}
               borderRadius="md"
               transition="background 0.2s"
               cursor="pointer"
-              color={item.label === activeSidebarItem ? "teal.400" : "gray.300"}
-              fontWeight={item.label === activeSidebarItem ? "bold" : "normal"}
+              color={
+                item.label === activeSidebarItem ? "teal.500" : "black.300"
+              }
+              // fontWeight={item.label === activeSidebarItem ? "bold" : "normal"}
             >
               {menuItemContent}
               {item.children && isExpanded && (
@@ -168,39 +206,47 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
           {item.children && (
             <CollapsibleContent>
               <VStack align="start" pl={isExpanded ? 6 : 0} mt={2}>
-                {item.children.map((child: any) => (
-                  <Tooltip
-                    key={child.label}
-                    content={child.label}
-                    disabled={isExpanded}
-                    positioning={{ placement: "right" }}
-                  >
-                    <Link
-                      color={
-                        child.label === activeSidebarItem
-                          ? "teal.400"
-                          : "gray.300"
-                      }
-                      fontWeight={
-                        child.label === activeSidebarItem ? "bold" : "normal"
-                      }
-                      onClick={() => handleLinkClick(child.link)}
-                      _hover={{ color: "teal.300" }}
-                      p={2}
-                      borderRadius="md"
-                      transition="background 0.2s"
-                      w="100%"
+                {item.children.map(
+                  (child: {
+                    label: string;
+                    icon: React.ElementType;
+                    link?: string;
+                  }) => (
+                    <Tooltip
+                      key={child.label}
+                      content={child.label}
+                      disabled={isExpanded}
+                      positioning={{ placement: "right" }}
                     >
-                      <Flex align="center">
-                        <child.icon
-                          size={20}
-                          style={{ marginRight: isExpanded ? "12px" : "0" }}
-                        />
-                        {isExpanded && child.label}
-                      </Flex>
-                    </Link>
-                  </Tooltip>
-                ))}
+                      <Link
+                        color={
+                          child.label === activeSidebarItem
+                            ? "teal.400"
+                            : "black.300"
+                        }
+                        // fontWeight={
+                        //   child.label === activeSidebarItem ? "bold" : "normal"
+                        // }
+                        onClick={() =>
+                          child?.link ? handleLinkClick(child?.link) : null
+                        }
+                        _hover={{ color: "teal.600" }}
+                        p={2}
+                        borderRadius="md"
+                        transition="background 0.2s"
+                        w="100%"
+                      >
+                        <Flex align="center">
+                          <child.icon
+                            size={20}
+                            style={{ marginRight: isExpanded ? "12px" : "0" }}
+                          />
+                          {isExpanded && child.label}
+                        </Flex>
+                      </Link>
+                    </Tooltip>
+                  )
+                )}
               </VStack>
             </CollapsibleContent>
           )}
@@ -213,9 +259,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
     <Box
       w={isExpanded ? "300px" : "80px"}
       h="100vh"
-      bg="gray.800"
-      color="white"
-      p={4}
+      bg="white.200"
+      color="black.400"
       position="fixed"
       boxShadow="lg"
       borderRadius="md"
@@ -225,26 +270,57 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
       justifyContent="space-between"
       zIndex={1000}
     >
-      {/* Top Section */}
-      <VStack align="start">
-        <Text
-          fontSize="2xl"
-          fontWeight="bold"
-          display="flex"
-          alignItems="center"
-          className="space-y-4"
-          mb={5}
-        >
-          {isExpanded ? (
-            "Yours Humanly Nepal"
-          ) : (
-            <Avatar name="Segun Adebayo" src="https://bit.ly/sage-adebayo" />
-          )}
-        </Text>
+      <Container
+        maxH="100%"
+        overflowY="auto"
+        css={{
+          "&::-webkit-scrollbar": {
+            width: "0px",
+          },
+          "&::-webkit-scrollbar-track": {
+            width: "0px",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            background: "transparent",
+            borderRadius: "24px",
+          },
+        }}
+        p={4}
+      >
+        <VStack align="start">
+          <Text
+            fontSize="2xl"
+            fontWeight="bold"
+            display="flex"
+            alignItems="center"
+            className="space-y-4"
+            mb={5}
+          >
+            {isExpanded ? (
+              <Image
+                src={Logo}
+                alt="Logo Image"
+                objectFit="cover"
+                width="100%"
+                height="100%"
+              />
+            ) : (
+              <Image
+                src={SmallLogo}
+                alt="Logo Image"
+                borderRadius="full"
+                fit="cover"
+                width="100%"
+                height="100%"
+              />
+            )}
+          </Text>
 
-        {/* Menu Items */}
-        {menuItems.map((item) => renderMenuItem(item))}
-      </VStack>
+          {/* Menu Items */}
+          {menuItems.map((item) => renderMenuItem(item))}
+        </VStack>
+      </Container>
+      {/* Top Section */}
 
       {/* Expand/Collapse Button */}
       <IconButton
@@ -252,14 +328,14 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
         onClick={handleSidebarToggle}
         size="sm"
         variant="ghost"
-        color="gray.300"
-        _hover={{ color: "white" }}
+        color="black.500"
+        _hover={{ color: "teal.500" }}
         position="absolute"
         top="9%"
         right={isExpanded ? "-12px" : "-16px"}
         transform={`translateY(-50%) rotate(${isExpanded ? "0deg" : "180deg"})`}
         transition="all 0.3s ease"
-        bg="gray.700"
+        bg="gray.100"
         borderRadius="full"
         boxShadow="md"
       >
@@ -268,7 +344,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
 
       {/* Bottom Section */}
       {isExpanded && (
-        <Text fontSize="sm" color="gray.500" mt="auto">
+        <Text fontSize="sm" color="gray.500" mt="auto" p={"4"}>
           © 2024 Admin Dashboard
         </Text>
       )}

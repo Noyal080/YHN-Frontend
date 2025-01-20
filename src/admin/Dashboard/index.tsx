@@ -1,7 +1,7 @@
 import AdminLayout from "../Layout";
 
 const AdminDashboard = () => {
-  const breadcrumbItems = [{ label: "Dashboard", link: "/" }];
+  const breadcrumbItems = [{ label: "Dashboard", link: "/admin" }];
   return (
     <AdminLayout
       breadcrumbItems={breadcrumbItems}
