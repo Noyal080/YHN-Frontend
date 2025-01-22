@@ -19,11 +19,11 @@ import { Field } from "@/components/ui/field";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Checkbox } from "@/components/ui/checkbox";
 
-const MotionBox = motion(Box);
-const MotionFlex = motion(Flex);
-const MotionInput = motion(Input);
-const MotionPasswordInput = motion(PasswordInput);
-const MotionButton = motion(Button);
+const MotionBox = motion.create(Box);
+const MotionFlex = motion.create(Flex);
+const MotionInput = motion.create(Input);
+const MotionPasswordInput = motion.create(PasswordInput);
+const MotionButton = motion.create(Button);
 const Login = () => {
   const schema = yup.object().shape({
     email: yup.string().email("Invalid email").required("Email is required"),

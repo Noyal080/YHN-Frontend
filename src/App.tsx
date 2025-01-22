@@ -7,10 +7,10 @@ import {
 import "./App.css";
 import AdminDashboard from "./admin/Dashboard";
 import SliderSection from "./admin/Home/Slider";
-import AddForm from "./admin/Home/form";
 import { useEffect } from "react";
 import LoginPage from "./auth/Login";
 import SliderForm from "./admin/Home/Slider/SliderForm";
+import ProjectSection from "./admin/Projects";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -24,14 +24,14 @@ function App() {
   return (
     <Router>
       <ScrollToTop />
+
       <Routes>
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/slider" element={<SliderSection />} />
         <Route path="/admin/slider/add" element={<SliderForm />} />
         <Route path="/admin/slider/edit/:id" element={<SliderForm />} />
-        <Route path="/form" element={<AddForm />} />
+        <Route path="/admin/projects" element={<ProjectSection />} />
       </Routes>
     </Router>
   );

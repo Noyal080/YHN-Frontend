@@ -45,7 +45,13 @@ import {
 } from "ckeditor5";
 
 import "ckeditor5/ckeditor5.css";
-const CommonEditor = () => {
+const CommonEditor = ({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (data: string) => void;
+}) => {
   const LICENSE_KEY =
     "eyJhbGciOiJFUzI1NiJ9.eyJleHAiOjE3MzgxOTUxOTksImp0aSI6ImYzNGFlYzA4LWExZTUtNGRjMS04MGM3LTg2YTFhZjc2MDExYSIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL3Byb3h5LWV2ZW50LmNrZWRpdG9yLmNvbSIsImRpc3RyaWJ1dGlvbkNoYW5uZWwiOlsiY2xvdWQiLCJkcnVwYWwiLCJzaCJdLCJ3aGl0ZUxhYmVsIjp0cnVlLCJsaWNlbnNlVHlwZSI6InRyaWFsIiwiZmVhdHVyZXMiOlsiKiJdLCJ2YyI6ImIzYTRjODlmIn0.yG4HLEF3BEJ3DB_4VEWlroJyZAuAeDteCaHS3TrNV9qcQpKtcaZjazl_kHox4eNpqcmoJQ8wy478iETCwjsKnA";
 
@@ -250,7 +256,15 @@ const CommonEditor = () => {
         <div className="editor-container__editor">
           <div ref={editorRef}>
             {editorConfig && (
-              <CKEditor editor={ClassicEditor} config={editorConfig} />
+              <CKEditor
+                editor={ClassicEditor}
+                config={editorConfig}
+                data={value}
+                onChange={(event, editor) => {
+                  const data = editor.getData();
+                  onChange(data);
+                }}
+              />
             )}
           </div>
         </div>

@@ -68,3 +68,8 @@ export interface TableHeadProps <T> {
   columns : Column<T>[]
   handleColumnVisibilityChange: (columnKey: keyof T , visible : boolean) => void;
 }
+
+export interface TableSkeletonProps<T> {
+  visibleColumns: Column<T>[];
+  rowCount: number;
+}

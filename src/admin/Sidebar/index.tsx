@@ -61,7 +61,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
       id: 1,
       label: "Dashboard",
       icon: LuLayoutDashboard,
-      link: "/admin/dashboard",
+      link: "/admin",
     },
     {
       id: 2,

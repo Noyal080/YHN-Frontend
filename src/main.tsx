@@ -11,8 +11,8 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Provider forcedTheme="light">
       <ReduxProvider store={store}>
-        <App />
         <Toaster />
+        <App />
       </ReduxProvider>
     </Provider>
   </StrictMode>

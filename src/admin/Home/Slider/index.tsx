@@ -5,7 +5,7 @@ import { SliderType } from "@/utils/types";
 import { Column } from "@/utils";
 import { Switch } from "@/components/ui/switch";
 import { Image } from "@chakra-ui/react";
-import SliderFilter from "./SliderFilter";
+// import SliderFilter from "./SliderFilter";
 import { useNavigate } from "react-router-dom";
 
 const SliderSection = () => {
@@ -69,7 +69,7 @@ const SliderSection = () => {
   const [rows, setRows] = useState<SliderType[]>([
     {
       id: 1,
-      title: "",
+      title: "ABCD",
       priorityOrder: 1,
       content: {
         image: "https://placehold.co/600x400",
@@ -79,7 +79,7 @@ const SliderSection = () => {
     },
     {
       id: 2,
-      title: "",
+      title: "ABCD",
       priorityOrder: 2,
       content: {
         image: "https://placehold.co/300x200",
@@ -89,14 +89,14 @@ const SliderSection = () => {
     },
     {
       id: 3,
-      title: "",
+      title: "ABCD",
       priorityOrder: 3,
       content: { image: "https://placehold.co/600x400", text: "Sample Text 3" },
       status: false,
     },
     {
       id: 4,
-      title: "",
+      title: "ABCD",
       priorityOrder: 4,
       content: {
         image: "https://placehold.co/600x400/000000/FFF",
@@ -107,7 +107,7 @@ const SliderSection = () => {
 
     {
       id: 5,
-      title: "",
+      title: "ABCD",
       priorityOrder: 5,
       content: {
         image: "https://placehold.co/600x400/png",
@@ -141,7 +141,7 @@ const SliderSection = () => {
       activeSidebarItem="Slider"
     >
       <CommonTable
-        title="User List"
+        title="Slider List"
         columns={columns}
         rows={rows.map((row) => ({
           ...row,
@@ -152,7 +152,7 @@ const SliderSection = () => {
         onDelete={handleDelete}
         onSearch={(query) => console.log("Search", query)}
         onAdd={() => navigate("/admin/slider/add")}
-        filterComponent={<SliderFilter />}
+        // filterComponent={<SliderFilter />}
         isDraggable
         count={100}
         entriesPerPage={entriesPerPage}
