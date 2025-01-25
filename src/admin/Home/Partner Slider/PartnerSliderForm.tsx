@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import {
   FileUploadDropzone,
-  FileUploadList,
   FileUploadRoot,
 } from "@/components/ui/file-upload";
 import { Switch } from "@/components/ui/switch";
@@ -15,6 +14,7 @@ import {
   CardRoot,
   Heading,
   HStack,
+  Image,
   Input,
   Text,
   VStack,
@@ -25,7 +25,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 const PartnerSliderForm = () => {
   const { id } = useParams();
-  console.log(id);
+  const [selectedImage, setSelectedImage] = useState<string | null>();
 
   const { showToast } = useCommonToast();
   const [sliderData, setSliderData] = useState<PartnerSliderType>({
@@ -158,6 +158,8 @@ const PartnerSliderForm = () => {
                       onFileAccept={(value) => {
                         const file = value.files[0];
                         field.onChange(file);
+                        const objectUrl = URL.createObjectURL(file); // Convert file to URL
+                        setSelectedImage(objectUrl);
                         handleFieldChange("image", file);
                       }}
                     >
@@ -166,7 +168,15 @@ const PartnerSliderForm = () => {
                         label="Drag and drop here to upload"
                         description=".png, .jpg up to 5MB"
                       />
-                      <FileUploadList />
+                      {(selectedImage || sliderData.image) && (
+                        <Image
+                          src={selectedImage || sliderData.image}
+                          alt="Uploaded or Existing Image"
+                          objectFit="contain"
+                          aspectRatio={2 / 1}
+                          mt={4}
+                        />
+                      )}
                     </FileUploadRoot>
                     {errors.image && (
                       <Text textStyle="sm" color="red">
@@ -189,8 +199,9 @@ const PartnerSliderForm = () => {
                       <Switch
                         checked={field.value === 1}
                         onCheckedChange={(value) => {
-                          const numericValue = value ? 1 : 0; // Convert `true`/`false` to `1`/`0`
+                          const numericValue = value.checked ? 1 : 0; // Convert `true`/`false` to `1`/`0`
                           field.onChange(numericValue);
+                          console.log(numericValue, value);
                           handleFieldChange("status", numericValue);
                         }}
                         color="black"
