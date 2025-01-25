@@ -18,6 +18,10 @@ import * as yup from "yup";
 import { Field } from "@/components/ui/field";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { axiosInstance } from "@/api/axios";
+import useCommonToast from "@/common/CommonToast";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const MotionBox = motion.create(Box);
 const MotionFlex = motion.create(Flex);
@@ -29,7 +33,8 @@ const Login = () => {
     email: yup.string().email("Invalid email").required("Email is required"),
     password: yup.string().required("Password is required"),
   });
-
+  const { showToast } = useCommonToast();
+  const navigate = useNavigate();
   const {
     control,
     handleSubmit,
@@ -38,9 +43,27 @@ const Login = () => {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data: LoginFormData) => {
-    console.log(data);
-    // Handle login logic here
+  const onSubmit = async (data: LoginFormData) => {
+    try {
+      const res = await axiosInstance.post("/login", data);
+      const userData = res.data.data;
+      localStorage.setItem("accessToken", userData.token);
+      localStorage.setItem("userData", JSON.stringify(userData.user));
+      showToast({
+        description: res.data.message,
+        type: "success",
+      });
+      navigate("/admin");
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        const errorMessage =
+          error.response.data?.message || "An error occurred";
+        showToast({
+          description: errorMessage,
+          type: "error",
+        });
+      }
+    }
   };
 
   return (

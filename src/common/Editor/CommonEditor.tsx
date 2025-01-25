@@ -234,7 +234,6 @@ const CommonEditor = ({
             reversed: true,
           },
         },
-        placeholder: "Type or paste your content here!",
         table: {
           contentToolbar: [
             "tableColumn",

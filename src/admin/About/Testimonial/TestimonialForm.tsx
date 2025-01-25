@@ -1,14 +1,17 @@
 import AdminLayout from "@/admin/Layout";
+import { axiosInstance } from "@/api/axios";
+import useCommonToast from "@/common/CommonToast";
 import CommonEditor from "@/common/Editor/CommonEditor";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
+import CreatableSelect from "react-select/creatable";
 import {
   FileUploadDropzone,
   FileUploadList,
   FileUploadRoot,
 } from "@/components/ui/file-upload";
 import { Switch } from "@/components/ui/switch";
-import { SliderInput } from "@/utils/types";
+import { TestimonialInput } from "@/utils/types";
 import {
   CardBody,
   CardRoot,
@@ -19,42 +22,37 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
 import { Controller, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
-import { axiosInstance } from "@/api/axios";
-import useCommonToast from "@/common/CommonToast";
-const SliderForm = () => {
-  const [showButtons, setShowButtons] = useState<boolean>(false);
+
+const TestimonialForm = () => {
+  const { id } = useParams();
   const { showToast } = useCommonToast();
-  const [sliderData, setSliderData] = useState<SliderInput>({
-    title: "",
-    sub_title: "",
-    priority_order: 1,
-    image: "",
+  const [sliderData, setSliderData] = useState<TestimonialInput>({
     status: true,
-    button_title: "",
-    button_route: "",
+    image: "",
+    name: "",
+    description: "",
+    designation: "",
+    usercategory: "",
   });
+
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<SliderInput>({
+  } = useForm<TestimonialInput>({
     values: {
       id: sliderData.id,
-      title: sliderData.title || "",
-      sub_title: sliderData.sub_title || "",
-      priority_order: sliderData.priority_order || 1,
-      image: sliderData.image || "",
-      status: sliderData.status || true,
-      button_title: sliderData.button_title || "",
-      button_route: sliderData.button_route || "",
+      name: sliderData.name,
+      description: sliderData.description,
+      image: sliderData.image,
+      designation: sliderData.designation,
+      usercategory: sliderData.usercategory,
+      status: sliderData.status,
     },
   });
-  const { id } = useParams();
   const token = localStorage.getItem("accessToken");
-
   axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
   useEffect(() => {
@@ -70,13 +68,13 @@ const SliderForm = () => {
   }, [id]);
 
   const handleFieldChange = (
-    field: keyof SliderInput,
+    field: keyof TestimonialInput,
     value: string | number | boolean | File
   ) => {
     setSliderData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const onSubmit = async (sliderData: SliderInput) => {
+  const onSubmit = async (sliderData: TestimonialInput) => {
     try {
       if (id) {
         await axiosInstance.patch(`/slider/edit/${id}`, sliderData);
@@ -107,60 +105,46 @@ const SliderForm = () => {
     }
   };
 
-  const buttonVariants = {
-    hidden: { opacity: 0, y: -20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.3, ease: "easeInOut" },
-    },
-    exit: {
-      opacity: 0,
-      y: -20,
-      transition: { duration: 0.3, ease: "easeInOut" },
-    },
-  };
-
   return (
     <AdminLayout
       breadcrumbItems={[
         { label: "Dashboard", link: "/admin" },
-        { label: "Slider", link: "/admin/slider" },
-        { label: id ? "Edit Slider" : "Add Slider" },
+        { label: "Partner Slider" },
       ]}
-      title={`${id ? "Edit" : "Add"} Slider Section`}
-      activeSidebarItem="Slider"
+      activeSidebarItem="Partner Slider"
+      title={`${id ? "Edit" : "Add"} Partner Slider`}
     >
       <CardRoot m="auto" maxWidth="800px" mt={8} boxShadow="lg">
         <CardBody>
-          <Heading mb={6}>{id ? "Edit Slider" : "Add Slider"}</Heading>
+          <Heading mb={6}>
+            {id ? "Edit Partner Slider" : "Add Partner Slider"}
+          </Heading>
           <form onSubmit={handleSubmit(onSubmit)}>
             <VStack gap={4} align="stretch">
               <Controller
-                name="title"
+                name="name"
                 control={control}
-                rules={{ required: "Title is required" }}
+                rules={{ required: "Testimonial Name is required" }}
                 render={({ field }) => (
-                  <Field label="Title">
+                  <Field label="Testimonial Name">
                     <Input
                       {...field}
-                      placeholder="Enter title"
+                      placeholder="Enter testimonial name"
                       size="md"
                       onChange={(e) =>
-                        handleFieldChange("title", e.target.value)
+                        handleFieldChange("name", e.target.value)
                       }
                     />
-                    {errors.title && (
+                    {errors.name && (
                       <Text textStyle="sm" color="red">
-                        {errors.title.message}
+                        {errors.name.message}
                       </Text>
                     )}
                   </Field>
                 )}
               />
-
               <Controller
-                name="sub_title"
+                name="description"
                 control={control}
                 rules={{ required: "Description is required" }}
                 render={({ field }) => (
@@ -169,18 +153,17 @@ const SliderForm = () => {
                       value={field.value}
                       onChange={(value) => {
                         field.onChange(value);
-                        handleFieldChange("sub_title", value);
+                        handleFieldChange("description", value);
                       }}
                     />
-                    {errors.sub_title && (
+                    {errors.description && (
                       <Text textStyle="sm" color="red">
-                        {errors.sub_title.message}
+                        {errors.description.message}
                       </Text>
                     )}
                   </Field>
                 )}
               />
-
               <Controller
                 name="image"
                 control={control}
@@ -192,7 +175,6 @@ const SliderForm = () => {
                       maxFiles={1}
                       accept={["image/*"]}
                       onFileAccept={(value) => {
-                        console.log("Uploaded File:", value);
                         const file = value.files[0];
                         field.onChange(file);
                         handleFieldChange("image", file);
@@ -213,29 +195,56 @@ const SliderForm = () => {
                   </Field>
                 )}
               />
-
               <Controller
-                name="priority_order"
+                name="designation"
                 control={control}
-                rules={{ required: "Priority order is required" }}
+                rules={{ required: "User Designation is required" }}
                 render={({ field }) => (
-                  <Field label="Priority Order">
+                  <Field label="User Designation">
+                    <CreatableSelect
+                      {...field}
+                      // options={designationOptions}
+                      placeholder="Enter or select user designation"
+                      // onChange={(selectedOption) => {
+                      //   const value = selectedOption?.value || "";
+                      //   field.onChange(value);
+                      //   handleFieldChange("designation", value);
+                      // }}
+                      onBlur={field.onBlur}
+                      styles={{
+                        control: (base) => ({
+                          ...base,
+                          borderColor: errors.designation
+                            ? "red"
+                            : base.borderColor,
+                        }),
+                      }}
+                    />
+                    {errors.designation && (
+                      <Text textStyle="sm" color="red">
+                        {errors.designation.message}
+                      </Text>
+                    )}
+                  </Field>
+                )}
+              />
+              <Controller
+                name="usercategory"
+                control={control}
+                rules={{ required: "User Category is required" }}
+                render={({ field }) => (
+                  <Field label="User Category">
                     <Input
                       {...field}
-                      type="number"
-                      min={1}
-                      placeholder="Enter priority order"
+                      placeholder="Enter user category"
                       size="md"
                       onChange={(e) =>
-                        handleFieldChange(
-                          "priority_order",
-                          Number(e.target.value)
-                        )
+                        handleFieldChange("usercategory", e.target.value)
                       }
                     />
-                    {errors.priority_order && (
+                    {errors.usercategory && (
                       <Text textStyle="sm" color="red">
-                        {errors.priority_order.message}
+                        {errors.usercategory.message}
                       </Text>
                     )}
                   </Field>
@@ -249,7 +258,7 @@ const SliderForm = () => {
                   <Field>
                     <HStack justify="space-between" align="center">
                       <Text fontWeight="500" textStyle="md">
-                        Pinned Image
+                        Show Image
                       </Text>
                       <Switch
                         checked={field.value}
@@ -264,70 +273,6 @@ const SliderForm = () => {
                   </Field>
                 )}
               />
-
-              <Button
-                variant="outline"
-                colorScheme="blue"
-                onClick={() => setShowButtons(!showButtons)}
-                mt={4}
-              >
-                {showButtons ? "Hide Buttons" : "Add/Show Buttons"}
-              </Button>
-
-              {showButtons && (
-                <motion.div
-                  initial="hidden"
-                  animate="visible"
-                  exit="exit"
-                  variants={buttonVariants}
-                >
-                  <HStack gap={4} align="flex-start">
-                    <Controller
-                      name="button_title"
-                      control={control}
-                      render={({ field }) => (
-                        <Field label="Button Title">
-                          <Input
-                            {...field}
-                            placeholder="Enter button title"
-                            size="md"
-                            onChange={(e) =>
-                              handleFieldChange("button_title", e.target.value)
-                            }
-                          />
-                          {errors.button_title && (
-                            <Text textStyle="sm" color="red">
-                              {errors.button_title.message}
-                            </Text>
-                          )}
-                        </Field>
-                      )}
-                    />
-
-                    <Controller
-                      name="button_route"
-                      control={control}
-                      render={({ field }) => (
-                        <Field label="Button Route">
-                          <Input
-                            {...field}
-                            placeholder="Enter button route"
-                            size="md"
-                            onChange={(e) =>
-                              handleFieldChange("button_route", e.target.value)
-                            }
-                          />
-                          {errors.button_route && (
-                            <Text textStyle="sm" color="red">
-                              {errors.button_route.message}
-                            </Text>
-                          )}
-                        </Field>
-                      )}
-                    />
-                  </HStack>
-                </motion.div>
-              )}
             </VStack>
             <HStack justifyContent="flex-end" mt={4}>
               <Button variant={"ghost"}> Cancel </Button>
@@ -343,4 +288,4 @@ const SliderForm = () => {
   );
 };
 
-export default SliderForm;
+export default TestimonialForm;

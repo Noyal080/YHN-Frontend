@@ -11,6 +11,14 @@ import { useEffect } from "react";
 import LoginPage from "./auth/Login";
 import SliderForm from "./admin/Home/Slider/SliderForm";
 import ProjectSection from "./admin/Projects";
+import PartnerSlider from "./admin/Home/Partner Slider";
+import PartnerSliderForm from "./admin/Home/Partner Slider/PartnerSliderForm";
+import UsSection from "./admin/About/UsSection";
+import BodSection from "./admin/About/BodSection";
+import TeamSection from "./admin/About/TeamSection";
+import Testimonial from "./admin/About/Testimonial";
+import TestimonialForm from "./admin/About/Testimonial/TestimonialForm";
+import ProtectedRoute from "./common/ProtectedRoute";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -27,11 +35,168 @@ function App() {
 
       <Routes>
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/admin/slider" element={<SliderSection />} />
-        <Route path="/admin/slider/add" element={<SliderForm />} />
-        <Route path="/admin/slider/edit/:id" element={<SliderForm />} />
-        <Route path="/admin/projects" element={<ProjectSection />} />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+        {/* Home Section */}
+        <Route
+          path="/admin/slider"
+          element={
+            <ProtectedRoute>
+              <SliderSection />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/slider/add"
+          element={
+            <ProtectedRoute>
+              <SliderForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/slider/edit/:id"
+          element={
+            <ProtectedRoute>
+              <SliderForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/partners"
+          element={
+            <ProtectedRoute>
+              <PartnerSlider />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/partners/add"
+          element={
+            <ProtectedRoute>
+              <PartnerSliderForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/partners/edit/:id"
+          element={<PartnerSliderForm />}
+        />
+        <Route
+          path="/admin/messages"
+          element={
+            <ProtectedRoute>
+              <UsSection />
+            </ProtectedRoute>
+          }
+        />
+        {/* About us Section */}
+        <Route
+          path="/admin/about"
+          element={
+            <ProtectedRoute>
+              <UsSection />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/founder"
+          element={
+            <ProtectedRoute>
+              <BodSection />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/team"
+          element={
+            <ProtectedRoute>
+              <TeamSection />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/testimonials"
+          element={
+            <ProtectedRoute>
+              <Testimonial />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/testimonials/add"
+          element={
+            <ProtectedRoute>
+              <TestimonialForm />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/donation"
+          element={
+            <ProtectedRoute>
+              <Testimonial />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/careers"
+          element={
+            <ProtectedRoute>
+              <Testimonial />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/projects"
+          element={
+            <ProtectedRoute>
+              <ProjectSection />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/events"
+          element={
+            <ProtectedRoute>
+              <ProjectSection />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/services"
+          element={
+            <ProtectedRoute>
+              <ProjectSection />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Image Section  */}
+        <Route
+          path="/admin/gallery/photos"
+          element={
+            <ProtectedRoute>
+              <ProjectSection />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/gallery/videos"
+          element={
+            <ProtectedRoute>
+              <ProjectSection />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </Router>
   );

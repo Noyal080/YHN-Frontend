@@ -29,3 +29,25 @@ export type LoginFormData = {
   email: string;
   password: string;
 };
+
+export type PartnerSliderType = {
+  id?: number;
+  title: string;
+  image: string;
+  status: number;
+};
+
+export type TestimonialInput = {
+  id?: number;
+  status: boolean;
+  image: string;
+  name: string;
+  description: string;
+  designation: string;
+  usercategory: string;
+};
+
+export type Option = {
+  value: string;
+  label: string;
+}
