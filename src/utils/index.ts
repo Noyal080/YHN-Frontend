@@ -32,7 +32,8 @@ export interface CommonModalProps {
   onOpenChange: () => void;
   children: React.ReactNode;
   title: string;
-}
+  onButtonClick : () => void;
+} 
 
 export interface Column<T> {
   key: keyof T;

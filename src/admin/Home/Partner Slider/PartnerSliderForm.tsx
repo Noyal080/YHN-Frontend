@@ -26,7 +26,6 @@ import { useNavigate, useParams } from "react-router-dom";
 const PartnerSliderForm = () => {
   const { id } = useParams();
   const [selectedImage, setSelectedImage] = useState<string | null>();
-
   const { showToast } = useCommonToast();
   const [sliderData, setSliderData] = useState<PartnerSliderType>({
     image: "",
@@ -73,14 +72,13 @@ const PartnerSliderForm = () => {
   const onSubmit = async (sliderData: PartnerSliderType) => {
     try {
       if (id) {
-        await axiosInstance.patch(`/slider/edit/${id}`, sliderData);
+        await axiosInstance.put(`/partner/${id}`, sliderData);
         showToast({
           description: "Slider updated successfully!",
           type: "success",
         });
         navigate("/admin/partners");
       } else {
-        console.log(sliderData);
         const res = await axiosInstance.post(`/partner`, sliderData, {
           headers: { "Content-Type": "multipart/form-data" },
         });

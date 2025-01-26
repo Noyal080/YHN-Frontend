@@ -17,6 +17,7 @@ const CommonModal: React.FC<CommonModalProps> = ({
   onOpenChange,
   children,
   title,
+  onButtonClick,
 }) => {
   return (
     <DialogRoot open={open} onOpenChange={onOpenChange} size={"lg"}>
@@ -30,12 +31,15 @@ const CommonModal: React.FC<CommonModalProps> = ({
         <DialogCloseTrigger />
         <DialogFooter>
           <DialogActionTrigger asChild>
-            <CommonButton
-              label="Close"
-              variant="outline"
-              colorPalette={"gray.500"}
-            />
+            <CommonButton label="Close" variant="outline" color={"gray"} />
           </DialogActionTrigger>
+          <CommonButton
+            label="Delete"
+            variant="subtle"
+            bgColor={"red.600"}
+            color={"white"}
+            onPress={onButtonClick}
+          />
         </DialogFooter>
       </DialogContent>
     </DialogRoot>
