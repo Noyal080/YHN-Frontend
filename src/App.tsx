@@ -19,6 +19,8 @@ import TeamSection from "./admin/About/TeamSection";
 import Testimonial from "./admin/About/Testimonial";
 import TestimonialForm from "./admin/About/Testimonial/TestimonialForm";
 import ProtectedRoute from "./common/ProtectedRoute";
+import Donations from "./admin/About/Donation";
+import Services from "./admin/Services";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -139,10 +141,19 @@ function App() {
         />
 
         <Route
+          path="/admin/testimonials/edit/:id"
+          element={
+            <ProtectedRoute>
+              <TestimonialForm />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
           path="/admin/donation"
           element={
             <ProtectedRoute>
-              <Testimonial />
+              <Donations />
             </ProtectedRoute>
           }
         />
@@ -175,7 +186,24 @@ function App() {
           path="/admin/services"
           element={
             <ProtectedRoute>
-              <ProjectSection />
+              <Services />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/services/add"
+          element={
+            <ProtectedRoute>
+              <Services />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/services/edit/:id"
+          element={
+            <ProtectedRoute>
+              <Services />
             </ProtectedRoute>
           }
         />

@@ -21,11 +21,12 @@ import {
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Controller, useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { axiosInstance } from "@/api/axios";
 import useCommonToast from "@/common/CommonToast";
 const SliderForm = () => {
   const [showButtons, setShowButtons] = useState<boolean>(false);
+  const navigate = useNavigate();
   const { showToast } = useCommonToast();
   const [sliderData, setSliderData] = useState<SliderInput>({
     title: "",
@@ -330,7 +331,10 @@ const SliderForm = () => {
               )}
             </VStack>
             <HStack justifyContent="flex-end" mt={4}>
-              <Button variant={"ghost"}> Cancel </Button>
+              <Button variant={"ghost"} onClick={() => navigate(-1)}>
+                {" "}
+                Cancel{" "}
+              </Button>
               <Button type="submit" colorPalette={"blue"}>
                 {" "}
                 Submit

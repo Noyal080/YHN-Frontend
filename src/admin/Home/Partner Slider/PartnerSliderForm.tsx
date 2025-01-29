@@ -211,7 +211,10 @@ const PartnerSliderForm = () => {
               />
             </VStack>
             <HStack justifyContent="flex-end" mt={4}>
-              <Button variant={"ghost"}> Cancel </Button>
+              <Button variant={"ghost"} onClick={() => navigate(-1)}>
+                {" "}
+                Cancel{" "}
+              </Button>
               <Button type="submit" colorPalette={"blue"}>
                 {" "}
                 Submit
