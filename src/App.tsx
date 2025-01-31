@@ -21,6 +21,7 @@ import TestimonialForm from "./admin/About/Testimonial/TestimonialForm";
 import ProtectedRoute from "./common/ProtectedRoute";
 import Donations from "./admin/About/Donation";
 import Services from "./admin/Services";
+import ServiceForms from "./admin/Services/ServiceForm";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -195,7 +196,7 @@ function App() {
           path="/admin/services/add"
           element={
             <ProtectedRoute>
-              <Services />
+              <ServiceForms />
             </ProtectedRoute>
           }
         />
@@ -203,7 +204,7 @@ function App() {
           path="/admin/services/edit/:id"
           element={
             <ProtectedRoute>
-              <Services />
+              <ServiceForms />
             </ProtectedRoute>
           }
         />

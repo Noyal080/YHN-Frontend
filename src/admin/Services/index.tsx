@@ -1,7 +1,7 @@
 import CommonTable from "@/common/Table/CommonTable";
 import AdminLayout from "../Layout";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Column } from "@/utils";
 import { ServiceInput } from "@/utils/types";
 
@@ -31,6 +31,26 @@ const Services = () => {
     },
   ];
   const [rows, setRows] = useState<ServiceInput[]>([]);
+
+  useEffect(() => {
+    setRows([
+      {
+        id: 1,
+        title: "Service 1",
+        description: "Service 1 Description",
+      },
+      {
+        id: 2,
+        title: "Service 2",
+        description: "Service 2 Description",
+      },
+      {
+        id: 3,
+        title: "Service 3",
+        description: "Service 3 Description",
+      },
+    ]);
+  }, []);
 
   const handleEdit = (row: ServiceInput) => {
     navigate(`/admin/services/edit/${row.id}`);
