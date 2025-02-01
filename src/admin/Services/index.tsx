@@ -71,7 +71,7 @@ const Services = () => {
       activeSidebarItem="Services"
     >
       <CommonTable
-        title="Slider List"
+        title="Service List"
         columns={columns}
         rows={rows}
         onEdit={handleEdit}

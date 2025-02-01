@@ -57,3 +57,15 @@ export type ServiceInput = {
   title: string;
   description: string;
 }
+
+export type ImageInputTypes = {
+  id?: number;
+  title: string;
+  image: Gallery[];
+  status: boolean;
+}
+
+export type Gallery = {
+  id: number;
+  imageUrl : string | File;
+}

@@ -1,3 +1,5 @@
+import { Gallery } from "./types";
+
 export interface AdminLayoutProps {
   children: React.ReactNode;
   breadcrumbItems: BreadcrumbProps[];
@@ -73,4 +75,8 @@ export interface TableHeadProps <T> {
 export interface TableSkeletonProps<T> {
   visibleColumns: Column<T>[];
   rowCount: number;
+}
+
+export interface ImageSliderProps {
+  images: Gallery[];
 }

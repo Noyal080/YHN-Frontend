@@ -126,9 +126,9 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
       children: [
         {
           id: 71,
-          label: "Photo",
+          label: "Image",
           icon: FiCamera,
-          link: "/admin/gallery/photos",
+          link: "/admin/gallery/images",
         },
         {
           id: 72,

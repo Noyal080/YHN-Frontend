@@ -70,16 +70,14 @@ const CommonTable = <T,>({
       )
     );
   };
-  console.log(isDraggable, visibleColumns);
+  console.log(isDraggable);
 
   const handleSort = (key: keyof T) => {
     if (sortKey === key) {
-      // Toggle sort direction or reset
       setSortDirection((prev) =>
         prev === "asc" ? "desc" : prev === "desc" ? null : "asc"
       );
     } else {
-      // Set new sort key and default to ascending
       setSortKey(key);
       setSortDirection("asc");
     }
@@ -112,7 +110,6 @@ const CommonTable = <T,>({
           onAdd={onAdd}
           addName={addName}
         />
-
         {loading ? (
           <TableSkeleton visibleColumns={visibleColumns} rowCount={5} />
         ) : (
