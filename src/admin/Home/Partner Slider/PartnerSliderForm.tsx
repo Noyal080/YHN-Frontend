@@ -71,36 +71,41 @@ const PartnerSliderForm = () => {
 
   const onSubmit = async (sliderData: PartnerSliderType) => {
     try {
+      const formData = new FormData();
+      formData.append("title", sliderData.title);
+      formData.append("status", sliderData.status.toString());
+
+      if (sliderData.image instanceof File) {
+        formData.append("image", sliderData.image);
+      }
+
       if (id) {
-        await axiosInstance.put(`/partner/${id}`, sliderData);
+        await axiosInstance.post(`/partner/${id}`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
         showToast({
           description: "Slider updated successfully!",
           type: "success",
         });
-        navigate("/admin/partners");
       } else {
-        const res = await axiosInstance.post(`/partner`, sliderData, {
+        const res = await axiosInstance.post(`/partner`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         showToast({
           description: res.data.message,
           type: "success",
         });
-        navigate("/admin/partners");
       }
+
+      navigate("/admin/partners");
     } catch (e) {
       console.error(e);
-      if (id) {
-        showToast({
-          description: "Failed to update the slider",
-          type: "error",
-        });
-      } else {
-        showToast({
-          description: "Failed to add the slider",
-          type: "error",
-        });
-      }
+      showToast({
+        description: id
+          ? "Failed to update the slider"
+          : "Failed to add the slider",
+        type: "error",
+      });
     }
   };
 
@@ -162,13 +167,20 @@ const PartnerSliderForm = () => {
                       }}
                     >
                       <FileUploadDropzone
-                        value={field.value}
+                        value={
+                          typeof field.value === "string" ? field.value : ""
+                        }
                         label="Drag and drop here to upload"
                         description=".png, .jpg up to 5MB"
                       />
                       {(selectedImage || sliderData.image) && (
                         <Image
-                          src={selectedImage || sliderData.image}
+                          src={
+                            selectedImage ||
+                            (typeof sliderData.image === "string"
+                              ? sliderData.image
+                              : undefined)
+                          }
                           alt="Uploaded or Existing Image"
                           objectFit="contain"
                           aspectRatio={2 / 1}

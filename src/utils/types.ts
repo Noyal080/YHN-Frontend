@@ -33,7 +33,7 @@ export type LoginFormData = {
 export type PartnerSliderType = {
   id?: number;
   title: string;
-  image: string;
+  image: string | File; // Allow both string and File
   status: number;
 };
 

@@ -44,7 +44,7 @@ export interface Column<T> {
 
 export interface CommonTableProps<T> {
   title: string;
-
+  loading ?: boolean
   columns: Column<T>[];
   rows: T[];
   onEdit?: (row: T) => void;
