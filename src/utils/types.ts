@@ -69,3 +69,8 @@ export type Gallery = {
   id: number;
   imageUrl : string | File;
 }
+
+export type ChartData = {
+  name: string;
+  [key: string]: number | string;
+};
