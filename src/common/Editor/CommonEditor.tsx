@@ -259,7 +259,7 @@ const CommonEditor = ({
                 editor={ClassicEditor}
                 config={editorConfig}
                 data={value}
-                onChange={(event, editor) => {
+                onChange={(_event, editor) => {
                   const data = editor.getData();
                   onChange(data);
                 }}
