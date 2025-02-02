@@ -39,6 +39,16 @@ const Testimonial = () => {
       ),
     },
     {
+      key: "designation",
+      label: "User Desgination",
+      visible: true,
+    },
+    {
+      key: "usercategory",
+      label: "User Category",
+      visible: true,
+    },
+    {
       key: "status",
       label: "Status",
       visible: true,
@@ -60,15 +70,15 @@ const Testimonial = () => {
       image: "",
       name: "Radha",
       description: "This is it",
-      designation: "",
-      usercategory: "",
+      designation: "Nepali Teacher Primary Level",
+      usercategory: "Jyoti Academy",
     },
   ]);
 
   const navigate = useNavigate();
 
   const handleEdit = (row: TestimonialInput) => {
-    navigate(`/admin/partners/edit/${row.id}`);
+    navigate(`/admin/testimonials/edit/${row.id}`);
   };
 
   const handleDelete = (row: TestimonialInput) => {

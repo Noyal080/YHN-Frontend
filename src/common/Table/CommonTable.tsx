@@ -29,6 +29,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { HiSwatch } from "react-icons/hi2";
 import { Column, CommonTableProps } from "@/utils";
 import TableHead from "./TableHeader";
+import TableSkeleton from "./TableSkeleton";
 
 const options = createListCollection({
   items: [
@@ -41,6 +42,7 @@ const options = createListCollection({
 
 const CommonTable = <T,>({
   title,
+  loading,
   columns,
   rows,
   onEdit,
@@ -68,16 +70,14 @@ const CommonTable = <T,>({
       )
     );
   };
-  console.log(isDraggable, visibleColumns);
+  console.log(isDraggable);
 
   const handleSort = (key: keyof T) => {
     if (sortKey === key) {
-      // Toggle sort direction or reset
       setSortDirection((prev) =>
         prev === "asc" ? "desc" : prev === "desc" ? null : "asc"
       );
     } else {
-      // Set new sort key and default to ascending
       setSortKey(key);
       setSortDirection("asc");
     }
@@ -110,99 +110,104 @@ const CommonTable = <T,>({
           onAdd={onAdd}
           addName={addName}
         />
-
-        <TableRoot variant={"outline"}>
-          <TableHeader>
-            <TableRow>
-              {visibleColumns
-                .filter((column) => column.visible) // Only render visible columns
-                .map((column) => (
-                  <TableColumnHeader
-                    key={String(column.key)}
-                    onClick={() => handleSort(column.key)}
-                    cursor="pointer"
-                    alignItems="center"
-                  >
-                    <Flex align={"center"}>
-                      <Text mr={4}>{column.label}</Text>
-                      {sortKey === column.key && sortDirection === "asc" && (
-                        <FiChevronUp />
-                      )}
-                      {sortKey === column.key && sortDirection === "desc" && (
-                        <FiChevronDown />
-                      )}
-                    </Flex>
-                  </TableColumnHeader>
-                ))}
-              {(onEdit || onDelete) && (
-                <TableColumnHeader textAlign="center">
-                  Actions
-                </TableColumnHeader>
-              )}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {sortedRows.length === 0 ? (
+        {loading ? (
+          <TableSkeleton visibleColumns={visibleColumns} rowCount={5} />
+        ) : (
+          <TableRoot variant={"outline"}>
+            <TableHeader>
               <TableRow>
-                <TableCell
-                  colSpan={
-                    visibleColumns.filter((column) => column.visible).length + 1
-                  }
-                >
-                  <EmptyState
-                    icon={<HiSwatch />}
-                    title="No data found"
-                    size={"lg"}
-                    // description="Try adjusting your search"
-                  />
-                </TableCell>
-              </TableRow>
-            ) : (
-              sortedRows.map((row, rowIndex) => (
-                <TableRow key={rowIndex}>
-                  {visibleColumns
-                    .filter((column) => column.visible) // Only render visible columns
-                    .map((column) => (
-                      <TableCell key={String(column.key)}>
-                        {column.render
-                          ? column.render(row)
-                          : String(row[column.key])}
-                      </TableCell>
-                    ))}
-                  {(onEdit || onDelete) && (
-                    <TableCell>
-                      <Flex justifyContent="center" gap={2}>
-                        {onEdit && (
-                          <IconButton
-                            aria-label="Edit"
-                            size="sm"
-                            onClick={() => onEdit(row)}
-                            variant="surface"
-                            colorPalette={"blue"}
-                          >
-                            <LuPencil />
-                          </IconButton>
+                {visibleColumns
+                  .filter((column) => column.visible) // Only render visible columns
+                  .map((column) => (
+                    <TableColumnHeader
+                      key={String(column.key)}
+                      onClick={() => handleSort(column.key)}
+                      cursor="pointer"
+                      alignItems="center"
+                    >
+                      <Flex align={"center"}>
+                        <Text mr={4}>{column.label}</Text>
+                        {sortKey === column.key && sortDirection === "asc" && (
+                          <FiChevronUp />
                         )}
-                        {onDelete && (
-                          <IconButton
-                            aria-label="Delete"
-                            size="sm"
-                            colorPalette={"red"}
-                            variant="surface"
-                            onClick={() => onDelete(row)}
-                          >
-                            <FiTrash />
-                          </IconButton>
+                        {sortKey === column.key && sortDirection === "desc" && (
+                          <FiChevronDown />
                         )}
                       </Flex>
-                    </TableCell>
-                  )}
+                    </TableColumnHeader>
+                  ))}
+                {(onEdit || onDelete) && (
+                  <TableColumnHeader textAlign="center">
+                    Actions
+                  </TableColumnHeader>
+                )}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {sortedRows.length === 0 ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={
+                      visibleColumns.filter((column) => column.visible).length +
+                      1
+                    }
+                  >
+                    <EmptyState
+                      icon={<HiSwatch />}
+                      title="No data found"
+                      size={"lg"}
+                      // description="Try adjusting your search"
+                    />
+                  </TableCell>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </TableRoot>
+              ) : (
+                sortedRows.map((row, rowIndex) => (
+                  <TableRow key={rowIndex}>
+                    {visibleColumns
+                      .filter((column) => column.visible) // Only render visible columns
+                      .map((column) => (
+                        <TableCell key={String(column.key)}>
+                          {column.render
+                            ? column.render(row)
+                            : String(row[column.key])}
+                        </TableCell>
+                      ))}
+                    {(onEdit || onDelete) && (
+                      <TableCell>
+                        <Flex justifyContent="center" gap={2}>
+                          {onEdit && (
+                            <IconButton
+                              aria-label="Edit"
+                              size="sm"
+                              onClick={() => onEdit(row)}
+                              variant="surface"
+                              colorPalette={"blue"}
+                            >
+                              <LuPencil />
+                            </IconButton>
+                          )}
+                          {onDelete && (
+                            <IconButton
+                              aria-label="Delete"
+                              size="sm"
+                              colorPalette={"red"}
+                              variant="surface"
+                              onClick={() => onDelete(row)}
+                            >
+                              <FiTrash />
+                            </IconButton>
+                          )}
+                        </Flex>
+                      </TableCell>
+                    )}
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </TableRoot>
+        )}
       </CardBody>
+
       <CardFooter>
         <Flex justifyContent="space-between" alignItems="center" w="100%">
           <Flex alignItems="center" gap={2}>

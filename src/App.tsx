@@ -19,6 +19,13 @@ import TeamSection from "./admin/About/TeamSection";
 import Testimonial from "./admin/About/Testimonial";
 import TestimonialForm from "./admin/About/Testimonial/TestimonialForm";
 import ProtectedRoute from "./common/ProtectedRoute";
+import Donations from "./admin/About/Donation";
+import Services from "./admin/Services";
+import ServiceForms from "./admin/Services/ServiceForm";
+import EventSection from "./admin/Events";
+import CareerSection from "./admin/About/Career";
+import ImageSection from "./admin/Gallery/Image";
+import VideoSection from "./admin/Gallery/Video";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -139,10 +146,19 @@ function App() {
         />
 
         <Route
+          path="/admin/testimonials/edit/:id"
+          element={
+            <ProtectedRoute>
+              <TestimonialForm />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
           path="/admin/donation"
           element={
             <ProtectedRoute>
-              <Testimonial />
+              <Donations />
             </ProtectedRoute>
           }
         />
@@ -150,7 +166,7 @@ function App() {
           path="/admin/careers"
           element={
             <ProtectedRoute>
-              <Testimonial />
+              <CareerSection />
             </ProtectedRoute>
           }
         />
@@ -167,7 +183,7 @@ function App() {
           path="/admin/events"
           element={
             <ProtectedRoute>
-              <ProjectSection />
+              <EventSection />
             </ProtectedRoute>
           }
         />
@@ -175,17 +191,34 @@ function App() {
           path="/admin/services"
           element={
             <ProtectedRoute>
-              <ProjectSection />
+              <Services />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/services/add"
+          element={
+            <ProtectedRoute>
+              <ServiceForms />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/services/edit/:id"
+          element={
+            <ProtectedRoute>
+              <ServiceForms />
             </ProtectedRoute>
           }
         />
 
         {/* Image Section  */}
         <Route
-          path="/admin/gallery/photos"
+          path="/admin/gallery/images"
           element={
             <ProtectedRoute>
-              <ProjectSection />
+              <ImageSection />
             </ProtectedRoute>
           }
         />
@@ -193,7 +226,7 @@ function App() {
           path="/admin/gallery/videos"
           element={
             <ProtectedRoute>
-              <ProjectSection />
+              <VideoSection />
             </ProtectedRoute>
           }
         />

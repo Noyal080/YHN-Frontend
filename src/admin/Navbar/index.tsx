@@ -10,9 +10,30 @@ import {
   MenuTrigger,
 } from "@/components/ui/menu";
 import { useNavigate } from "react-router-dom";
+import { axiosInstance } from "@/api/axios";
+import useCommonToast from "@/common/CommonToast";
 
 const AdminNavbar: React.FC<NavbarProps> = ({ title, breadcrumbItems }) => {
   const navigate = useNavigate();
+  const { showToast } = useCommonToast();
+  const logout = async () => {
+    try {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("userData");
+      await axiosInstance.post("/logout");
+      showToast({
+        description: "Logged out successfully",
+        type: "success",
+      });
+      navigate("/login");
+    } catch (e) {
+      console.error(e);
+      showToast({
+        description: "Error while logging out",
+        type: "error",
+      });
+    }
+  };
   return (
     <Flex
       as="header"
@@ -54,7 +75,7 @@ const AdminNavbar: React.FC<NavbarProps> = ({ title, breadcrumbItems }) => {
               {" "}
               My Profile{" "}
             </MenuItem>
-            <MenuItem value="prog" onClick={() => navigate("/admin/slider")}>
+            <MenuItem value="prog" onClick={() => logout()}>
               {" "}
               Logout
             </MenuItem>

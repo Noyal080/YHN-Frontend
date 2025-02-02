@@ -33,7 +33,7 @@ export type LoginFormData = {
 export type PartnerSliderType = {
   id?: number;
   title: string;
-  image: string;
+  image: string | File; // Allow both string and File
   status: number;
 };
 
@@ -50,4 +50,22 @@ export type TestimonialInput = {
 export type Option = {
   value: string;
   label: string;
+}
+
+export type ServiceInput = {
+  id?: number;
+  title: string;
+  description: string;
+}
+
+export type ImageInputTypes = {
+  id?: number;
+  title: string;
+  image: Gallery[];
+  status: boolean;
+}
+
+export type Gallery = {
+  id: number;
+  imageUrl : string | File;
 }

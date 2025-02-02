@@ -23,11 +23,12 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const TestimonialForm = () => {
   const { id } = useParams();
   const { showToast } = useCommonToast();
+  const navigate = useNavigate();
   const [sliderData, setSliderData] = useState<TestimonialInput>({
     status: true,
     image: "",
@@ -109,15 +110,16 @@ const TestimonialForm = () => {
     <AdminLayout
       breadcrumbItems={[
         { label: "Dashboard", link: "/admin" },
-        { label: "Partner Slider" },
+        { label: "Testimonial", link: "/admin/testimonials" },
+        { label: `${id ? "Edit" : "Add"} Testimonial` },
       ]}
-      activeSidebarItem="Partner Slider"
-      title={`${id ? "Edit" : "Add"} Partner Slider`}
+      activeSidebarItem="Testimonial"
+      title={`${id ? "Edit" : "Add"} Testimonial`}
     >
       <CardRoot m="auto" maxWidth="800px" mt={8} boxShadow="lg">
         <CardBody>
           <Heading mb={6}>
-            {id ? "Edit Partner Slider" : "Add Partner Slider"}
+            {id ? "Edit Testimonial" : "Add Testimonial"}
           </Heading>
           <form onSubmit={handleSubmit(onSubmit)}>
             <VStack gap={4} align="stretch">
@@ -210,13 +212,30 @@ const TestimonialForm = () => {
                       //   field.onChange(value);
                       //   handleFieldChange("designation", value);
                       // }}
-                      onBlur={field.onBlur}
+                      // onBlur={field.onBlur}
                       styles={{
+                        container: (base) => ({
+                          ...base,
+                          width: "100%",
+                        }),
                         control: (base) => ({
                           ...base,
+                          width: "100%",
                           borderColor: errors.designation
                             ? "red"
                             : base.borderColor,
+                        }),
+                        menu: (base) => ({
+                          ...base,
+                          width: "100%",
+                        }),
+                        valueContainer: (base) => ({
+                          ...base,
+                          width: "100%",
+                        }),
+                        input: (base) => ({
+                          ...base,
+                          width: "100%",
                         }),
                       }}
                     />
@@ -275,7 +294,10 @@ const TestimonialForm = () => {
               />
             </VStack>
             <HStack justifyContent="flex-end" mt={4}>
-              <Button variant={"ghost"}> Cancel </Button>
+              <Button variant={"ghost"} onClick={() => navigate(-1)}>
+                {" "}
+                Cancel{" "}
+              </Button>
               <Button type="submit" colorPalette={"blue"}>
                 {" "}
                 Submit

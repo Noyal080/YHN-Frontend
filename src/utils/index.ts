@@ -1,3 +1,5 @@
+import { Gallery } from "./types";
+
 export interface AdminLayoutProps {
   children: React.ReactNode;
   breadcrumbItems: BreadcrumbProps[];
@@ -32,7 +34,8 @@ export interface CommonModalProps {
   onOpenChange: () => void;
   children: React.ReactNode;
   title: string;
-}
+  onButtonClick : () => void;
+} 
 
 export interface Column<T> {
   key: keyof T;
@@ -43,7 +46,7 @@ export interface Column<T> {
 
 export interface CommonTableProps<T> {
   title: string;
-
+  loading ?: boolean
   columns: Column<T>[];
   rows: T[];
   onEdit?: (row: T) => void;
@@ -72,4 +75,8 @@ export interface TableHeadProps <T> {
 export interface TableSkeletonProps<T> {
   visibleColumns: Column<T>[];
   rowCount: number;
+}
+
+export interface ImageSliderProps {
+  images: Gallery[];
 }
