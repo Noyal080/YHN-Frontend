@@ -1,12 +1,13 @@
 import CommonTable from "@/common/Table/CommonTable";
 import AdminLayout from "../../Layout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SliderType } from "@/utils/types";
 import { Column } from "@/utils";
 import { Switch } from "@/components/ui/switch";
 import { Image } from "@chakra-ui/react";
 // import SliderFilter from "./SliderFilter";
 import { useNavigate } from "react-router-dom";
+import { axiosInstance } from "@/api/axios";
 
 const SliderSection = () => {
   const columns: Column<{
@@ -23,11 +24,10 @@ const SliderSection = () => {
   }>[] = [
     { key: "id", label: "#", visible: true },
     { key: "title", label: "Title", visible: true },
-    { key: "priorityOrder", label: "Priority Order", visible: true },
     {
       key: "content.image",
       label: "Image",
-      visible: false,
+      visible: true,
       render: (row) => (
         <Image
           rounded="md"
@@ -63,59 +63,27 @@ const SliderSection = () => {
           "No Button"
         ),
     },
+    { key: "priorityOrder", label: "Priority Order", visible: false },
   ];
   const navigate = useNavigate();
 
-  const [rows, setRows] = useState<SliderType[]>([
-    {
-      id: 1,
-      title: "ABCD",
-      priorityOrder: 1,
-      content: {
-        image: "https://placehold.co/600x400",
-        text: "Sample Text 1",
-      },
-      status: true,
-    },
-    {
-      id: 2,
-      title: "ABCD",
-      priorityOrder: 2,
-      content: {
-        image: "https://placehold.co/300x200",
-        text: "Sample Text 2",
-      },
-      status: false,
-    },
-    {
-      id: 3,
-      title: "ABCD",
-      priorityOrder: 3,
-      content: { image: "https://placehold.co/600x400", text: "Sample Text 3" },
-      status: false,
-    },
-    {
-      id: 4,
-      title: "ABCD",
-      priorityOrder: 4,
-      content: {
-        image: "https://placehold.co/600x400/000000/FFF",
-        text: "Sample Text 4",
-      },
-      status: true,
-    },
+  const [rows, setRows] = useState<SliderType[]>([]);
 
-    {
-      id: 5,
-      title: "ABCD",
-      priorityOrder: 5,
-      content: {
-        image: "https://placehold.co/600x400/png",
-        text: "Sample Text 5",
-      },
-      status: true,
-    },
-  ]);
+  const token = localStorage.getItem("accessToken");
+  axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+  useEffect(() => {
+    const fetchSliders = async () => {
+      try {
+        const response = await axiosInstance.get("/slider");
+        setRows(response.data.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchSliders();
+  }, [token]);
 
   const [entriesPerPage, setEntriesPerPage] = useState("10");
 

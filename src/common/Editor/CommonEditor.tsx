@@ -1,50 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import { CKEditor } from "@ckeditor/ckeditor5-react";
-import {
-  ClassicEditor,
-  AutoImage,
-  Autosave,
-  BalloonToolbar,
-  BlockQuote,
-  Bold,
-  CKBox,
-  CKBoxImageEdit,
-  CloudServices,
-  Essentials,
-  Heading,
-  ImageBlock,
-  ImageCaption,
-  ImageInline,
-  ImageInsert,
-  ImageInsertViaUrl,
-  ImageResize,
-  ImageStyle,
-  ImageTextAlternative,
-  ImageToolbar,
-  ImageUpload,
-  Indent,
-  IndentBlock,
-  Italic,
-  Link,
-  LinkImage,
-  List,
-  ListProperties,
-  MediaEmbed,
-  Paragraph,
-  PasteFromOffice,
-  PictureEditing,
-  SpecialCharacters,
-  Table,
-  TableCaption,
-  TableCellProperties,
-  TableColumnResize,
-  TableProperties,
-  TableToolbar,
-  TodoList,
-  Underline,
-} from "ckeditor5";
+import { useState, useEffect, useRef, useMemo } from "react";
+import { CKEditor, useCKEditorCloud } from "@ckeditor/ckeditor5-react";
 
-import "ckeditor5/ckeditor5.css";
+const LICENSE_KEY =
+  "eyJhbGciOiJFUzI1NiJ9.eyJleHAiOjE3Njc0ODQ3OTksImp0aSI6IjI1OTA4M2Y0LTdkMjctNGU1MC1hNzQxLTdjZjBhMDI2MTY0MSIsImxpY2Vuc2VkSG9zdHMiOlsiMTI3LjAuMC4xIiwibG9jYWxob3N0IiwiMTkyLjE2OC4qLioiLCIxMC4qLiouKiIsIjE3Mi4qLiouKiIsIioudGVzdCIsIioubG9jYWxob3N0IiwiKi5sb2NhbCJdLCJ1c2FnZUVuZHBvaW50IjoiaHR0cHM6Ly9wcm94eS1ldmVudC5ja2VkaXRvci5jb20iLCJkaXN0cmlidXRpb25DaGFubmVsIjpbImNsb3VkIiwiZHJ1cGFsIl0sImxpY2Vuc2VUeXBlIjoiZGV2ZWxvcG1lbnQiLCJmZWF0dXJlcyI6WyJEUlVQIl0sInZjIjoiODA1MzczOWMifQ.V5lefp5aR2QQHourgVKXfiwfowXZgGzHTgeRUAZYRVLPaVI36kBndmsBXA2IY-KdBjJ6vvhhBMrjrLJp9q0uqw";
+
 const CommonEditor = ({
   value,
   onChange,
@@ -52,32 +11,105 @@ const CommonEditor = ({
   value: string;
   onChange: (data: string) => void;
 }) => {
-  const LICENSE_KEY =
-    "eyJhbGciOiJFUzI1NiJ9.eyJleHAiOjE3MzgxOTUxOTksImp0aSI6ImYzNGFlYzA4LWExZTUtNGRjMS04MGM3LTg2YTFhZjc2MDExYSIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL3Byb3h5LWV2ZW50LmNrZWRpdG9yLmNvbSIsImRpc3RyaWJ1dGlvbkNoYW5uZWwiOlsiY2xvdWQiLCJkcnVwYWwiLCJzaCJdLCJ3aGl0ZUxhYmVsIjp0cnVlLCJsaWNlbnNlVHlwZSI6InRyaWFsIiwiZmVhdHVyZXMiOlsiKiJdLCJ2YyI6ImIzYTRjODlmIn0.yG4HLEF3BEJ3DB_4VEWlroJyZAuAeDteCaHS3TrNV9qcQpKtcaZjazl_kHox4eNpqcmoJQ8wy478iETCwjsKnA";
-
-  const CLOUD_SERVICES_TOKEN_URL =
-    "https://qkm5hj8gr66k.cke-cs.com/token/dev/0a099597b34959756a73a45549991b401dd97bb914f84d5716a82f394e64?limit=10";
-
   const editorContainerRef = useRef(null);
   const editorRef = useRef(null);
   const [isLayoutReady, setIsLayoutReady] = useState(false);
+  const cloud = useCKEditorCloud({ version: "44.1.0" });
 
   useEffect(() => {
     setIsLayoutReady(true);
-
     return () => setIsLayoutReady(false);
   }, []);
 
-  const { editorConfig } = useMemo(() => {
-    if (!isLayoutReady) {
+  const { ClassicEditor, editorConfig } = useMemo(() => {
+    if (cloud.status !== "success" || !isLayoutReady) {
       return {};
     }
 
+    const {
+      ClassicEditor,
+      Autoformat,
+      AutoImage,
+      Autosave,
+      BalloonToolbar,
+      BlockQuote,
+      Bold,
+      CloudServices,
+      Essentials,
+      FindAndReplace,
+      FontBackgroundColor,
+      FontColor,
+      FontFamily,
+      FontSize,
+      FullPage,
+      GeneralHtmlSupport,
+      Heading,
+      Highlight,
+      HtmlComment,
+      HtmlEmbed,
+      ImageBlock,
+      ImageCaption,
+      ImageInline,
+      ImageInsert,
+      ImageInsertViaUrl,
+      ImageResize,
+      ImageStyle,
+      ImageTextAlternative,
+      ImageToolbar,
+      ImageUpload,
+      Indent,
+      IndentBlock,
+      Italic,
+      Link,
+      LinkImage,
+      List,
+      ListProperties,
+      Markdown,
+      MediaEmbed,
+      Mention,
+      Paragraph,
+      PasteFromMarkdownExperimental,
+      PasteFromOffice,
+      ShowBlocks,
+      SimpleUploadAdapter,
+      SourceEditing,
+      SpecialCharacters,
+      SpecialCharactersArrows,
+      SpecialCharactersCurrency,
+      SpecialCharactersEssentials,
+      SpecialCharactersLatin,
+      SpecialCharactersMathematical,
+      SpecialCharactersText,
+      Table,
+      TableCaption,
+      TableCellProperties,
+      TableColumnResize,
+      TableProperties,
+      TableToolbar,
+      TextPartLanguage,
+      TextTransformation,
+      Title,
+      TodoList,
+      Underline,
+      WordCount,
+    } = cloud.CKEditor;
+
     return {
+      ClassicEditor,
       editorConfig: {
         toolbar: {
           items: [
+            "sourceEditing",
+            "showBlocks",
+            "findAndReplace",
+            "textPartLanguage",
+            "|",
             "heading",
+            "|",
+            "fontSize",
+            "fontFamily",
+            "fontColor",
+            "fontBackgroundColor",
             "|",
             "bold",
             "italic",
@@ -86,10 +118,11 @@ const CommonEditor = ({
             "specialCharacters",
             "link",
             "insertImage",
-            "ckbox",
             "mediaEmbed",
             "insertTable",
+            "highlight",
             "blockQuote",
+            "htmlEmbed",
             "|",
             "bulletedList",
             "numberedList",
@@ -97,19 +130,28 @@ const CommonEditor = ({
             "outdent",
             "indent",
           ],
-          shouldNotGroupWhenFull: false,
+          shouldNotGroupWhenFull: true,
         },
         plugins: [
+          Autoformat,
           AutoImage,
           Autosave,
           BalloonToolbar,
           BlockQuote,
           Bold,
-          CKBox,
-          CKBoxImageEdit,
           CloudServices,
           Essentials,
+          FindAndReplace,
+          FontBackgroundColor,
+          FontColor,
+          FontFamily,
+          FontSize,
+          FullPage,
+          GeneralHtmlSupport,
           Heading,
+          Highlight,
+          HtmlComment,
+          HtmlEmbed,
           ImageBlock,
           ImageCaption,
           ImageInline,
@@ -127,19 +169,34 @@ const CommonEditor = ({
           LinkImage,
           List,
           ListProperties,
+          Markdown,
           MediaEmbed,
+          Mention,
           Paragraph,
+          PasteFromMarkdownExperimental,
           PasteFromOffice,
-          PictureEditing,
+          ShowBlocks,
+          SimpleUploadAdapter,
+          SourceEditing,
           SpecialCharacters,
+          SpecialCharactersArrows,
+          SpecialCharactersCurrency,
+          SpecialCharactersEssentials,
+          SpecialCharactersLatin,
+          SpecialCharactersMathematical,
+          SpecialCharactersText,
           Table,
           TableCaption,
           TableCellProperties,
           TableColumnResize,
           TableProperties,
           TableToolbar,
+          TextPartLanguage,
+          TextTransformation,
+          Title,
           TodoList,
           Underline,
+          WordCount,
         ],
         balloonToolbar: [
           "bold",
@@ -151,8 +208,12 @@ const CommonEditor = ({
           "bulletedList",
           "numberedList",
         ],
-        cloudServices: {
-          tokenUrl: CLOUD_SERVICES_TOKEN_URL,
+        fontFamily: {
+          supportAllValues: true,
+        },
+        fontSize: {
+          options: [10, 12, 14, "default", 18, 20, 22],
+          supportAllValues: true,
         },
         heading: {
           options: [
@@ -199,6 +260,16 @@ const CommonEditor = ({
             },
           ],
         },
+        htmlSupport: {
+          allow: [
+            {
+              name: /^.*$/,
+              styles: true,
+              attributes: true,
+              classes: true,
+            },
+          ],
+        },
         image: {
           toolbar: [
             "toggleImageCaption",
@@ -209,17 +280,16 @@ const CommonEditor = ({
             "imageStyle:breakText",
             "|",
             "resizeImage",
-            "|",
-            "ckboxImageEdit",
           ],
         },
+        initialData: "",
         licenseKey: LICENSE_KEY,
         link: {
           addTargetToExternalLinks: true,
           defaultProtocol: "https://",
           decorators: {
             toggleDownloadable: {
-              mode: "manual" as const, // Explicitly set to "manual"
+              mode: "manual",
               label: "Downloadable",
               attributes: {
                 download: "file",
@@ -234,6 +304,17 @@ const CommonEditor = ({
             reversed: true,
           },
         },
+        mention: {
+          feeds: [
+            {
+              marker: "@",
+              feed: [
+                /* See: https://ckeditor.com/docs/ckeditor5/latest/features/mentions.html */
+              ],
+            },
+          ],
+        },
+        placeholder: "",
         table: {
           contentToolbar: [
             "tableColumn",
@@ -245,16 +326,17 @@ const CommonEditor = ({
         },
       },
     };
-  }, [isLayoutReady]);
+  }, [cloud, isLayoutReady]);
+
   return (
     <div className="main-container">
       <div
-        className="editor-container editor-container_classic-editor"
+        className="editor-container editor-container_classic-editor editor-container_include-word-count"
         ref={editorContainerRef}
       >
         <div className="editor-container__editor">
           <div ref={editorRef}>
-            {editorConfig && (
+            {ClassicEditor && editorConfig && (
               <CKEditor
                 editor={ClassicEditor}
                 config={editorConfig}
