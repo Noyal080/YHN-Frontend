@@ -50,6 +50,14 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
         {/* Home Section */}
         <Route
           path="/admin/slider"

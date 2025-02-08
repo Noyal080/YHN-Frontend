@@ -16,11 +16,16 @@ import useCommonToast from "@/common/CommonToast";
 const AdminNavbar: React.FC<NavbarProps> = ({ title, breadcrumbItems }) => {
   const navigate = useNavigate();
   const { showToast } = useCommonToast();
+  const token = localStorage.getItem("accessToken");
   const logout = async () => {
     try {
+      axiosInstance.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${token}`;
+
+      await axiosInstance.post("/logout");
       localStorage.removeItem("accessToken");
       localStorage.removeItem("userData");
-      await axiosInstance.post("/logout");
       showToast({
         description: "Logged out successfully",
         type: "success",

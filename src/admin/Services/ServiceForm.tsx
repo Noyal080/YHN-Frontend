@@ -13,7 +13,7 @@ import { useState } from "react";
 import { ServiceInput } from "@/utils/types";
 import { Controller, useForm } from "react-hook-form";
 import { Field } from "@/components/ui/field";
-import CommonEditor from "@/common/Editor/CommonEditor";
+import CommonEditor from "@/common/Editor";
 import { Button } from "@/components/ui/button";
 
 const ServiceForms = () => {

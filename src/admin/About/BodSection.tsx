@@ -7,7 +7,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import AdminLayout from "../Layout";
-import CommonEditor from "@/common/Editor/CommonEditor";
+import CommonEditor from "@/common/Editor";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { axiosInstance } from "@/api/axios";

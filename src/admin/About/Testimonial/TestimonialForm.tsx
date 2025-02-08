@@ -1,7 +1,7 @@
 import AdminLayout from "@/admin/Layout";
 import { axiosInstance } from "@/api/axios";
 import useCommonToast from "@/common/CommonToast";
-import CommonEditor from "@/common/Editor/CommonEditor";
+import CommonEditor from "@/common/Editor";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import CreatableSelect from "react-select/creatable";

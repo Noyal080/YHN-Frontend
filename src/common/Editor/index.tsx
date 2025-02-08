@@ -18,6 +18,7 @@ const CommonEditor = ({
 
   useEffect(() => {
     setIsLayoutReady(true);
+
     return () => setIsLayoutReady(false);
   }, []);
 
@@ -28,25 +29,15 @@ const CommonEditor = ({
 
     const {
       ClassicEditor,
-      Autoformat,
       AutoImage,
       Autosave,
       BalloonToolbar,
+      Base64UploadAdapter,
       BlockQuote,
       Bold,
       CloudServices,
       Essentials,
-      FindAndReplace,
-      FontBackgroundColor,
-      FontColor,
-      FontFamily,
-      FontSize,
-      FullPage,
-      GeneralHtmlSupport,
       Heading,
-      Highlight,
-      HtmlComment,
-      HtmlEmbed,
       ImageBlock,
       ImageCaption,
       ImageInline,
@@ -64,34 +55,19 @@ const CommonEditor = ({
       LinkImage,
       List,
       ListProperties,
-      Markdown,
       MediaEmbed,
       Mention,
       Paragraph,
-      PasteFromMarkdownExperimental,
       PasteFromOffice,
-      ShowBlocks,
-      SimpleUploadAdapter,
-      SourceEditing,
       SpecialCharacters,
-      SpecialCharactersArrows,
-      SpecialCharactersCurrency,
-      SpecialCharactersEssentials,
-      SpecialCharactersLatin,
-      SpecialCharactersMathematical,
-      SpecialCharactersText,
       Table,
       TableCaption,
       TableCellProperties,
       TableColumnResize,
       TableProperties,
       TableToolbar,
-      TextPartLanguage,
-      TextTransformation,
-      Title,
       TodoList,
       Underline,
-      WordCount,
     } = cloud.CKEditor;
 
     return {
@@ -99,17 +75,7 @@ const CommonEditor = ({
       editorConfig: {
         toolbar: {
           items: [
-            "sourceEditing",
-            "showBlocks",
-            "findAndReplace",
-            "textPartLanguage",
-            "|",
             "heading",
-            "|",
-            "fontSize",
-            "fontFamily",
-            "fontColor",
-            "fontBackgroundColor",
             "|",
             "bold",
             "italic",
@@ -120,9 +86,7 @@ const CommonEditor = ({
             "insertImage",
             "mediaEmbed",
             "insertTable",
-            "highlight",
             "blockQuote",
-            "htmlEmbed",
             "|",
             "bulletedList",
             "numberedList",
@@ -130,28 +94,18 @@ const CommonEditor = ({
             "outdent",
             "indent",
           ],
-          shouldNotGroupWhenFull: true,
+          shouldNotGroupWhenFull: false,
         },
         plugins: [
-          Autoformat,
           AutoImage,
           Autosave,
           BalloonToolbar,
+          Base64UploadAdapter,
           BlockQuote,
           Bold,
           CloudServices,
           Essentials,
-          FindAndReplace,
-          FontBackgroundColor,
-          FontColor,
-          FontFamily,
-          FontSize,
-          FullPage,
-          GeneralHtmlSupport,
           Heading,
-          Highlight,
-          HtmlComment,
-          HtmlEmbed,
           ImageBlock,
           ImageCaption,
           ImageInline,
@@ -169,34 +123,19 @@ const CommonEditor = ({
           LinkImage,
           List,
           ListProperties,
-          Markdown,
           MediaEmbed,
           Mention,
           Paragraph,
-          PasteFromMarkdownExperimental,
           PasteFromOffice,
-          ShowBlocks,
-          SimpleUploadAdapter,
-          SourceEditing,
           SpecialCharacters,
-          SpecialCharactersArrows,
-          SpecialCharactersCurrency,
-          SpecialCharactersEssentials,
-          SpecialCharactersLatin,
-          SpecialCharactersMathematical,
-          SpecialCharactersText,
           Table,
           TableCaption,
           TableCellProperties,
           TableColumnResize,
           TableProperties,
           TableToolbar,
-          TextPartLanguage,
-          TextTransformation,
-          Title,
           TodoList,
           Underline,
-          WordCount,
         ],
         balloonToolbar: [
           "bold",
@@ -208,13 +147,6 @@ const CommonEditor = ({
           "bulletedList",
           "numberedList",
         ],
-        fontFamily: {
-          supportAllValues: true,
-        },
-        fontSize: {
-          options: [10, 12, 14, "default", 18, 20, 22],
-          supportAllValues: true,
-        },
         heading: {
           options: [
             {
@@ -260,16 +192,6 @@ const CommonEditor = ({
             },
           ],
         },
-        htmlSupport: {
-          allow: [
-            {
-              name: /^.*$/,
-              styles: true,
-              attributes: true,
-              classes: true,
-            },
-          ],
-        },
         image: {
           toolbar: [
             "toggleImageCaption",
@@ -282,14 +204,13 @@ const CommonEditor = ({
             "resizeImage",
           ],
         },
-        initialData: "",
         licenseKey: LICENSE_KEY,
         link: {
           addTargetToExternalLinks: true,
           defaultProtocol: "https://",
           decorators: {
             toggleDownloadable: {
-              mode: "manual",
+              mode: "manual" as const,
               label: "Downloadable",
               attributes: {
                 download: "file",
@@ -331,7 +252,7 @@ const CommonEditor = ({
   return (
     <div className="main-container">
       <div
-        className="editor-container editor-container_classic-editor editor-container_include-word-count"
+        className="editor-container editor-container_classic-editor"
         ref={editorContainerRef}
       >
         <div className="editor-container__editor">

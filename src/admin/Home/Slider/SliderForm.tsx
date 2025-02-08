@@ -1,5 +1,4 @@
 import AdminLayout from "@/admin/Layout";
-import CommonEditor from "@/common/Editor/CommonEditor";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import {
@@ -24,6 +23,7 @@ import { Controller, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { axiosInstance } from "@/api/axios";
 import useCommonToast from "@/common/CommonToast";
+import CommonEditor from "@/common/Editor";
 const SliderForm = () => {
   const [showButtons, setShowButtons] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -173,6 +173,7 @@ const SliderForm = () => {
                         handleFieldChange("sub_title", value);
                       }}
                     />
+
                     {errors.sub_title && (
                       <Text textStyle="sm" color="red">
                         {errors.sub_title.message}
