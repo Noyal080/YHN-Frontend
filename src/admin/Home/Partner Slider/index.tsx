@@ -54,7 +54,10 @@ const PartnerSlider = () => {
         return (
           <Switch
             checked={row.status === 1}
-            onCheckedChange={() => console.log(`${row.id}`)}
+            onCheckedChange={() => {
+              console.log("clicked");
+              handleStatusChange(String(row.id), row.status);
+            }}
           />
         );
       },
@@ -64,14 +67,11 @@ const PartnerSlider = () => {
   const [rows, setRows] = useState<PartnerSliderType[]>([]);
   const [triggerFetch, setTriggerFetch] = useState<boolean>(false);
   const token = localStorage.getItem("accessToken");
-
+  axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   useEffect(() => {
     const fetchPartners = async () => {
       setLoading(true);
       try {
-        axiosInstance.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${token}`;
         const res = await axiosInstance.get("/partner");
         setRows(res.data.data);
         setTriggerFetch(false);
@@ -113,6 +113,22 @@ const PartnerSlider = () => {
     }
   };
 
+  const handleStatusChange = async (id: string, status: number) => {
+    const newStatus = status === 1 ? 0 : 1;
+    console.log("clicked");
+
+    try {
+      await axiosInstance.post(`/partner/${id}`, {
+        status: newStatus,
+      });
+      console.log(`Partner ${id} status changed to ${newStatus}`);
+      setTriggerFetch(true);
+    } catch (error) {
+      console.error("Error changing status:", error);
+      // Handle error (e.g., show an error message to the user)
+    }
+  };
+
   return (
     <AdminLayout
       breadcrumbItems={[
@@ -137,6 +153,7 @@ const PartnerSlider = () => {
         onAdd={() => navigate("/admin/partners/add")}
         entriesPerPage={entriesPerPage}
         setEntriesPerPage={setEntriesPerPage}
+        isDraggable={false}
       />
 
       <CommonModal

@@ -1,7 +1,7 @@
 import CommonTable from "@/common/Table/CommonTable";
 import AdminLayout from "../../Layout";
 import { useEffect, useState } from "react";
-import { SliderType } from "@/utils/types";
+import { SliderInput } from "@/utils/types";
 import { Column } from "@/utils";
 import { Switch } from "@/components/ui/switch";
 import { Image } from "@chakra-ui/react";
@@ -11,21 +11,20 @@ import { axiosInstance } from "@/api/axios";
 
 const SliderSection = () => {
   const columns: Column<{
-    id: number;
+    id?: number;
     title: string;
-    priorityOrder: number;
-    "content.image": string;
+    sub_title: string;
+    priority_order: number;
+    image: string;
     status: boolean;
-    "content.text": string;
-    "content.button"?: {
-      label: string;
-      link: string;
-    };
+    button_title?: string;
+    button_route?: string;
   }>[] = [
     { key: "id", label: "#", visible: true },
     { key: "title", label: "Title", visible: true },
+    { key: "sub_title", label: "Description", visible: false },
     {
-      key: "content.image",
+      key: "image",
       label: "Image",
       visible: true,
       render: (row) => (
@@ -34,7 +33,7 @@ const SliderSection = () => {
           h="200px"
           w="300px"
           fit="contain"
-          src={row["content.image"]}
+          src={row["image"]}
         />
       ),
     },
@@ -49,25 +48,21 @@ const SliderSection = () => {
         />
       ),
     },
-    { key: "content.text", label: "Text", visible: true },
     {
-      key: "content.button",
-      label: "Button",
+      key: "button_title",
+      label: "Button Title",
       visible: false,
-      render: (row) =>
-        row["content.button"] ? (
-          <>
-            <span>{row["content.button"].label}</span>
-          </>
-        ) : (
-          "No Button"
-        ),
     },
-    { key: "priorityOrder", label: "Priority Order", visible: false },
+    {
+      key: "button_route",
+      label: "Button Route",
+      visible: false,
+    },
+    { key: "priority_order", label: "Priority Order", visible: false },
   ];
   const navigate = useNavigate();
 
-  const [rows, setRows] = useState<SliderType[]>([]);
+  const [rows, setRows] = useState<SliderInput[]>([]);
 
   const token = localStorage.getItem("accessToken");
   axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
@@ -87,11 +82,11 @@ const SliderSection = () => {
 
   const [entriesPerPage, setEntriesPerPage] = useState("10");
 
-  const handleEdit = (row: SliderType) => {
+  const handleEdit = (row: SliderInput) => {
     navigate(`/admin/slider/edit/${row.id}`);
   };
 
-  const handleDelete = (row: SliderType) => {
+  const handleDelete = (row: SliderInput) => {
     if (window.confirm(`Delete slider with ID: ${row.id}?`)) {
       setRows((prev) => prev.filter((r) => r.id !== row.id));
     }
@@ -111,11 +106,7 @@ const SliderSection = () => {
       <CommonTable
         title="Slider List"
         columns={columns}
-        rows={rows.map((row) => ({
-          ...row,
-          "content.image": row.content.image,
-          "content.text": row.content.text,
-        }))}
+        rows={rows}
         onEdit={handleEdit}
         onDelete={handleDelete}
         onSearch={(query) => console.log("Search", query)}

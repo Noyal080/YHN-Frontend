@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import {
   FileUploadDropzone,
-  FileUploadList,
   FileUploadRoot,
 } from "@/components/ui/file-upload";
 import { Switch } from "@/components/ui/switch";
@@ -13,6 +12,7 @@ import {
   CardRoot,
   Heading,
   HStack,
+  Image,
   Input,
   Text,
   VStack,
@@ -24,9 +24,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { axiosInstance } from "@/api/axios";
 import useCommonToast from "@/common/CommonToast";
 import CommonEditor from "@/common/Editor";
+import { compressImage } from "@/utils/imageCompressor";
 const SliderForm = () => {
   const [showButtons, setShowButtons] = useState<boolean>(false);
   const navigate = useNavigate();
+  const [selectedImage, setSelectedImage] = useState<string | null>();
   const { showToast } = useCommonToast();
   const [sliderData, setSliderData] = useState<SliderInput>({
     title: "",
@@ -61,13 +63,15 @@ const SliderForm = () => {
   useEffect(() => {
     const fetchSliderData = async () => {
       try {
-        const res = await axiosInstance.get(`/slider/${id}`);
+        const res = await axiosInstance.get(`/sliders/${id}`);
         setSliderData(res.data.payload);
       } catch (e) {
         console.error(e);
       }
     };
-    fetchSliderData();
+    if (id) {
+      fetchSliderData();
+    }
   }, [id]);
 
   const handleFieldChange = (
@@ -80,13 +84,15 @@ const SliderForm = () => {
   const onSubmit = async (sliderData: SliderInput) => {
     try {
       if (id) {
-        await axiosInstance.patch(`/slider/edit/${id}`, sliderData);
+        await axiosInstance.post(`/sliders/${id}`, sliderData);
         showToast({
           description: "Slider updated successfully!",
           type: "success",
         });
       } else {
-        await axiosInstance.post(`/slider/add`, sliderData);
+        await axiosInstance.post(`/sliders`, sliderData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
         showToast({
           description: " Slider added successfully",
           type: "success",
@@ -120,6 +126,16 @@ const SliderForm = () => {
       y: -20,
       transition: { duration: 0.3, ease: "easeInOut" },
     },
+  };
+
+  const handleImageUpload = async (file: File) => {
+    try {
+      const compressedFile = await compressImage(file);
+      setSelectedImage(URL.createObjectURL(compressedFile)); // Preview image
+      handleFieldChange("image", compressedFile); // Update form state
+    } catch (error) {
+      console.error("Compression error:", error);
+    }
   };
 
   return (
@@ -193,19 +209,33 @@ const SliderForm = () => {
                       alignItems="stretch"
                       maxFiles={1}
                       accept={["image/*"]}
-                      onFileAccept={(value) => {
-                        console.log("Uploaded File:", value);
+                      onFileAccept={async (value) => {
                         const file = value.files[0];
                         field.onChange(file);
-                        handleFieldChange("image", file);
+                        handleImageUpload(file);
                       }}
                     >
                       <FileUploadDropzone
-                        value={field.value}
+                        value={
+                          typeof field.value === "string" ? field.value : ""
+                        }
                         label="Drag and drop here to upload"
                         description=".png, .jpg up to 5MB"
                       />
-                      <FileUploadList />
+                      {(selectedImage || sliderData.image) && (
+                        <Image
+                          src={
+                            selectedImage ||
+                            (typeof sliderData.image === "string"
+                              ? sliderData.image
+                              : undefined)
+                          }
+                          alt="Uploaded or Existing Image"
+                          objectFit="contain"
+                          aspectRatio={2 / 1}
+                          mt={4}
+                        />
+                      )}
                     </FileUploadRoot>
                     {errors.image && (
                       <Text textStyle="sm" color="red">

@@ -14,6 +14,14 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
+import {
+  SelectContent,
+  SelectItem,
+  SelectRoot,
+  SelectTrigger,
+  SelectValueText,
+} from "@/components/ui/select";
+import { createListCollection } from "@chakra-ui/react";
 
 const projectDataByProvince = [
   { name: "Bagmati", projects: 120 },
@@ -37,11 +45,13 @@ const eventDataByTime = [
   { name: "Future Events", events: 70 },
 ];
 
-const chartTypes = ["Bar", "Line", "Pie", "Table"];
+const chartTypes = createListCollection({
+  items: ["Bar", "Line", "Pie", "Table"],
+});
 
 const AdminDashboard = () => {
   // Set the default chartType to "Line"
-  const [chartType, setChartType] = useState("Line");
+  const [chartType, setChartType] = useState<string[]>(["Line"]);
   const breadcrumbItems = [{ label: "Dashboard", link: "/admin" }];
 
   const renderChart = (
@@ -50,7 +60,7 @@ const AdminDashboard = () => {
     xLabel: string,
     yLabel: string
   ) => {
-    if (chartType === "Line") {
+    if (chartType.includes("Line")) {
       return (
         <LineChart data={data}>
           <XAxis
@@ -66,7 +76,7 @@ const AdminDashboard = () => {
         </LineChart>
       );
     }
-    if (chartType === "Pie") {
+    if (chartType.includes("Pie")) {
       return (
         <PieChart>
           <Tooltip />
@@ -84,7 +94,7 @@ const AdminDashboard = () => {
         </PieChart>
       );
     }
-    if (chartType === "Table") {
+    if (chartType.includes("Table")) {
       return (
         <table
           className="table table-bordered"
@@ -160,23 +170,23 @@ const AdminDashboard = () => {
           marginBottom: "24px",
         }}
       >
-        <select
-          style={{
-            padding: "8px 16px",
-            borderRadius: "4px",
-            border: "1px solid #ccc",
-            width: "100%",
-            fontSize: "1rem",
-          }}
+        <SelectRoot
+          collection={chartTypes}
+          defaultValue={chartType}
           value={chartType}
-          onChange={(e) => setChartType(e.target.value)}
+          onValueChange={(e) => setChartType(e.value)}
         >
-          {chartTypes.map((type) => (
-            <option key={type} value={type}>
-              {type}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger>
+            <SelectValueText placeholder="Select chart" />
+          </SelectTrigger>
+          <SelectContent>
+            {chartTypes.items.map((type) => (
+              <SelectItem item={type} key={type}>
+                {type}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </SelectRoot>
       </div>
 
       <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>

@@ -8,6 +8,7 @@ import {
   FileUploadRoot,
 } from "@/components/ui/file-upload";
 import { Switch } from "@/components/ui/switch";
+import { compressImage } from "@/utils/imageCompressor";
 import { PartnerSliderType } from "@/utils/types";
 import {
   CardBody,
@@ -67,6 +68,16 @@ const PartnerSliderForm = () => {
     value: string | number | boolean | File
   ) => {
     setSliderData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleImageUpload = async (file: File) => {
+    try {
+      const compressedFile = await compressImage(file);
+      setSelectedImage(URL.createObjectURL(compressedFile)); // Preview image
+      handleFieldChange("image", compressedFile); // Update form state
+    } catch (error) {
+      console.error("Compression error:", error);
+    }
   };
 
   const onSubmit = async (sliderData: PartnerSliderType) => {
@@ -161,9 +172,7 @@ const PartnerSliderForm = () => {
                       onFileAccept={(value) => {
                         const file = value.files[0];
                         field.onChange(file);
-                        const objectUrl = URL.createObjectURL(file); // Convert file to URL
-                        setSelectedImage(objectUrl);
-                        handleFieldChange("image", file);
+                        handleImageUpload(file);
                       }}
                     >
                       <FileUploadDropzone
