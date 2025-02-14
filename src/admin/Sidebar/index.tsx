@@ -21,12 +21,14 @@ import {
   FiInfo,
   FiUser,
   FiDollarSign,
-  FiBriefcase,
   FiFolder,
   FiCalendar,
   FiImage,
   FiCamera,
   FiVideo,
+  FiUserPlus,
+  FiUserCheck,
+  FiBookOpen,
 } from "react-icons/fi";
 import { LuImagePlay, LuLayoutDashboard, LuQuote } from "react-icons/lu";
 import { Tooltip } from "@/components/ui/tooltip";
@@ -96,29 +98,43 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
           link: "/admin/founder",
         },
         { id: 33, label: "Our Team", icon: FiUsers, link: "/admin/team" },
+      ],
+    },
+
+    {
+      id: 9,
+      label: "Join Us",
+      icon: FiUserPlus,
+      children: [
         {
-          id: 34,
+          id: 91,
+          label: "Volunteer",
+          icon: FiUserCheck,
+          link: "/admin/volunteer",
+        },
+        {
+          id: 92,
+          label: "Internship",
+          icon: FiBookOpen,
+          link: "/admin/internship",
+        },
+        {
+          id: 94,
           label: "Testimonial",
           icon: LuQuote,
           link: "/admin/testimonials",
         },
         {
-          id: 35,
+          id: 95,
           label: "Donation",
           icon: FiDollarSign,
           link: "/admin/donation",
         },
-        {
-          id: 36,
-          label: "Volunteer / Careers",
-          icon: FiBriefcase,
-          link: "/admin/careers",
-        },
       ],
     },
-    { id: 4, label: "Projects", icon: FiFolder, link: "/admin/projects" },
+    { id: 4, label: "Our Works", icon: FiFolder, link: "/admin/our-works" },
     { id: 5, label: "Events", icon: FiCalendar, link: "/admin/events" },
-    { id: 6, label: "Services", icon: FiSettings, link: "/admin/services" },
+    // { id: 6, label: "Services", icon: FiSettings, link: "/admin/services" },
     {
       id: 7,
       label: "Gallery",

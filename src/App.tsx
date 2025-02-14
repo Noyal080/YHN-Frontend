@@ -20,8 +20,8 @@ import Testimonial from "./admin/About/Testimonial";
 import TestimonialForm from "./admin/About/Testimonial/TestimonialForm";
 import ProtectedRoute from "./common/ProtectedRoute";
 import Donations from "./admin/About/Donation";
-import Services from "./admin/Services";
-import ServiceForms from "./admin/Services/ServiceForm";
+// import Services from "./admin/Services";
+// import ServiceForms from "./admin/Services/ServiceForm";
 import EventSection from "./admin/Events";
 import CareerSection from "./admin/About/Career";
 import ImageSection from "./admin/Gallery/Image";
@@ -180,7 +180,7 @@ function App() {
         />
 
         <Route
-          path="/admin/projects"
+          path="/admin/our-works"
           element={
             <ProtectedRoute>
               <ProjectSection />
@@ -195,7 +195,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route
+        {/* <Route
           path="/admin/services"
           element={
             <ProtectedRoute>
@@ -219,7 +219,7 @@ function App() {
               <ServiceForms />
             </ProtectedRoute>
           }
-        />
+        /> */}
 
         {/* Image Section  */}
         <Route

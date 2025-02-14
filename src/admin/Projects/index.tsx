@@ -5,12 +5,12 @@ const ProjectSection = () => {
     <AdminLayout
       breadcrumbItems={[
         { label: "Dashboard", link: "/admin" },
-        { label: "Projects" },
+        { label: "Our Works" },
       ]}
-      title={`Projects Section`}
-      activeSidebarItem="Projects"
+      title={`Our Works`}
+      activeSidebarItem="Our Works"
     >
-      <h1> Projects </h1>
+      <h1> Our Works </h1>
     </AdminLayout>
   );
 };
