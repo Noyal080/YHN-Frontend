@@ -14,8 +14,8 @@ import ProjectSection from "./admin/Projects";
 import PartnerSlider from "./admin/Home/Partner Slider";
 import PartnerSliderForm from "./admin/Home/Partner Slider/PartnerSliderForm";
 import UsSection from "./admin/About/UsSection";
-import BodSection from "./admin/About/BodSection";
-import TeamSection from "./admin/About/TeamSection";
+// import BodSection from "./admin/About/BodSection";
+import TeamSection from "./admin/About/Teams";
 import Testimonial from "./admin/About/Testimonial";
 import TestimonialForm from "./admin/About/Testimonial/TestimonialForm";
 import ProtectedRoute from "./common/ProtectedRoute";
@@ -26,6 +26,7 @@ import EventSection from "./admin/Events";
 import CareerSection from "./admin/About/Career";
 import ImageSection from "./admin/Gallery/Image";
 import VideoSection from "./admin/Gallery/Video";
+import TeamsForms from "./admin/About/Teams/TeamsForms";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -120,22 +121,40 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route
+        {/* <Route
           path="/admin/founder"
           element={
             <ProtectedRoute>
               <BodSection />
             </ProtectedRoute>
           }
-        />
+        /> */}
         <Route
-          path="/admin/team"
+          path="/admin/teams"
           element={
             <ProtectedRoute>
               <TeamSection />
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/admin/teams/add"
+          element={
+            <ProtectedRoute>
+              <TeamsForms />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/teams/edit/:id"
+          element={
+            <ProtectedRoute>
+              <TeamsForms />
+            </ProtectedRoute>
+          }
+        />
+
         <Route
           path="/admin/testimonials"
           element={

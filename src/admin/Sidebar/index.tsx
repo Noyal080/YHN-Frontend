@@ -14,7 +14,6 @@ import {
 } from "@chakra-ui/react";
 import {
   FiUsers,
-  FiSettings,
   FiChevronLeft,
   FiHome,
   FiMail,
@@ -91,13 +90,13 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
       icon: FiInfo,
       children: [
         { id: 31, label: "Who are we", icon: FiUser, link: "/admin/about" },
-        {
-          id: 32,
-          label: "Board of Directors",
-          icon: FiSettings,
-          link: "/admin/founder",
-        },
-        { id: 33, label: "Our Team", icon: FiUsers, link: "/admin/team" },
+        // {
+        //   id: 32,
+        //   label: "Board of Directors",
+        //   icon: FiSettings,
+        //   link: "/admin/founder",
+        // },
+        { id: 33, label: "Our Team", icon: FiUsers, link: "/admin/teams" },
       ],
     },
 

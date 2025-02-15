@@ -74,3 +74,12 @@ export type ChartData = {
   name: string;
   [key: string]: number | string;
 };
+
+export type TeamsInput = {
+  id ? : number;
+  name : string;
+  image : string | File;
+  position : string;
+  role : string;
+  status : number;
+}

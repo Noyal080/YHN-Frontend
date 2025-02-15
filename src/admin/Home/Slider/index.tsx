@@ -70,7 +70,7 @@ const SliderSection = () => {
   useEffect(() => {
     const fetchSliders = async () => {
       try {
-        const response = await axiosInstance.get("/slider");
+        const response = await axiosInstance.get("/sliders");
         setRows(response.data.data);
       } catch (err) {
         console.log(err);
