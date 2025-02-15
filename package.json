@@ -17,6 +17,7 @@
     "@hookform/resolvers": "^3.10.0",
     "@reduxjs/toolkit": "^2.5.0",
     "@types/axios": "^0.14.4",
+    "@types/js-cookie": "^3.0.6",
     "@types/yup": "^0.32.0",
     "axios": "^1.7.9",
     "ckeditor5": "^44.1.0",

@@ -30,6 +30,8 @@ import TeamsForms from "./admin/About/Teams/TeamsForms";
 import MessageRequest from "./admin/Home/Message Request";
 import MessageView from "./admin/Home/Message Request/MessageView";
 import ImageForm from "./admin/Gallery/Image/ImageForm";
+import InternshipSection from "./admin/Join Us/Internship";
+import VolunteerSection from "./admin/Join Us/Volunteer";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -222,6 +224,24 @@ function App() {
           element={
             <ProtectedRoute>
               <EventSection />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/volunteer"
+          element={
+            <ProtectedRoute>
+              <VolunteerSection />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/internship"
+          element={
+            <ProtectedRoute>
+              <InternshipSection />
             </ProtectedRoute>
           }
         />

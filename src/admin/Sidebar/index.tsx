@@ -360,7 +360,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
       {/* Bottom Section */}
       {isExpanded && (
         <Text fontSize="sm" color="gray.500" mt="auto" p={"4"}>
-          © 2024 Admin Dashboard
+          © 2024 Yours Humanly Nepal
         </Text>
       )}
     </Box>

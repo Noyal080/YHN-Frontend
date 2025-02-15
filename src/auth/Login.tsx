@@ -24,6 +24,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "@/redux/authSlice";
+import Cookies from "js-cookie";
 
 const MotionBox = motion.create(Box);
 const MotionFlex = motion.create(Flex);
@@ -51,6 +52,7 @@ const Login = () => {
       const res = await axiosInstance.post("/login", data);
       const userData = res.data.data;
       localStorage.setItem("accessToken", userData.token);
+      Cookies.set("accessToken", userData.token);
       dispatch(
         loginSuccess({
           token: userData.token,
