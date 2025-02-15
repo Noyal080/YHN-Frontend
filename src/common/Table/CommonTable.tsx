@@ -14,7 +14,7 @@ import {
   TableRow,
   Text,
 } from "@chakra-ui/react";
-import { FiChevronDown, FiChevronUp, FiTrash } from "react-icons/fi";
+import { FiChevronDown, FiChevronUp, FiEye, FiTrash } from "react-icons/fi";
 import { LuPencil } from "react-icons/lu";
 
 import {
@@ -55,6 +55,7 @@ const CommonTable = <T,>({
   entriesPerPage,
   setEntriesPerPage,
   addName,
+  onView,
 }: CommonTableProps<T>) => {
   const [sortKey, setSortKey] = useState<keyof T | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>(
@@ -172,16 +173,28 @@ const CommonTable = <T,>({
                             : String(row[column.key])}
                         </TableCell>
                       ))}
-                    {(onEdit || onDelete) && (
+                    {(onEdit || onDelete || onView) && (
                       <TableCell>
                         <Flex justifyContent="center" gap={2}>
+                          {onView && (
+                            <IconButton
+                              aria-label="Edit"
+                              size="xs"
+                              onClick={() => onView(row)}
+                              variant="outline"
+                              rounded={"md"}
+                            >
+                              <FiEye />
+                            </IconButton>
+                          )}
                           {onEdit && (
                             <IconButton
                               aria-label="Edit"
-                              size="sm"
+                              size="xs"
                               onClick={() => onEdit(row)}
-                              variant="surface"
+                              variant="outline"
                               colorPalette={"blue"}
+                              rounded={"md"}
                             >
                               <LuPencil />
                             </IconButton>
@@ -189,9 +202,10 @@ const CommonTable = <T,>({
                           {onDelete && (
                             <IconButton
                               aria-label="Delete"
-                              size="sm"
+                              size="xs"
                               colorPalette={"red"}
-                              variant="surface"
+                              variant="outline"
+                              rounded={"md"}
                               onClick={() => onDelete(row)}
                             >
                               <FiTrash />

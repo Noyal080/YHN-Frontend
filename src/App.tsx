@@ -27,6 +27,9 @@ import CareerSection from "./admin/About/Career";
 import ImageSection from "./admin/Gallery/Image";
 import VideoSection from "./admin/Gallery/Video";
 import TeamsForms from "./admin/About/Teams/TeamsForms";
+import MessageRequest from "./admin/Home/Message Request";
+import MessageView from "./admin/Home/Message Request/MessageView";
+import ImageForm from "./admin/Gallery/Image/ImageForm";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -108,7 +111,15 @@ function App() {
           path="/admin/messages"
           element={
             <ProtectedRoute>
-              <UsSection />
+              <MessageRequest />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/messages/view/:id"
+          element={
+            <ProtectedRoute>
+              <MessageView />
             </ProtectedRoute>
           }
         />
@@ -246,6 +257,14 @@ function App() {
           element={
             <ProtectedRoute>
               <ImageSection />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/gallery/images/add"
+          element={
+            <ProtectedRoute>
+              <ImageForm />
             </ProtectedRoute>
           }
         />

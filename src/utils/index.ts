@@ -50,10 +50,11 @@ export interface CommonTableProps<T> {
   columns: Column<T>[];
   rows: T[];
   onEdit?: (row: T) => void;
+  onView?: (row :T) => void;
   onDelete?: (row: T) => void;
   onSearch?: (query: string) => void;
   onAdd?: () => void;
-  addName: string;
+  addName?: string;
   filterComponent?: React.ReactNode;
   isDraggable?: boolean;
   count?: number;
@@ -67,7 +68,7 @@ export interface TableHeadProps <T> {
   onSearch?: (query: string) => void;
   filterComponent?: React.ReactNode;
   onAdd?: () => void;
-  addName: string;
+  addName?: string;
   columns : Column<T>[]
   handleColumnVisibilityChange: (columnKey: keyof T , visible : boolean) => void;
 }

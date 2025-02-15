@@ -4,15 +4,18 @@ import "./index.css";
 import App from "./App.tsx";
 import { Provider } from "./components/ui/provider.tsx";
 import { Provider as ReduxProvider } from "react-redux";
-import { store } from "./redux/store.ts";
+import { persistor, store } from "./redux/store.ts";
 import { Toaster } from "./components/ui/toaster.tsx";
+import { PersistGate } from "redux-persist/integration/react";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Provider forcedTheme="light">
       <ReduxProvider store={store}>
-        <Toaster />
-        <App />
+        <PersistGate loading={null} persistor={persistor}>
+          <Toaster />
+          <App />
+        </PersistGate>
       </ReduxProvider>
     </Provider>
   </StrictMode>

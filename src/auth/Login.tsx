@@ -22,6 +22,8 @@ import { axiosInstance } from "@/api/axios";
 import useCommonToast from "@/common/CommonToast";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "@/redux/authSlice";
 
 const MotionBox = motion.create(Box);
 const MotionFlex = motion.create(Flex);
@@ -34,6 +36,7 @@ const Login = () => {
     password: yup.string().required("Password is required"),
   });
   const { showToast } = useCommonToast();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const {
     control,
@@ -48,6 +51,13 @@ const Login = () => {
       const res = await axiosInstance.post("/login", data);
       const userData = res.data.data;
       localStorage.setItem("accessToken", userData.token);
+      dispatch(
+        loginSuccess({
+          token: userData.token,
+          user: userData.user,
+        })
+      );
+
       localStorage.setItem("userData", JSON.stringify(userData.user));
       showToast({
         description: res.data.message,

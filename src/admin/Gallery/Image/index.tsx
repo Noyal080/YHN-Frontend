@@ -53,7 +53,7 @@ const ImageSection = () => {
             imageUrl: "https://placehold.jp/800x800.png",
           },
         ],
-        status: true,
+        status: 1,
       },
     ]);
   }, []);

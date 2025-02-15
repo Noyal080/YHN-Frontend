@@ -62,7 +62,7 @@ export type ImageInputTypes = {
   id?: number;
   title: string;
   image: Gallery[];
-  status: boolean;
+  status: number;
 }
 
 export type Gallery = {
@@ -82,4 +82,13 @@ export type TeamsInput = {
   position : string;
   role : string;
   status : number;
+}
+
+export type MessageRequestType = {
+  id?: number;
+  full_name : string;
+  email : string;
+  phone : number;
+  address : string;
+  message : string
 }

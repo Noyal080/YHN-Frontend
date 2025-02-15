@@ -12,6 +12,8 @@ import CommonEditor from "@/common/Editor";
 import { Button } from "@/components/ui/button";
 import { axiosInstance } from "@/api/axios";
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const Donations = () => {
   const [editorData, setEditorData] = useState<string>("");
@@ -24,7 +26,8 @@ const Donations = () => {
       editorData: editorData || "",
     },
   });
-  const token = localStorage.getItem("accessToken");
+  // const token = localStorage.getItem("accessToken");
+  const token = useSelector((state: RootState) => state.auth.token);
   axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
   const onSubmit = () => {
