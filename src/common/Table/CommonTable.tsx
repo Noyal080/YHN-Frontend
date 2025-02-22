@@ -237,7 +237,7 @@ const CommonTable = <T,>({
             <Text>entries</Text>
           </Flex> */}
           {count && (
-            <Flex alignItems="center" gap={2}>
+            <Flex justifyContent={"flex-end"} alignItems="center" w={"100%"}>
               <PaginationRoot count={count} pageSize={10}>
                 <HStack>
                   <PaginationPrevTrigger />

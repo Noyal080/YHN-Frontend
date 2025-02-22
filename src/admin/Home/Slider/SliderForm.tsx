@@ -35,7 +35,7 @@ const SliderForm = () => {
     sub_title: "",
     priority_order: 1,
     image: "",
-    status: true,
+    status: 1,
     button_title: "",
     button_route: "",
   });
@@ -50,7 +50,7 @@ const SliderForm = () => {
       sub_title: sliderData.sub_title || "",
       priority_order: sliderData.priority_order || 1,
       image: sliderData.image || "",
-      status: sliderData.status || true,
+      status: sliderData.status || 1,
       button_title: sliderData.button_title || "",
       button_route: sliderData.button_route || "",
     },
@@ -284,10 +284,11 @@ const SliderForm = () => {
                         Pinned Image
                       </Text>
                       <Switch
-                        checked={field.value}
+                        checked={field.value === 1}
                         onCheckedChange={(value) => {
-                          field.onChange(value);
-                          handleFieldChange("status", value.checked);
+                          const statusValue = value.checked ? 1 : 0;
+                          field.onChange(statusValue);
+                          handleFieldChange("status", statusValue);
                         }}
                         color="black"
                         colorPalette="blue"

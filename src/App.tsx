@@ -32,6 +32,10 @@ import MessageView from "./admin/Home/Message Request/MessageView";
 import ImageForm from "./admin/Gallery/Image/ImageForm";
 import InternshipSection from "./admin/Join Us/Internship";
 import VolunteerSection from "./admin/Join Us/Volunteer";
+import InternshipForm from "./admin/Join Us/Internship/InternshipForm";
+import VolunteerForm from "./admin/Join Us/Volunteer/VolunteerForm";
+import WorkForms from "./admin/Projects/WorkForm";
+import EventForm from "./admin/Events/EventForm";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -219,11 +223,46 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        <Route
+          path="/admin/our-works/add"
+          element={
+            <ProtectedRoute>
+              <WorkForms />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/our-works/edit/:id"
+          element={
+            <ProtectedRoute>
+              <WorkForms />
+            </ProtectedRoute>
+          }
+        />
+
         <Route
           path="/admin/events"
           element={
             <ProtectedRoute>
               <EventSection />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/events/add"
+          element={
+            <ProtectedRoute>
+              <EventForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/events/edit/:id"
+          element={
+            <ProtectedRoute>
+              <EventForm />
             </ProtectedRoute>
           }
         />
@@ -238,6 +277,24 @@ function App() {
         />
 
         <Route
+          path="/admin/volunteer/add"
+          element={
+            <ProtectedRoute>
+              <VolunteerForm />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/volunteer/edit/:id"
+          element={
+            <ProtectedRoute>
+              <VolunteerForm />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
           path="/admin/internship"
           element={
             <ProtectedRoute>
@@ -245,6 +302,25 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        <Route
+          path="/admin/internship/add"
+          element={
+            <ProtectedRoute>
+              <InternshipForm />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/internship/edit/:id"
+          element={
+            <ProtectedRoute>
+              <InternshipForm />
+            </ProtectedRoute>
+          }
+        />
+
         {/* <Route
           path="/admin/services"
           element={

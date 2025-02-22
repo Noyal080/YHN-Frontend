@@ -20,7 +20,7 @@ export type SliderInput = {
   sub_title: string;
   priority_order: number;
   image: string;
-  status: boolean;
+  status: number;
   button_title?: string;
   button_route?: string;
 };
@@ -91,4 +91,34 @@ export type MessageRequestType = {
   phone : number;
   address : string;
   message : string
+}
+
+export type InternshipType = {
+  id? :number ;
+  title : string;
+  description : string;
+  linkTo : string;
+}
+
+export type OurWorkType = {
+  id?: number,
+  title : string;
+  description : string;
+  sector : string;
+  banner_image : File | string;
+  date : string;
+  location : string;
+  gallery : number | null;
+  objective : string;
+  activities : string
+}
+
+export type EventType = {
+  id?: number;
+  title : string;
+  description : string;
+  banner_image : File | string;
+  date : string;
+  location : string;
+  gallery : number | null;
 }
