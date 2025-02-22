@@ -42,7 +42,7 @@ const MessageRequest = () => {
       visible: false,
     },
   ];
-  const [entriesPerPage, setEntriesPerPage] = useState("10");
+
   const [rows, setRows] = useState<MessageRequestType[]>([]);
 
   useEffect(() => {
@@ -86,8 +86,6 @@ const MessageRequest = () => {
         }}
         onView={(row) => navigate(`/admin/messages/view/${row.id}`)}
         onSearch={(query) => console.log("Search", query)}
-        entriesPerPage={entriesPerPage}
-        setEntriesPerPage={setEntriesPerPage}
         isDraggable={false}
       />
     </AdminLayout>

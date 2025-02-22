@@ -9,7 +9,6 @@ import { TeamsInput } from "@/utils/types";
 import { axiosInstance } from "@/api/axios";
 
 const TeamSection = () => {
-  const [entriesPerPage, setEntriesPerPage] = useState("10");
   const navigate = useNavigate();
   const token = localStorage.getItem("accessToken");
   const columns: Column<{
@@ -97,8 +96,6 @@ const TeamSection = () => {
         // filterComponent={<SliderFilter />}
         isDraggable
         count={100}
-        entriesPerPage={entriesPerPage}
-        setEntriesPerPage={setEntriesPerPage}
         addName="Add Teams"
       />
     </AdminLayout>

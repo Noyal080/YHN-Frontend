@@ -63,7 +63,7 @@ const PartnerSlider = () => {
       },
     },
   ];
-  const [entriesPerPage, setEntriesPerPage] = useState("10");
+
   const [rows, setRows] = useState<PartnerSliderType[]>([]);
   const [triggerFetch, setTriggerFetch] = useState<boolean>(false);
   const token = localStorage.getItem("accessToken");
@@ -151,8 +151,6 @@ const PartnerSlider = () => {
         }}
         onSearch={(query) => console.log("Search", query)}
         onAdd={() => navigate("/admin/partners/add")}
-        entriesPerPage={entriesPerPage}
-        setEntriesPerPage={setEntriesPerPage}
         isDraggable={false}
       />
 

@@ -86,7 +86,6 @@ const Testimonial = () => {
       setRows((prev) => prev.filter((r) => r.id !== row.id));
     }
   };
-  const [entriesPerPage, setEntriesPerPage] = useState("10");
 
   return (
     <AdminLayout
@@ -106,8 +105,6 @@ const Testimonial = () => {
         onDelete={handleDelete}
         onSearch={(query) => console.log("Search", query)}
         onAdd={() => navigate("/admin/testimonials/add")}
-        entriesPerPage={entriesPerPage}
-        setEntriesPerPage={setEntriesPerPage}
       />
     </AdminLayout>
   );

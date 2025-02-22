@@ -80,8 +80,6 @@ const SliderSection = () => {
     fetchSliders();
   }, [token]);
 
-  const [entriesPerPage, setEntriesPerPage] = useState("10");
-
   const handleEdit = (row: SliderInput) => {
     navigate(`/admin/slider/edit/${row.id}`);
   };
@@ -114,8 +112,6 @@ const SliderSection = () => {
         // filterComponent={<SliderFilter />}
         isDraggable
         count={100}
-        entriesPerPage={entriesPerPage}
-        setEntriesPerPage={setEntriesPerPage}
         addName="Add Slider"
       />
     </AdminLayout>

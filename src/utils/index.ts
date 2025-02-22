@@ -59,8 +59,6 @@ export interface CommonTableProps<T> {
   isDraggable?: boolean;
   count?: number;
   onPageChange?: () => void;
-  entriesPerPage: string;
-  setEntriesPerPage: (value: string) => void;
 }
 
 export interface TableHeadProps <T> {

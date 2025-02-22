@@ -8,7 +8,6 @@ import ImageSlider from "./ImageSllider";
 
 const ImageSection = () => {
   const navigate = useNavigate();
-  const [entriesPerPage, setEntriesPerPage] = useState("10");
 
   const columns: Column<ImageInputTypes>[] = [
     {
@@ -79,8 +78,6 @@ const ImageSection = () => {
         onDelete={handleDelete}
         onSearch={(query) => console.log("Search", query)}
         onAdd={() => navigate("/admin/gallery/images/add")}
-        entriesPerPage={entriesPerPage}
-        setEntriesPerPage={setEntriesPerPage}
       />
     </AdminLayout>
   );

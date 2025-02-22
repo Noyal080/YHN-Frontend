@@ -2,7 +2,6 @@ import {
   CardBody,
   CardFooter,
   CardRoot,
-  createListCollection,
   Flex,
   HStack,
   IconButton,
@@ -31,14 +30,14 @@ import { Column, CommonTableProps } from "@/utils";
 import TableHead from "./TableHeader";
 import TableSkeleton from "./TableSkeleton";
 
-const options = createListCollection({
-  items: [
-    { id: "10", label: 10, value: 10 },
-    { id: "20", label: 20, value: 20 },
-    { id: "30", label: 30, value: 30 },
-    { id: "100", label: 100, value: 100 },
-  ],
-});
+// const options = createListCollection({
+//   items: [
+//     { id: "10", label: 10, value: 10 },
+//     { id: "20", label: 20, value: 20 },
+//     { id: "30", label: 30, value: 30 },
+//     { id: "100", label: 100, value: 100 },
+//   ],
+// });
 
 const CommonTable = <T,>({
   title,
@@ -52,8 +51,6 @@ const CommonTable = <T,>({
   filterComponent,
   isDraggable,
   count,
-  entriesPerPage,
-  setEntriesPerPage,
   addName,
   onView,
 }: CommonTableProps<T>) => {
@@ -95,9 +92,9 @@ const CommonTable = <T,>({
     return 0;
   });
 
-  const handleEntriesChange = (value: string) => {
-    setEntriesPerPage(value);
-  };
+  // const handleEntriesChange = (value: string) => {
+  //   setEntriesPerPage(value);
+  // };
 
   return (
     <CardRoot variant={"elevated"}>
@@ -224,7 +221,7 @@ const CommonTable = <T,>({
 
       <CardFooter>
         <Flex justifyContent="space-between" alignItems="center" w="100%">
-          <Flex alignItems="center" gap={2}>
+          {/* <Flex alignItems="center" gap={2}>
             <Text>Show</Text>
             <select
               defaultValue={entriesPerPage}
@@ -238,7 +235,7 @@ const CommonTable = <T,>({
               ))}
             </select>
             <Text>entries</Text>
-          </Flex>
+          </Flex> */}
           {count && (
             <Flex alignItems="center" gap={2}>
               <PaginationRoot count={count} pageSize={10}>
