@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { CKEditor, useCKEditorCloud } from "@ckeditor/ckeditor5-react";
+import DOMPurify from "dompurify";
 
 const LICENSE_KEY =
   "eyJhbGciOiJFUzI1NiJ9.eyJleHAiOjE3Njc0ODQ3OTksImp0aSI6IjI1OTA4M2Y0LTdkMjctNGU1MC1hNzQxLTdjZjBhMDI2MTY0MSIsImxpY2Vuc2VkSG9zdHMiOlsiMTI3LjAuMC4xIiwibG9jYWxob3N0IiwiMTkyLjE2OC4qLioiLCIxMC4qLiouKiIsIjE3Mi4qLiouKiIsIioudGVzdCIsIioubG9jYWxob3N0IiwiKi5sb2NhbCJdLCJ1c2FnZUVuZHBvaW50IjoiaHR0cHM6Ly9wcm94eS1ldmVudC5ja2VkaXRvci5jb20iLCJkaXN0cmlidXRpb25DaGFubmVsIjpbImNsb3VkIiwiZHJ1cGFsIl0sImxpY2Vuc2VUeXBlIjoiZGV2ZWxvcG1lbnQiLCJmZWF0dXJlcyI6WyJEUlVQIl0sInZjIjoiODA1MzczOWMifQ.V5lefp5aR2QQHourgVKXfiwfowXZgGzHTgeRUAZYRVLPaVI36kBndmsBXA2IY-KdBjJ6vvhhBMrjrLJp9q0uqw";
@@ -15,7 +16,7 @@ const CommonEditor = ({
   const editorRef = useRef(null);
   const [isLayoutReady, setIsLayoutReady] = useState(false);
   const cloud = useCKEditorCloud({ version: "44.1.0" });
-
+  const sanitizedContent = DOMPurify.sanitize(value);
   useEffect(() => {
     setIsLayoutReady(true);
 
@@ -203,8 +204,12 @@ const CommonEditor = ({
             "|",
             "resizeImage",
           ],
+          upload: {
+            types: ["jpeg", "png", "gif"], // Allowed image types
+          },
         },
         licenseKey: LICENSE_KEY,
+        allowedContent: "true",
         link: {
           addTargetToExternalLinks: true,
           defaultProtocol: "https://",
@@ -261,7 +266,7 @@ const CommonEditor = ({
               <CKEditor
                 editor={ClassicEditor}
                 config={editorConfig}
-                data={value}
+                data={sanitizedContent}
                 onChange={(_event, editor) => {
                   const data = editor.getData();
                   onChange(data);
