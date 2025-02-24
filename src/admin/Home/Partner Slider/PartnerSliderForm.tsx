@@ -82,15 +82,14 @@ const PartnerSliderForm = () => {
 
   const onSubmit = async (sliderData: PartnerSliderType) => {
     try {
-      const formData = new FormData();
-      formData.append("title", sliderData.title);
-      formData.append("status", sliderData.status.toString());
-
-      if (sliderData.image instanceof File) {
-        formData.append("image", sliderData.image);
-      }
-
       if (id) {
+        const formData = new FormData();
+        formData.append("title", sliderData.title);
+        formData.append("status", sliderData.status.toString());
+
+        if (sliderData.image instanceof File) {
+          formData.append("image", sliderData.image);
+        }
         await axiosInstance.post(`/partner/${id}`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
@@ -99,7 +98,7 @@ const PartnerSliderForm = () => {
           type: "success",
         });
       } else {
-        const res = await axiosInstance.post(`/partner`, formData, {
+        const res = await axiosInstance.post(`/partner`, sliderData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         showToast({

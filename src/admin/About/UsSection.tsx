@@ -49,7 +49,7 @@ const UsSection = () => {
 
   const onSubmit = async (data: AboutType) => {
     try {
-      const res = await axiosInstance.put(`/aboutus/1`, data);
+      await axiosInstance.put(`/aboutus/1`, data);
       showToast({
         description: "Updated Successfully",
         type: "success",
