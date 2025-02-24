@@ -70,7 +70,7 @@ function App() {
         />
         {/* Home Section */}
         <Route
-          path="/admin/slider"
+          path="/admin/sliders"
           element={
             <ProtectedRoute>
               <SliderSection />
@@ -78,7 +78,7 @@ function App() {
           }
         />
         <Route
-          path="/admin/slider/add"
+          path="/admin/sliders/add"
           element={
             <ProtectedRoute>
               <SliderForm />
@@ -86,7 +86,7 @@ function App() {
           }
         />
         <Route
-          path="/admin/slider/edit/:id"
+          path="/admin/sliders/edit/:id"
           element={
             <ProtectedRoute>
               <SliderForm />

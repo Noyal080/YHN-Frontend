@@ -64,7 +64,7 @@ const SliderForm = () => {
     const fetchSliderData = async () => {
       try {
         const res = await axiosInstance.get(`/sliders/${id}`);
-        setSliderData(res.data.payload);
+        setSliderData(res.data.data);
       } catch (e) {
         console.error(e);
       }
@@ -98,6 +98,7 @@ const SliderForm = () => {
           type: "success",
         });
       }
+      navigate("/admin/sliders");
     } catch (e) {
       console.error(e);
       if (id) {
@@ -142,7 +143,7 @@ const SliderForm = () => {
     <AdminLayout
       breadcrumbItems={[
         { label: "Dashboard", link: "/admin" },
-        { label: "Slider", link: "/admin/slider" },
+        { label: "Sliders", link: "/admin/sliders" },
         { label: id ? "Edit Slider" : "Add Slider" },
       ]}
       title={`${id ? "Edit" : "Add"} Slider Section`}

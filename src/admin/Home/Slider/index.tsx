@@ -4,22 +4,20 @@ import { useEffect, useState } from "react";
 import { SliderInput } from "@/utils/types";
 import { Column } from "@/utils";
 import { Switch } from "@/components/ui/switch";
-import { Image } from "@chakra-ui/react";
+import { Image, Text } from "@chakra-ui/react";
 // import SliderFilter from "./SliderFilter";
 import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "@/api/axios";
+import CommonModal from "@/common/CommonModal";
+import useCommonToast from "@/common/CommonToast";
 
 const SliderSection = () => {
-  const columns: Column<{
-    id?: number;
-    title: string;
-    sub_title: string;
-    priority_order: number;
-    image: string;
-    status: boolean;
-    button_title?: string;
-    button_route?: string;
-  }>[] = [
+  const { showToast } = useCommonToast();
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [selectedRow, setSelectedRow] = useState<SliderInput | null>(null);
+  const [triggerFetch, setTriggerFetch] = useState(false);
+  const columns: Column<SliderInput>[] = [
     { key: "id", label: "#", visible: true },
     { key: "title", label: "Title", visible: true },
     { key: "sub_title", label: "Description", visible: false },
@@ -43,8 +41,8 @@ const SliderSection = () => {
       visible: true,
       render: (row) => (
         <Switch
-          checked={row.status}
-          onCheckedChange={() => console.log(`${row.id} checked`)}
+          checked={row.status === 1}
+          onCheckedChange={() => handleStatusChange(String(row.id), row.status)}
         />
       ),
     },
@@ -72,21 +70,52 @@ const SliderSection = () => {
       try {
         const response = await axiosInstance.get("/sliders/");
         setRows(response.data.data);
+        setLoading(false);
       } catch (err) {
         console.log(err);
       }
     };
 
     fetchSliders();
-  }, [token]);
+  }, [token, triggerFetch]);
 
   const handleEdit = (row: SliderInput) => {
-    navigate(`/admin/slider/edit/${row.id}`);
+    navigate(`/admin/sliders/edit/${row.id}`);
   };
 
-  const handleDelete = (row: SliderInput) => {
-    if (window.confirm(`Delete slider with ID: ${row.id}?`)) {
-      setRows((prev) => prev.filter((r) => r.id !== row.id));
+  const handleDelete = async (row: SliderInput) => {
+    try {
+      await axiosInstance.delete(`/sliders/${row.id}`);
+      showToast({
+        description: `${row.title} deleted succesfully`,
+        type: "success",
+      });
+      setModalOpen(false);
+      setLoading(true);
+      setTriggerFetch(true);
+    } catch (e) {
+      console.log(e);
+      showToast({
+        description: "Error while removing slider data",
+        type: "error",
+      });
+      setLoading(false);
+    }
+  };
+
+  const handleStatusChange = async (id: string, status: number) => {
+    const newStatus = status === 1 ? 0 : 1;
+    console.log("clicked");
+
+    try {
+      await axiosInstance.post(`/slider/${id}`, {
+        status: newStatus,
+      });
+      console.log(`Slider ${id} status changed to ${newStatus}`);
+      setTriggerFetch(true);
+    } catch (error) {
+      console.error("Error changing status:", error);
+      // Handle error (e.g., show an error message to the user)
     }
   };
 
@@ -96,24 +125,42 @@ const SliderSection = () => {
       breadcrumbItems={[
         { label: "Dashboard", link: "/admin" },
         {
-          label: "Slider",
+          label: "Sliders",
         },
       ]}
       activeSidebarItem="Slider"
     >
       <CommonTable
+        loading={loading}
         title="Slider List"
         columns={columns}
         rows={rows}
         onEdit={handleEdit}
-        onDelete={handleDelete}
+        onDelete={(row) => {
+          setModalOpen(true);
+          setSelectedRow(row);
+        }}
         onSearch={(query) => console.log("Search", query)}
-        onAdd={() => navigate("/admin/slider/add")}
+        onAdd={() => navigate("/admin/sliders/add")}
         // filterComponent={<SliderFilter />}
         isDraggable
         count={100}
         addName="Add Slider"
       />
+
+      <CommonModal
+        open={modalOpen}
+        onOpenChange={() => setModalOpen(false)}
+        title={"Remove PartnerSlider"}
+        onButtonClick={() => handleDelete(selectedRow as SliderInput)}
+      >
+        <Text>
+          {" "}
+          Are you sure you want to remove{" "}
+          <strong> {selectedRow?.title} </strong> ? This will permanently remove
+          all the data regarding the partner{" "}
+        </Text>
+      </CommonModal>
     </AdminLayout>
   );
 };

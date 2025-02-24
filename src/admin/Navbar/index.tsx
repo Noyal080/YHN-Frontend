@@ -55,12 +55,16 @@ const AdminNavbar: React.FC<NavbarProps> = ({ title, breadcrumbItems }) => {
         <BreadcrumbRoot variant="underline">
           {breadcrumbItems.map((item, index) => (
             <BreadcrumbItem key={index}>
-              <BreadcrumbLink
-                cursor={item.link ? "pointer" : ""}
-                onClick={() => navigate(`${item.link}`)}
-              >
-                {item.label}
-              </BreadcrumbLink>
+              {item.link ? (
+                <BreadcrumbLink
+                  cursor="pointer"
+                  onClick={() => navigate(`${item.link}`)}
+                >
+                  {item.label}
+                </BreadcrumbLink>
+              ) : (
+                <span>{item.label}</span>
+              )}
             </BreadcrumbItem>
           ))}
         </BreadcrumbRoot>
@@ -76,7 +80,7 @@ const AdminNavbar: React.FC<NavbarProps> = ({ title, breadcrumbItems }) => {
             />
           </MenuTrigger>
           <MenuContent>
-            <MenuItem value="prof" onClick={() => navigate("/admin/slider")}>
+            <MenuItem value="prof" onClick={() => navigate("/admin/sliders")}>
               {" "}
               My Profile{" "}
             </MenuItem>

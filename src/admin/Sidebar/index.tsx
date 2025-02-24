@@ -69,7 +69,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
       label: "Home Section",
       icon: FiHome,
       children: [
-        { id: 21, label: "Slider", icon: LuImagePlay, link: "/admin/slider" },
+        { id: 21, label: "Sliders", icon: LuImagePlay, link: "/admin/sliders" },
         {
           id: 22,
           label: "Message Request",
