@@ -61,12 +61,11 @@ export type ServiceInput = {
 export type ImageInputTypes = {
   id?: number;
   title: string;
-  image: Gallery[];
+  images: Gallery[];
   status: number;
 }
 
 export type Gallery = {
-  id: number;
   imageUrl : string | File;
 }
 

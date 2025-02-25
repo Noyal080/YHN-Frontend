@@ -5,6 +5,8 @@ import { ImageInputTypes } from "@/utils/types";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ImageSlider from "./ImageSllider";
+import { axiosInstance } from "@/api/axios";
+import { Switch } from "@/components/ui/switch";
 
 const ImageSection = () => {
   const navigate = useNavigate();
@@ -17,44 +19,42 @@ const ImageSection = () => {
     },
     {
       key: "title",
-      label: "title",
+      label: "Title",
       visible: true,
     },
     {
-      key: "image",
-      label: "Image",
+      key: "images",
+      label: "Images",
       visible: true,
-      render: (row) => <ImageSlider images={row.image} />,
+      render: (row) => <ImageSlider images={row.images} />,
+    },
+    {
+      key: "status",
+      label: "Status",
+      visible: true,
+      render: (row) => (
+        <Switch
+          checked={row.status === 1}
+          onCheckedChange={() => console.log(row.id)}
+        />
+      ),
     },
   ];
 
   const [rows, setRows] = useState<ImageInputTypes[]>([]);
+
   useEffect(() => {
-    setRows([
-      {
-        id: 1,
-        title: "Opening Ceremony",
-        image: [
-          {
-            id: 1,
-            imageUrl: "https://placehold.jp/300x300.png",
-          },
-          {
-            id: 2,
-            imageUrl: "https://imageplaceholder.net/600x400",
-          },
-          {
-            id: 3,
-            imageUrl: "https://placehold.jp/400x400.png",
-          },
-          {
-            id: 4,
-            imageUrl: "https://placehold.jp/800x800.png",
-          },
-        ],
-        status: 1,
-      },
-    ]);
+    const fetchGallery = async () => {
+      try {
+        const res = await axiosInstance.get("/gallery/");
+        setRows(res.data.data);
+        // setLoading(false);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    fetchGallery();
   }, []);
 
   const handleDelete = () => {
