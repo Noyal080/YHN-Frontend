@@ -5,8 +5,9 @@ import {
   FileUploadDropzone,
   FileUploadRoot,
 } from "@/components/ui/file-upload";
+import { Switch } from "@/components/ui/switch";
 import { compressMultiImage } from "@/utils/imageCompressor";
-import { Gallery, ImageInputTypes } from "@/utils/types";
+import { Gallery, ImageType } from "@/utils/types";
 import {
   CardBody,
   CardRoot,
@@ -15,6 +16,7 @@ import {
   Image,
   Input,
   SimpleGrid,
+  Spinner,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -24,56 +26,65 @@ import { useNavigate, useParams } from "react-router-dom";
 
 const ImageForm = () => {
   const { id } = useParams();
-  const [imageData, setImageData] = useState<ImageInputTypes>({
+  const [imageData, setImageData] = useState<ImageType>({
     title: "",
     images: [],
     status: 1,
   });
   const [previewImages, setPreviewImages] = useState<string[]>([]);
-
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<ImageInputTypes>({});
+  } = useForm<ImageType>({});
 
   const handleFieldChange = (
-    field: keyof ImageInputTypes,
+    field: keyof ImageType,
     value: string | number | boolean | File | Gallery[]
   ) => {
-    console.log("here");
-
     setImageData((prev) => ({ ...prev, [field]: value }));
   };
 
+  console.log(imageData, previewImages);
+
   const handleImageUpload = async (files: File[]) => {
     try {
-      console.log("entered");
+      setLoading(true); // Start loading state
 
       const compressionPromises = files.map((file) => compressMultiImage(file));
       const compressedFiles = await Promise.all(compressionPromises);
 
-      // Create Gallery objects from compressed files
-      const newGalleryItems: Gallery[] = compressedFiles.map((file, index) => ({
-        id: Date.now() + index, // Temporary ID, replace with actual ID from backend if needed
-        imageUrl: file,
-      }));
-
-      // Create preview URLs for all compressed images
       const newPreviewUrls = compressedFiles.map((file) =>
-        URL.createObjectURL(file)
+        URL.createObjectURL(file as Blob)
       );
 
-      // Update state
-      setPreviewImages((prev) => [...prev, ...newPreviewUrls]);
-      handleFieldChange("images", [...imageData.images, ...newGalleryItems]);
+      setPreviewImages((prev) => {
+        const uniqueUrls = [...newPreviewUrls]; // Prevent duplicates
+        return Array.from(uniqueUrls);
+      });
+
+      setImageData((prev) => {
+        const uniqueImages = [...prev.images];
+
+        compressedFiles.forEach((file) => {
+          if (!uniqueImages.some((img) => img.name === file.name)) {
+            uniqueImages.push(file);
+          }
+        });
+
+        return { ...prev, images: uniqueImages };
+      });
     } catch (error) {
       console.error("Compression error:", error);
+    } finally {
+      setLoading(false); // Stop loading state
     }
   };
 
-  const onSubmit = async (data: ImageInputTypes) => {
+  const onSubmit = (data: ImageType) => {
+    console.log("here");
     console.log(data);
   };
 
@@ -95,7 +106,6 @@ const ImageForm = () => {
               <Controller
                 name="title"
                 control={control}
-                rules={{ required: "Title is required" }}
                 render={({ field }) => (
                   <Field label="Title">
                     <Input
@@ -122,7 +132,7 @@ const ImageForm = () => {
                       onFileAccept={(value) => {
                         handleImageUpload(value.files);
                         field.onChange([
-                          ...(imageData.images as Gallery[]),
+                          ...(imageData.images as File[]),
                           ...value.files,
                         ]);
                       }}
@@ -137,20 +147,45 @@ const ImageForm = () => {
                         {errors.images.message}
                       </Text>
                     )}
-                    {previewImages.length > 0 && (
-                      <SimpleGrid columns={5} gap={4} mt={4}>
-                        {previewImages.map((src, index) => (
-                          <Image
-                            key={index}
-                            src={src}
-                            alt={`Preview ${index + 1}`}
-                            objectFit="cover"
-                            height="150px"
-                            borderRadius="md"
-                          />
-                        ))}
-                      </SimpleGrid>
+                    {loading ? (
+                      <VStack mt={4}>
+                        <Spinner size="lg" color="blue.500" />
+                        <Text>Uploading...</Text>
+                      </VStack>
+                    ) : (
+                      previewImages.length > 0 && (
+                        <SimpleGrid columns={5} gap={4} mt={4}>
+                          {previewImages.map((src, index) => (
+                            <Image
+                              key={index}
+                              src={src}
+                              alt={`Preview ${index + 1}`}
+                              objectFit="cover"
+                              height="150px"
+                              borderRadius="md"
+                            />
+                          ))}
+                        </SimpleGrid>
+                      )
                     )}
+                  </Field>
+                )}
+              />
+              <Controller
+                name="status"
+                control={control}
+                render={({ field }) => (
+                  <Field label="Status">
+                    <Switch
+                      checked={field.value === 1}
+                      onCheckedChange={(value) => {
+                        const statusValue = value.checked ? 1 : 0;
+                        field.onChange(statusValue);
+                        handleFieldChange("status", statusValue);
+                      }}
+                      color="black"
+                      colorPalette="blue"
+                    />
                   </Field>
                 )}
               />

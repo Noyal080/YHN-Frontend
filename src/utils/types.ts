@@ -69,6 +69,13 @@ export type Gallery = {
   imageUrl : string | File;
 }
 
+export type ImageType = {
+  id?: number;
+  title: string;
+  images: File[];
+  status: number;
+}
+
 export type ChartData = {
   name: string;
   [key: string]: number | string;
