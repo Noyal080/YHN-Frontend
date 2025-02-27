@@ -66,7 +66,9 @@ export type ImageInputTypes = {
 }
 
 export type Gallery = {
-  imageUrl : string | File;
+  id ?: number;
+  gallery_id : number;
+  path : string ;
 }
 
 export type ImageType = {

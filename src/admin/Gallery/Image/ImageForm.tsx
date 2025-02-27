@@ -1,4 +1,6 @@
 import AdminLayout from "@/admin/Layout";
+import { axiosInstance } from "@/api/axios";
+import useCommonToast from "@/common/CommonToast";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import {
@@ -26,6 +28,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 const ImageForm = () => {
   const { id } = useParams();
+  const { showToast } = useCommonToast();
   const [imageData, setImageData] = useState<ImageType>({
     title: "",
     images: [],
@@ -38,7 +41,14 @@ const ImageForm = () => {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<ImageType>({});
+  } = useForm<ImageType>({
+    values: {
+      id: imageData.id,
+      title: imageData.title || "",
+      images: imageData.images || [],
+      status: imageData.status || 1,
+    },
+  });
 
   const handleFieldChange = (
     field: keyof ImageType,
@@ -47,8 +57,8 @@ const ImageForm = () => {
     setImageData((prev) => ({ ...prev, [field]: value }));
   };
 
-  console.log(imageData, previewImages);
-
+  const token = localStorage.getItem("accessToken");
+  axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   const handleImageUpload = async (files: File[]) => {
     try {
       setLoading(true); // Start loading state
@@ -60,7 +70,7 @@ const ImageForm = () => {
         URL.createObjectURL(file as Blob)
       );
 
-      setPreviewImages((prev) => {
+      setPreviewImages(() => {
         const uniqueUrls = [...newPreviewUrls]; // Prevent duplicates
         return Array.from(uniqueUrls);
       });
@@ -83,9 +93,20 @@ const ImageForm = () => {
     }
   };
 
-  const onSubmit = (data: ImageType) => {
-    console.log("here");
-    console.log(data);
+  const onSubmit = async (data: ImageType) => {
+    try {
+      await axiosInstance.post("/gallery", data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      showToast({
+        type: "success",
+        description: "Images added succesfuly",
+      });
+      navigate("/admin/gallery/images");
+    } catch (e) {
+      console.log(e);
+      showToast({ type: "error", description: "Error while adding data" });
+    }
   };
 
   return (
@@ -105,6 +126,7 @@ const ImageForm = () => {
             <VStack gap={4} align={"stretch"}>
               <Controller
                 name="title"
+                rules={{ required: "Title is required" }}
                 control={control}
                 render={({ field }) => (
                   <Field label="Title">

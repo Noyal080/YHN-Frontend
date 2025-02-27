@@ -14,6 +14,8 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ images }) => {
     return () => clearInterval(interval);
   }, []);
 
+  console.log(images);
+
   return (
     <Box position="relative" width={"lg"} height="300px" overflow="hidden">
       <AnimatePresence mode="wait">
@@ -31,11 +33,7 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ images }) => {
           }}
         >
           <Image
-            src={
-              typeof images[currentImage].imageUrl === "string"
-                ? images[currentImage].imageUrl
-                : URL.createObjectURL(images[currentImage].imageUrl)
-            }
+            src={images[currentImage].path}
             alt={`Slide ${currentImage}`}
             width="100%"
             height="100%"

@@ -70,7 +70,7 @@ const ImageSection = () => {
       activeSidebarItem="Image"
     >
       <CommonTable
-        title="Testimonials"
+        title="Gallery Images"
         columns={columns}
         rows={rows}
         addName="Add Images"
