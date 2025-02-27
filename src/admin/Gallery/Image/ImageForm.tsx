@@ -11,6 +11,7 @@ import { Switch } from "@/components/ui/switch";
 import { compressMultiImage } from "@/utils/imageCompressor";
 import { Gallery, ImageType } from "@/utils/types";
 import {
+  Box,
   CardBody,
   CardRoot,
   Heading,
@@ -170,22 +171,54 @@ const ImageForm = () => {
                       </Text>
                     )}
                     {loading ? (
-                      <VStack mt={4}>
-                        <Spinner size="lg" color="blue.500" />
-                        <Text>Uploading...</Text>
+                      <VStack
+                        mt={4}
+                        minHeight="200px" // Gives consistent space
+                        alignItems="center"
+                        justifyContent="center"
+                        bg="gray.100"
+                        borderRadius="md"
+                        border="1px solid"
+                        borderColor="gray.200"
+                      >
+                        <Spinner
+                          size="xl" // Larger spinner for better visibility
+                          color="blue.500"
+                          borderWidth="4px" // Thicker ring
+                          animationDuration="0.65s" // Smoother animation
+                          css={{ "--spinner-track-color": "colors.gray.200" }}
+                        />
+                        <Text mt={3} color="gray.600" fontWeight="medium">
+                          Uploading Images...
+                        </Text>
                       </VStack>
                     ) : (
                       previewImages.length > 0 && (
-                        <SimpleGrid columns={5} gap={4} mt={4}>
+                        <SimpleGrid
+                          columns={[2, 3, 5]} // Responsive columns
+                          gap={4}
+                          mt={4}
+                        >
                           {previewImages.map((src, index) => (
-                            <Image
+                            <Box
                               key={index}
-                              src={src}
-                              alt={`Preview ${index + 1}`}
-                              objectFit="cover"
-                              height="150px"
+                              position="relative"
                               borderRadius="md"
-                            />
+                              overflow="hidden"
+                              bg="gray.100"
+                              _hover={{
+                                transform: "scale(1.02)",
+                                transition: "transform 0.2s",
+                              }}
+                            >
+                              <Image
+                                src={src}
+                                alt={`Preview ${index + 1}`}
+                                objectFit="cover"
+                                height="150px"
+                                width="100%"
+                              />
+                            </Box>
                           ))}
                         </SimpleGrid>
                       )
