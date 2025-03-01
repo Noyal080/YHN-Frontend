@@ -85,6 +85,9 @@ const UsSection = () => {
       >
         <CardBody>
           <Heading mb={6}>Who are we Section</Heading>
+          <div
+            dangerouslySetInnerHTML={{ __html: editorData.description }}
+          ></div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <VStack gap={4} align="stretch">
               <Controller

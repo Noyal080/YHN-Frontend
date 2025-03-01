@@ -26,19 +26,25 @@ import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { axiosInstance } from "@/api/axios";
 
-interface Option {
+interface RoleOption {
   label: string;
   value: string;
+}
+
+interface PositionOption {
+  label: string;
+  value: number;
 }
 
 const TeamsForms = () => {
   const { id } = useParams();
   const { showToast } = useCommonToast();
   const [selectedImage, setSelectedImage] = useState<string | null>();
+  const [positionOption, setPositionOption] = useState<PositionOption[]>([]);
   const [teamData, setTeamData] = useState<TeamsInput>({
     name: "",
     image: "",
-    position: "",
+    position_id: null,
     role: "",
     status: 1,
   });
@@ -46,7 +52,7 @@ const TeamsForms = () => {
   const token = localStorage.getItem("accessToken");
   axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
-  const options: Option[] = [
+  const options: RoleOption[] = [
     { label: "BOD", value: "BOD" },
     { label: "Staff", value: "Staff" },
   ];
@@ -60,7 +66,7 @@ const TeamsForms = () => {
       id: teamData.id,
       name: teamData.name,
       image: teamData.image,
-      position: teamData.position,
+      position_id: teamData.position_id,
       role: teamData.role,
       status: teamData.status,
     },
@@ -86,6 +92,24 @@ const TeamsForms = () => {
   };
 
   useEffect(() => {
+    const fetchPositionData = async () => {
+      try {
+        const res = await axiosInstance.get("/positions");
+        const result = res.data.data;
+        setPositionOption(
+          result.map((position: { name: string; id: number }) => ({
+            label: position.name,
+            value: position.id,
+          }))
+        );
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    fetchPositionData();
+  });
+
+  useEffect(() => {
     const fetchTeamData = async () => {
       try {
         const res = await axiosInstance.get(`/teams/${id}`);
@@ -102,6 +126,7 @@ const TeamsForms = () => {
   const onSubmit = async (data: TeamsInput) => {
     try {
       if (id) {
+        // await axiosInstance.post('/positions', {name : });
         await axiosInstance.post(`/teams/${id}`, data);
         showToast({
           description: "Team updated successfully",
@@ -161,7 +186,7 @@ const TeamsForms = () => {
               />
               <HStack>
                 <Controller
-                  name="position"
+                  name="position_id"
                   control={control}
                   rules={{ required: "Position is required" }}
                   render={({ field }) => (
@@ -169,6 +194,7 @@ const TeamsForms = () => {
                       <CreatableSelect
                         {...field}
                         placeholder="Create or select user position"
+                        options={positionOption}
                         styles={{
                           container: (base) => ({
                             ...base,
@@ -177,7 +203,7 @@ const TeamsForms = () => {
                           control: (base) => ({
                             ...base,
                             width: "100%",
-                            borderColor: errors.position
+                            borderColor: errors.position_id
                               ? "red"
                               : base.borderColor,
                           }),
@@ -195,9 +221,9 @@ const TeamsForms = () => {
                           }),
                         }}
                       />
-                      {errors.position && (
+                      {errors.position_id && (
                         <Text textStyle="sm" color="red">
-                          {errors.position.message}
+                          {errors.position_id.message}
                         </Text>
                       )}
                     </Field>
@@ -229,9 +255,7 @@ const TeamsForms = () => {
                           control: (base) => ({
                             ...base,
                             width: "100%",
-                            borderColor: errors.position
-                              ? "red"
-                              : base.borderColor,
+                            borderColor: errors.role ? "red" : base.borderColor,
                           }),
                           menu: (base) => ({
                             ...base,

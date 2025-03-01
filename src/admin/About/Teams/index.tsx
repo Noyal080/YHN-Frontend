@@ -40,7 +40,7 @@ const TeamSection = () => {
         />
       ),
     },
-    { key: "position", label: "Position", visible: true },
+    { key: "position_id", label: "Position", visible: true },
     { key: "role", label: "Role", visible: true },
     {
       key: "status",

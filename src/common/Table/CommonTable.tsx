@@ -30,15 +30,6 @@ import { Column, CommonTableProps } from "@/utils";
 import TableHead from "./TableHeader";
 import TableSkeleton from "./TableSkeleton";
 
-// const options = createListCollection({
-//   items: [
-//     { id: "10", label: 10, value: 10 },
-//     { id: "20", label: 20, value: 20 },
-//     { id: "30", label: 30, value: 30 },
-//     { id: "100", label: 100, value: 100 },
-//   ],
-// });
-
 const CommonTable = <T,>({
   title,
   loading,

@@ -87,7 +87,7 @@ export type TeamsInput = {
   id ? : number;
   name : string;
   image : string | File;
-  position : string;
+  position_id : number  | null;
   role : string;
   status : number;
 }
@@ -102,10 +102,10 @@ export type MessageRequestType = {
 }
 
 export type InternshipType = {
-  id? :number ;
+  id? :number | undefined;
   title : string;
   description : string;
-  linkTo : string;
+  apply_link : string;
 }
 
 export type OurWorkType = {

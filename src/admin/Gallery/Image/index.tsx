@@ -74,7 +74,7 @@ const ImageSection = () => {
 
   const handleDelete = async (row: ImageInputTypes) => {
     try {
-      await axiosInstance.delete(`/partner/${row.id}`);
+      await axiosInstance.delete(`/gallery/${row.id}`);
       showToast({
         description: `${row.title} deleted succesfully`,
         type: "success",
@@ -117,7 +117,7 @@ const ImageSection = () => {
       <CommonModal
         open={modalOpen}
         onOpenChange={() => setModalOpen(false)}
-        title={"Remove PartnerSlider"}
+        title={"Remove Gallery Image"}
         onButtonClick={() => handleDelete(selectedRow as ImageInputTypes)}
       >
         <Text>
