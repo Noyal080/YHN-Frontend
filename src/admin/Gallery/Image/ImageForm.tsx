@@ -181,11 +181,11 @@ const ImageForm = () => {
                         borderRadius="md"
                         mt={4}
                       >
-                        <VStack spacing={4}>
+                        <VStack gap={4}>
                           <Spinner
                             size="lg"
                             color="blue.500"
-                            thickness="4px"
+                            borderWidth="4px"
                             emptyColor="gray.200"
                           />
                           <Text fontSize="md" color="gray.600">
