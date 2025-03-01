@@ -36,6 +36,7 @@ import InternshipForm from "./admin/Join Us/Internship/InternshipForm";
 import VolunteerForm from "./admin/Join Us/Volunteer/VolunteerForm";
 import WorkForms from "./admin/Projects/WorkForm";
 import EventForm from "./admin/Events/EventForm";
+import ImageViewSection from "./admin/Gallery/Image/ImageViewSection";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -361,6 +362,14 @@ function App() {
           element={
             <ProtectedRoute>
               <ImageForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/gallery/images/view/:id"
+          element={
+            <ProtectedRoute>
+              <ImageViewSection />
             </ProtectedRoute>
           }
         />

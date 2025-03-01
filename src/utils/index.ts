@@ -35,6 +35,8 @@ export interface CommonModalProps {
   children: React.ReactNode;
   title: string;
   onButtonClick : () => void;
+  buttonName?: string
+  type? : "primary" | "danger" ;
 } 
 
 export interface Column<T> {

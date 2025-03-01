@@ -18,6 +18,8 @@ const CommonModal: React.FC<CommonModalProps> = ({
   children,
   title,
   onButtonClick,
+  buttonName,
+  type = "danger",
 }) => {
   return (
     <DialogRoot open={open} onOpenChange={onOpenChange} size={"lg"}>
@@ -34,9 +36,9 @@ const CommonModal: React.FC<CommonModalProps> = ({
             <CommonButton label="Close" variant="outline" color={"gray"} />
           </DialogActionTrigger>
           <CommonButton
-            label="Delete"
+            label={buttonName || "Delete"}
             variant="subtle"
-            bgColor={"red.600"}
+            bgColor={type === "danger" ? "red.600" : "blue.500"}
             color={"white"}
             onPress={onButtonClick}
           />

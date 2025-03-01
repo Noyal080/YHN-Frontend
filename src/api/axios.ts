@@ -5,6 +5,9 @@ export const axiosInstance = axios.create({
     timeout: 10000, // Request timeout in ms
     headers: {
       'Content-Type': 'application/json',
+      "Cache-Control": "no-cache",
+      Pragma: "no-cache",
+      Expires: "0",
     },
   });
 

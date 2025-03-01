@@ -72,7 +72,9 @@ const PartnerSlider = () => {
     const fetchPartners = async () => {
       setLoading(true);
       try {
-        const res = await axiosInstance.get("/partner/");
+        const res = await axiosInstance.get("/partner");
+        console.log(res.data);
+
         setRows(res.data.data);
         setTriggerFetch(false);
         setLoading(false);
@@ -87,7 +89,7 @@ const PartnerSlider = () => {
     };
 
     fetchPartners();
-  }, [token, triggerFetch]);
+  }, [triggerFetch]);
 
   const navigate = useNavigate();
 

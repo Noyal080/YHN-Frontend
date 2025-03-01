@@ -186,7 +186,6 @@ const ImageForm = () => {
                             size="lg"
                             color="blue.500"
                             borderWidth="4px"
-                            emptyColor="gray.200"
                           />
                           <Text fontSize="md" color="gray.600">
                             Uploading...
