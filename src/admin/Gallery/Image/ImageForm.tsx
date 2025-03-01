@@ -171,27 +171,28 @@ const ImageForm = () => {
                       </Text>
                     )}
                     {loading ? (
-                      <VStack
-                        mt={4}
-                        minHeight="200px" // Gives consistent space
+                      <Box
+                        display="flex"
                         alignItems="center"
                         justifyContent="center"
-                        bg="gray.100"
+                        height="200px"
+                        width="100%"
+                        bg="gray.50"
                         borderRadius="md"
-                        border="1px solid"
-                        borderColor="gray.200"
+                        mt={4}
                       >
-                        <Spinner
-                          size="xl" // Larger spinner for better visibility
-                          color="blue.500"
-                          borderWidth="4px" // Thicker ring
-                          animationDuration="0.65s" // Smoother animation
-                          css={{ "--spinner-track-color": "colors.gray.200" }}
-                        />
-                        <Text mt={3} color="gray.600" fontWeight="medium">
-                          Uploading Images...
-                        </Text>
-                      </VStack>
+                        <VStack spacing={4}>
+                          <Spinner
+                            size="lg"
+                            color="blue.500"
+                            thickness="4px"
+                            emptyColor="gray.200"
+                          />
+                          <Text fontSize="md" color="gray.600">
+                            Uploading...
+                          </Text>
+                        </VStack>
+                      </Box>
                     ) : (
                       previewImages.length > 0 && (
                         <SimpleGrid
