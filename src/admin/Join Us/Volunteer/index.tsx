@@ -19,8 +19,8 @@ const VolunteerSection = () => {
   const [triggerFetch, setTriggerFetch] = useState(false);
   const { showToast } = useCommonToast();
 
-  const token = localStorage.getItem("accessToken");
-  axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  // const token = localStorage.getItem("accessToken");
+  // axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
   const columns: Column<InternshipType>[] = [
     { key: "id", label: "#", visible: true },

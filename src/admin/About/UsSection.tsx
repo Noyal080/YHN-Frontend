@@ -32,8 +32,8 @@ const UsSection = () => {
       description: editorData.description || "",
     },
   });
-  const token = localStorage.getItem("accessToken");
-  axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  // const token = localStorage.getItem("accessToken");
+  // axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,7 +45,7 @@ const UsSection = () => {
       }
     };
     fetchData();
-  }, [token]);
+  }, []);
 
   const onSubmit = async (data: AboutType) => {
     try {

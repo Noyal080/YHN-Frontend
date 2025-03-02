@@ -58,8 +58,8 @@ const ImageForm = () => {
     setImageData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const token = localStorage.getItem("accessToken");
-  axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  // const token = localStorage.getItem("accessToken");
+  // axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   const handleImageUpload = async (files: File[]) => {
     try {
       setLoading(true); // Start loading state

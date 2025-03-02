@@ -12,7 +12,7 @@ import useCommonToast from "@/common/CommonToast";
 
 const TeamSection = () => {
   const navigate = useNavigate();
-  const token = localStorage.getItem("accessToken");
+  // const token = localStorage.getItem("accessToken");
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedRow, setSelectedRow] = useState<TeamsInput | null>(null);
@@ -80,7 +80,7 @@ const TeamSection = () => {
   };
 
   const [rows, setRows] = useState<TeamsInput[]>([]);
-  axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  // axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   useEffect(() => {
     const fetchTeams = async () => {
       setLoading(true);
@@ -93,7 +93,7 @@ const TeamSection = () => {
       }
     };
     fetchTeams();
-  }, [token, triggerFetch]);
+  }, [triggerFetch]);
 
   return (
     <AdminLayout

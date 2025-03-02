@@ -56,9 +56,9 @@ const SliderForm = () => {
     },
   });
   const { id } = useParams();
-  const token = localStorage.getItem("accessToken");
+  // const token = localStorage.getItem("accessToken");
 
-  axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  // axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
   useEffect(() => {
     const fetchSliderData = async () => {
@@ -147,7 +147,7 @@ const SliderForm = () => {
         { label: id ? "Edit Slider" : "Add Slider" },
       ]}
       title={`${id ? "Edit" : "Add"} Slider Section`}
-      activeSidebarItem="Slider"
+      activeSidebarItem="Sliders"
     >
       <CardRoot m="auto" maxWidth="800px" mt={8} boxShadow="lg">
         <CardBody>

@@ -48,8 +48,8 @@ const InternshipSection = () => {
       setLoading(false);
     }
   };
-  const token = localStorage.getItem("accessToken");
-  axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  // const token = localStorage.getItem("accessToken");
+  // axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
   useEffect(() => {
     setLoading(true);

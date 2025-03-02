@@ -66,8 +66,8 @@ const PartnerSlider = () => {
 
   const [rows, setRows] = useState<PartnerSliderType[]>([]);
   const [triggerFetch, setTriggerFetch] = useState<boolean>(false);
-  const token = localStorage.getItem("accessToken");
-  axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  // const token = localStorage.getItem("accessToken");
+  // axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   useEffect(() => {
     const fetchPartners = async () => {
       setLoading(true);

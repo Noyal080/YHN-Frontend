@@ -62,8 +62,8 @@ const SliderSection = () => {
 
   const [rows, setRows] = useState<SliderInput[]>([]);
 
-  const token = localStorage.getItem("accessToken");
-  axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  // const token = localStorage.getItem("accessToken");
+  // axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
   useEffect(() => {
     const fetchSliders = async () => {
@@ -77,7 +77,7 @@ const SliderSection = () => {
     };
 
     fetchSliders();
-  }, [token, triggerFetch]);
+  }, [triggerFetch]);
 
   const handleEdit = (row: SliderInput) => {
     navigate(`/admin/sliders/edit/${row.id}`);
@@ -128,7 +128,7 @@ const SliderSection = () => {
           label: "Sliders",
         },
       ]}
-      activeSidebarItem="Slider"
+      activeSidebarItem="Sliders"
     >
       <CommonTable
         loading={loading}

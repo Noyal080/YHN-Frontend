@@ -2,6 +2,7 @@ import { Box, BreadcrumbItem, Flex, Text } from "@chakra-ui/react";
 import { BreadcrumbLink, BreadcrumbRoot } from "@/components/ui/breadcrumb";
 import { Avatar } from "@/components/ui/avatar";
 import { NavbarProps } from "@/utils";
+import Cookies from "js-cookie";
 
 import {
   MenuContent,
@@ -10,22 +11,17 @@ import {
   MenuTrigger,
 } from "@/components/ui/menu";
 import { useNavigate } from "react-router-dom";
-import { axiosInstance } from "@/api/axios";
 import useCommonToast from "@/common/CommonToast";
 
 const AdminNavbar: React.FC<NavbarProps> = ({ title, breadcrumbItems }) => {
   const navigate = useNavigate();
   const { showToast } = useCommonToast();
-  const token = localStorage.getItem("accessToken");
   const logout = async () => {
     try {
-      axiosInstance.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${token}`;
-
-      await axiosInstance.post("/logout");
+      // await axiosInstance.post("/logout");
       localStorage.removeItem("accessToken");
       localStorage.removeItem("userData");
+      Cookies.remove("accessToken");
       showToast({
         description: "Logged out successfully",
         type: "success",

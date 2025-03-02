@@ -24,8 +24,8 @@ const ImageViewSection = () => {
   const [selectedImage, setSelectedImage] = useState<Gallery>();
   const [refetchData, setRefetchData] = useState(false);
   const [loading, setLoading] = useState(false);
-  const token = localStorage.getItem("accessToken");
-  axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  // const token = localStorage.getItem("accessToken");
+  // axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   useEffect(() => {
     setLoading(true);
     const fetchImageData = async () => {

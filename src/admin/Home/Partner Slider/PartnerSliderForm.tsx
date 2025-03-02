@@ -46,8 +46,8 @@ const PartnerSliderForm = () => {
       status: sliderData.status || 1,
     },
   });
-  const token = localStorage.getItem("accessToken");
-  axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  // const token = localStorage.getItem("accessToken");
+  // axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
   useEffect(() => {
     const fetchSliderData = async () => {

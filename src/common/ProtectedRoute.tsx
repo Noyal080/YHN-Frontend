@@ -1,3 +1,5 @@
+import { RootState } from "@/redux/store";
+import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 
 interface ProtectedRouteProps {
@@ -5,7 +7,7 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const token = localStorage.getItem("accessToken");
+  const token = useSelector((state: RootState) => state.auth.token);
   console.log(token);
 
   return token ? children : <Navigate to="/login" replace />;

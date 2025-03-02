@@ -26,8 +26,8 @@ const InternshipForm = () => {
   });
   const navigate = useNavigate();
   const { id } = useParams();
-  const token = localStorage.getItem("accessToken");
-  axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  // const token = localStorage.getItem("accessToken");
+  // axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   const { showToast } = useCommonToast();
 
   const {
