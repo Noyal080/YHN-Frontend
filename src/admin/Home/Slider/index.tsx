@@ -151,14 +151,14 @@ const SliderSection = () => {
       <CommonModal
         open={modalOpen}
         onOpenChange={() => setModalOpen(false)}
-        title={"Remove PartnerSlider"}
+        title={"Remove Slider"}
         onButtonClick={() => handleDelete(selectedRow as SliderInput)}
       >
         <Text>
           {" "}
           Are you sure you want to remove{" "}
           <strong> {selectedRow?.title} </strong> ? This will permanently remove
-          all the data regarding the partner{" "}
+          all the data regarding the slider{" "}
         </Text>
       </CommonModal>
     </AdminLayout>

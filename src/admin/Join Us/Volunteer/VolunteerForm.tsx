@@ -1,4 +1,6 @@
 import AdminLayout from "@/admin/Layout";
+import { axiosInstance } from "@/api/axios";
+import useCommonToast from "@/common/CommonToast";
 import CommonEditor from "@/common/Editor";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
@@ -12,7 +14,7 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -20,10 +22,13 @@ const VolunteerForm = () => {
   const [volunteerData, setVolunteerData] = useState<InternshipType>({
     title: "",
     description: "",
-    linkTo: "",
+    apply_link: "",
   });
   const navigate = useNavigate();
   const { id } = useParams();
+  const token = localStorage.getItem("accessToken");
+  axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  const { showToast } = useCommonToast();
 
   const {
     control,
@@ -31,15 +36,47 @@ const VolunteerForm = () => {
     formState: { errors },
   } = useForm<InternshipType>({
     values: {
-      id: volunteerData.id,
-      title: volunteerData.title || "",
-      description: volunteerData.description || "",
-      linkTo: volunteerData.linkTo || "",
+      id: volunteerData?.id || undefined,
+      title: volunteerData?.title || "",
+      description: volunteerData?.description || "",
+      apply_link: volunteerData?.apply_link || "",
     },
   });
 
-  const onSubmit = (data: InternshipType) => {
-    console.log(data);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axiosInstance.get(`/volunteers/${id}`);
+        setVolunteerData(res.data);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    if (id) {
+      fetchData();
+    }
+  }, [id]);
+
+  const onSubmit = async (data: InternshipType) => {
+    try {
+      if (id) {
+        const res = await axiosInstance.put(`/volunteers/${id}`, data);
+        showToast({
+          type: "success",
+          description: res.data.message,
+        });
+      } else {
+        const res = await axiosInstance.post("/volunteers", data);
+        showToast({
+          type: "success",
+          description: res.data.message,
+        });
+      }
+      navigate("/admin/volunteer");
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
@@ -102,8 +139,16 @@ const VolunteerForm = () => {
               />
 
               <Controller
-                name="linkTo"
+                name="apply_link"
                 control={control}
+                rules={{
+                  required: "Apply link is required",
+                  pattern: {
+                    value: /^https:\/\/[\w.-]+\.[a-z]{2,6}([/\w.-]*)*\/?$/,
+                    message:
+                      "Please enter a valid URL (e.g., https://example.com)",
+                  },
+                }}
                 render={({ field }) => (
                   <Field label="Apply Link">
                     <Input
@@ -112,9 +157,9 @@ const VolunteerForm = () => {
                       size="md"
                       onChange={(e) => field.onChange(e.target.value)}
                     />
-                    {errors.linkTo && (
+                    {errors.apply_link && (
                       <Text textStyle="sm" color="red">
-                        {errors.linkTo.message}
+                        {errors.apply_link.message}
                       </Text>
                     )}
                   </Field>
