@@ -18,7 +18,6 @@ import UsSection from "./admin/About/UsSection";
 import TeamSection from "./admin/About/Teams";
 import Testimonial from "./admin/About/Testimonial";
 import TestimonialForm from "./admin/About/Testimonial/TestimonialForm";
-import ProtectedRoute from "./common/ProtectedRoute";
 import Donations from "./admin/About/Donation";
 // import Services from "./admin/Services";
 // import ServiceForms from "./admin/Services/ServiceForm";
@@ -37,6 +36,7 @@ import VolunteerForm from "./admin/Join Us/Volunteer/VolunteerForm";
 import WorkForms from "./admin/Projects/WorkForm";
 import EventForm from "./admin/Events/EventForm";
 import ImageViewSection from "./admin/Gallery/Image/ImageViewSection";
+import { ProtectedRoute, ReverseProtectedRoute } from "./common/ProtectedRoute";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -52,7 +52,14 @@ function App() {
       <ScrollToTop />
 
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
+        <Route
+          path="/login"
+          element={
+            <ReverseProtectedRoute>
+              <LoginPage />
+            </ReverseProtectedRoute>
+          }
+        />
         <Route
           path="/admin"
           element={

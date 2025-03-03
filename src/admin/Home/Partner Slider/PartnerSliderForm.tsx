@@ -219,7 +219,6 @@ const PartnerSliderForm = () => {
                         onCheckedChange={(value) => {
                           const numericValue = value.checked ? 1 : 0; // Convert `true`/`false` to `1`/`0`
                           field.onChange(numericValue);
-                          console.log(numericValue, value);
                           handleFieldChange("status", numericValue);
                         }}
                         color="black"

@@ -107,7 +107,7 @@ const TeamsForms = () => {
       }
     };
     fetchPositionData();
-  });
+  }, []);
 
   useEffect(() => {
     const fetchTeamData = async () => {
@@ -340,8 +340,9 @@ const TeamsForms = () => {
                       <Switch
                         checked={field.value === 1}
                         onCheckedChange={(value) => {
-                          field.onChange(value);
-                          handleFieldChange("status", value.checked);
+                          const statusValue = value.checked ? 1 : 0;
+                          field.onChange(statusValue);
+                          handleFieldChange("status", statusValue);
                         }}
                         color="black"
                         colorPalette="blue"

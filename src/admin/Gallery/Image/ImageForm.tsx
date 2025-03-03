@@ -230,17 +230,22 @@ const ImageForm = () => {
                 name="status"
                 control={control}
                 render={({ field }) => (
-                  <Field label="Status">
-                    <Switch
-                      checked={field.value === 1}
-                      onCheckedChange={(value) => {
-                        const statusValue = value.checked ? 1 : 0;
-                        field.onChange(statusValue);
-                        handleFieldChange("status", statusValue);
-                      }}
-                      color="black"
-                      colorPalette="blue"
-                    />
+                  <Field>
+                    <HStack justify="space-between" align="center">
+                      <Text fontWeight="500" textStyle="md">
+                        Status
+                      </Text>
+                      <Switch
+                        checked={field.value === 1}
+                        onCheckedChange={(value) => {
+                          const statusValue = value.checked ? 1 : 0;
+                          field.onChange(statusValue);
+                          handleFieldChange("status", statusValue);
+                        }}
+                        color="black"
+                        colorPalette="blue"
+                      />
+                    </HStack>
                   </Field>
                 )}
               />

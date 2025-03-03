@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { SliderInput } from "@/utils/types";
 import { Column } from "@/utils";
 import { Switch } from "@/components/ui/switch";
-import { Image, Text } from "@chakra-ui/react";
+import { Box, Image, Text } from "@chakra-ui/react";
 // import SliderFilter from "./SliderFilter";
 import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "@/api/axios";
@@ -20,7 +20,26 @@ const SliderSection = () => {
   const columns: Column<SliderInput>[] = [
     { key: "id", label: "#", visible: true },
     { key: "title", label: "Title", visible: true },
-    { key: "sub_title", label: "Description", visible: false },
+    {
+      key: "sub_title",
+      label: "Description",
+      visible: false,
+      render: (row) => {
+        return (
+          <Box
+            whiteSpace="normal" // Allow text wrapping
+            wordBreak="break-word" // Break long words
+            maxW={"400px"}
+          >
+            <Text
+              truncate
+              dangerouslySetInnerHTML={{ __html: row.sub_title }}
+              lineClamp={2}
+            />
+          </Box>
+        );
+      },
+    },
     {
       key: "image",
       label: "Image",
@@ -108,10 +127,9 @@ const SliderSection = () => {
     console.log("clicked");
 
     try {
-      await axiosInstance.post(`/slider/${id}`, {
+      await axiosInstance.post(`/sliders/${id}`, {
         status: newStatus,
       });
-      console.log(`Slider ${id} status changed to ${newStatus}`);
       setTriggerFetch(true);
     } catch (error) {
       console.error("Error changing status:", error);

@@ -1,16 +1,27 @@
-import { RootState } from "@/redux/store";
-import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 interface ProtectedRouteProps {
   children: JSX.Element;
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const token = useSelector((state: RootState) => state.auth.token);
+export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
+  const token = Cookies.get("accessToken");
   console.log(token);
 
   return token ? children : <Navigate to="/login" replace />;
 };
 
-export default ProtectedRoute;
+export const ReverseProtectedRoute: React.FC<ProtectedRouteProps> = ({
+  children,
+}) => {
+  const token = Cookies.get("accessToken");
+
+  // If the user is authenticated, redirect them to the dashboard
+  if (token) {
+    return <Navigate to="/admin" replace />;
+  }
+
+  // If the user is not authenticated, allow them to access the login page
+  return children;
+};

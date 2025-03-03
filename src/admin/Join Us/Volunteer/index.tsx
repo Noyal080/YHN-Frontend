@@ -5,7 +5,7 @@ import useCommonToast from "@/common/CommonToast";
 import CommonTable from "@/common/Table/CommonTable";
 import { Column } from "@/utils";
 import { InternshipType } from "@/utils/types";
-import { Text } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -25,7 +25,26 @@ const VolunteerSection = () => {
   const columns: Column<InternshipType>[] = [
     { key: "id", label: "#", visible: true },
     { key: "title", label: "Title", visible: true },
-    { key: "description", label: "Description", visible: true },
+    {
+      key: "description",
+      label: "Description",
+      visible: true,
+      render: (row) => {
+        return (
+          <Box
+            whiteSpace="normal" // Allow text wrapping
+            wordBreak="break-word" // Break long words
+            maxW={"400px"}
+          >
+            <Text
+              truncate
+              dangerouslySetInnerHTML={{ __html: row.description }}
+              lineClamp={2}
+            />
+          </Box>
+        );
+      },
+    },
     { key: "apply_link", label: "Apply Link", visible: true },
   ];
 
