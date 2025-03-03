@@ -32,11 +32,7 @@ const TeamSection = () => {
           h="200px"
           w="300px"
           fit="contain"
-          src={
-            typeof row["image"] === "string"
-              ? row["image"]
-              : URL.createObjectURL(row["image"])
-          }
+          src={row["image"]}
         />
       ),
     },

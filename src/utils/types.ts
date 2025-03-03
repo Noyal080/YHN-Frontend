@@ -86,7 +86,7 @@ export type ChartData = {
 export type TeamsInput = {
   id ? : number;
   name : string;
-  image : string | File;
+  image : string;
   position_id : number  | null;
   role : string;
   status : number;

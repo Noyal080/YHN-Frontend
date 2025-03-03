@@ -125,8 +125,19 @@ const TeamsForms = () => {
 
   const onSubmit = async (data: TeamsInput) => {
     try {
+      const positionId = data.position_id;
+      console.log(typeof data.position_id);
+
+      // Check if the position is a new one (e.g., it doesn't exist in the options)
+      if (
+        typeof data.position_id === "string" &&
+        !positionOption.some((option) => option.value === data.position_id)
+      ) {
+        // Create a new position
+        console.log(positionId);
+      }
+
       if (id) {
-        // await axiosInstance.post('/positions', {name : });
         await axiosInstance.post(`/teams/${id}`, data);
         showToast({
           description: "Team updated successfully",
@@ -170,7 +181,7 @@ const TeamsForms = () => {
                   <Field label="Name">
                     <Input
                       {...field}
-                      placeholder="Enter your name"
+                      placeholder="Enter user name"
                       size={"md"}
                       onChange={(e) =>
                         handleFieldChange("name", e.target.value)
@@ -194,7 +205,19 @@ const TeamsForms = () => {
                       <CreatableSelect
                         {...field}
                         placeholder="Create or select user position"
-                        options={positionOption}
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        options={positionOption as any}
+                        value={
+                          positionOption.find(
+                            (option) => option.value === field.value
+                          ) || null
+                        } // Ensure value is properly set
+                        onChange={(selectedOption) => {
+                          // Handle both existing and new options
+                          field.onChange(
+                            selectedOption ? selectedOption.value : null
+                          );
+                        }}
                         styles={{
                           container: (base) => ({
                             ...base,
