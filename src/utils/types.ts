@@ -92,6 +92,15 @@ export type TeamsInput = {
   status : number;
 }
 
+export type TeamsData  ={
+  id ? : number;
+  name : string;
+  image_url : string;
+  position_id : number  | null;
+  role : string;
+  status : number;
+}
+
 export type MessageRequestType = {
   id?: number;
   full_name : string;

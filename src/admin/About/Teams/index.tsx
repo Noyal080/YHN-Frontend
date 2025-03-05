@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Column } from "@/utils";
 import { Switch } from "@/components/ui/switch";
 import { Image, Text } from "@chakra-ui/react";
-import { TeamsInput } from "@/utils/types";
+import { TeamsData } from "@/utils/types";
 import { axiosInstance } from "@/api/axios";
 import CommonModal from "@/common/CommonModal";
 import useCommonToast from "@/common/CommonToast";
@@ -15,15 +15,15 @@ const TeamSection = () => {
   // const token = localStorage.getItem("accessToken");
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const [selectedRow, setSelectedRow] = useState<TeamsInput | null>(null);
+  const [selectedRow, setSelectedRow] = useState<TeamsData | null>(null);
   const [triggerFetch, setTriggerFetch] = useState(false);
   const { showToast } = useCommonToast();
 
-  const columns: Column<TeamsInput>[] = [
+  const columns: Column<TeamsData>[] = [
     { key: "id", label: "#", visible: true },
     { key: "name", label: "Name", visible: true },
     {
-      key: "image",
+      key: "image_url",
       label: "Image",
       visible: true,
       render: (row) => (
@@ -32,7 +32,7 @@ const TeamSection = () => {
           h="200px"
           w="300px"
           fit="contain"
-          src={row["image"]}
+          src={row["image_url"]}
         />
       ),
     },
@@ -51,11 +51,11 @@ const TeamSection = () => {
     },
   ];
 
-  const handleEdit = (row: TeamsInput) => {
+  const handleEdit = (row: TeamsData) => {
     navigate(`/admin/teams/edit/${row.id}`);
   };
 
-  const handleDelete = async (row: TeamsInput) => {
+  const handleDelete = async (row: TeamsData) => {
     try {
       await axiosInstance.delete(`/sliders/${row.id}`);
       showToast({
@@ -75,7 +75,7 @@ const TeamSection = () => {
     }
   };
 
-  const [rows, setRows] = useState<TeamsInput[]>([]);
+  const [rows, setRows] = useState<TeamsData[]>([]);
   // axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   useEffect(() => {
     const fetchTeams = async () => {
@@ -122,7 +122,7 @@ const TeamSection = () => {
         open={modalOpen}
         onOpenChange={() => setModalOpen(false)}
         title={"Remove PartnerSlider"}
-        onButtonClick={() => handleDelete(selectedRow as TeamsInput)}
+        onButtonClick={() => handleDelete(selectedRow as TeamsData)}
       >
         <Text>
           {" "}

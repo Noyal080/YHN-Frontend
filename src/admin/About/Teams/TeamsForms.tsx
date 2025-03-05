@@ -74,7 +74,7 @@ const TeamsForms = () => {
 
   const handleFieldChange = (
     field: keyof TeamsInput,
-    value: string | number | boolean | File
+    value: string | number | boolean | File | null
   ) => {
     console.log(value);
 
@@ -125,29 +125,40 @@ const TeamsForms = () => {
 
   const onSubmit = async (data: TeamsInput) => {
     try {
-      const positionId = data.position_id;
-      console.log(typeof data.position_id);
+      const submissionData = { ...data };
 
-      // Check if the position is a new one (e.g., it doesn't exist in the options)
-      if (
-        typeof data.position_id === "string" &&
-        !positionOption.some((option) => option.value === data.position_id)
-      ) {
-        // Create a new position
-        console.log(positionId);
+      // Check if the position is a new one (a string value)
+      if (typeof submissionData.position_id === "string") {
+        // Create new position first
+        const positionResponse = await axiosInstance.post("/positions", {
+          name: submissionData.position_id,
+        });
+
+        // Extract the new position ID from the response
+        const newPositionId = positionResponse.data.data.id;
+        console.log(newPositionId);
+
+        // Update the submission data with the new position ID
+        submissionData.position_id = newPositionId;
+
+        console.log(
+          `Created new position "${data.position_id}" with ID ${newPositionId}`
+        );
       }
 
       if (id) {
-        await axiosInstance.post(`/teams/${id}`, data);
+        await axiosInstance.post(`/teams/${id}`, submissionData);
         showToast({
           description: "Team updated successfully",
           type: "success",
         });
+        navigate("/admin/teams");
       } else {
-        await axiosInstance.post("/teams", data, {
+        await axiosInstance.post("/teams", submissionData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         showToast({ description: "Team added successfully", type: "success" });
+        navigate("/admin/teams");
       }
     } catch (e) {
       console.error(e);
@@ -207,17 +218,25 @@ const TeamsForms = () => {
                         placeholder="Create or select user position"
                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         options={positionOption as any}
-                        value={
-                          positionOption.find(
-                            (option) => option.value === field.value
-                          ) || null
-                        } // Ensure value is properly set
                         onChange={(selectedOption) => {
-                          // Handle both existing and new options
-                          field.onChange(
-                            selectedOption ? selectedOption.value : null
+                          // Update both React Hook Form state and local state
+                          field.onChange(selectedOption?.value || null);
+                          handleFieldChange(
+                            "position_id",
+                            selectedOption?.value || null
                           );
                         }}
+                        value={
+                          // Find the matching option object if field.value is a number
+                          typeof field.value === "number"
+                            ? positionOption.find(
+                                (option) => option.value === field.value
+                              )
+                            : // If it's a custom value (string) or null, handle accordingly
+                            field.value
+                            ? { label: String(field.value), value: field.value }
+                            : null
+                        }
                         styles={{
                           container: (base) => ({
                             ...base,
