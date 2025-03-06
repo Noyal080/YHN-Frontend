@@ -75,7 +75,7 @@ const InternshipSection = () => {
     const fetchIntershipData = async () => {
       try {
         const res = await axiosInstance.get("/internships");
-        setRows(res.data.data);
+        setRows(res.data.data.data);
         setLoading(false);
         setTriggerFetch(false);
       } catch (e) {

@@ -147,7 +147,9 @@ const TeamsForms = () => {
       }
 
       if (id) {
-        await axiosInstance.post(`/teams/${id}`, submissionData);
+        await axiosInstance.post(`/teams/${id}`, submissionData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
         showToast({
           description: "Team updated successfully",
           type: "success",

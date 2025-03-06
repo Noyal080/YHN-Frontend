@@ -34,7 +34,7 @@ const CommonTable = <T,>({
   title,
   loading,
   columns,
-  rows,
+  rows = [],
   onEdit,
   onDelete,
   onSearch,
@@ -44,6 +44,9 @@ const CommonTable = <T,>({
   count,
   addName,
   onView,
+  onPageChange,
+  currentPage,
+  pageSize,
 }: CommonTableProps<T>) => {
   const [sortKey, setSortKey] = useState<keyof T | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>(
@@ -229,7 +232,12 @@ const CommonTable = <T,>({
           </Flex> */}
           {count && (
             <Flex justifyContent={"flex-end"} alignItems="center" w={"100%"}>
-              <PaginationRoot count={count} pageSize={10}>
+              <PaginationRoot
+                page={currentPage}
+                count={count}
+                pageSize={pageSize}
+                onPageChange={(e) => onPageChange && onPageChange(e.page)}
+              >
                 <HStack>
                   <PaginationPrevTrigger />
                   <PaginationItems />

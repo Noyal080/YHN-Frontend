@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Column } from "@/utils";
 import { Switch } from "@/components/ui/switch";
 import { Image, Text } from "@chakra-ui/react";
-import { TeamsData } from "@/utils/types";
+import { PaginationProps, TeamsData } from "@/utils/types";
 import { axiosInstance } from "@/api/axios";
 import CommonModal from "@/common/CommonModal";
 import useCommonToast from "@/common/CommonToast";
@@ -18,6 +18,19 @@ const TeamSection = () => {
   const [selectedRow, setSelectedRow] = useState<TeamsData | null>(null);
   const [triggerFetch, setTriggerFetch] = useState(false);
   const { showToast } = useCommonToast();
+
+  //Pagination
+  const [paginationData, setPaginationData] = useState<PaginationProps>();
+  const [page, setPage] = useState<number>(1);
+  // const [paginationData , setPaginationData] = useState({
+  //   "total_records": 0,
+  //   "current_page": 1,
+  //   "total_pages": 1,
+  //   "next_page": null,
+  //   "prev_page": null,
+  //   "per_page": 5,
+  //   "has_more_pages": false
+  // })
 
   const columns: Column<TeamsData>[] = [
     { key: "id", label: "#", visible: true },
@@ -82,7 +95,9 @@ const TeamSection = () => {
       setLoading(true);
       try {
         const res = await axiosInstance.get("/teams");
-        setRows(res.data.data);
+        const data = res.data.data;
+        setRows(data.data);
+        setPaginationData(data.pagination);
         setLoading(false);
       } catch (e) {
         console.log(e);
@@ -114,8 +129,13 @@ const TeamSection = () => {
         onAdd={() => navigate("/admin/teams/add")}
         // filterComponent={<SliderFilter />}
         isDraggable
-        count={100}
         addName="Add Teams"
+        count={paginationData?.total_pages}
+        pageSize={paginationData?.per_page}
+        currentPage={page}
+        onPageChange={(page) => {
+          setPage(page);
+        }}
       />
 
       <CommonModal

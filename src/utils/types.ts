@@ -50,33 +50,33 @@ export type TestimonialInput = {
 export type Option = {
   value: string;
   label: string;
-}
+};
 
 export type ServiceInput = {
   id?: number;
   title: string;
   description: string;
-}
+};
 
 export type ImageInputTypes = {
   id?: number;
   title: string;
   images: Gallery[];
   status: number;
-}
+};
 
 export type Gallery = {
-  id ?: number;
-  gallery_id : number;
-  path : string ;
-}
+  id?: number;
+  gallery_id: number;
+  path: string;
+};
 
 export type ImageType = {
   id?: number;
   title: string;
   images: File[];
   status: number;
-}
+};
 
 export type ChartData = {
   name: string;
@@ -84,58 +84,66 @@ export type ChartData = {
 };
 
 export type TeamsInput = {
-  id ? : number;
-  name : string;
-  image : string;
-  position_id : number  | null;
-  role : string;
-  status : number;
-}
+  id?: number;
+  name: string;
+  image: string;
+  position_id: number | null;
+  role: string;
+  status: number;
+};
 
-export type TeamsData  ={
-  id ? : number;
-  name : string;
-  image_url : string;
-  position_id : number  | null;
-  role : string;
-  status : number;
-}
+export type TeamsData = {
+  id?: number;
+  name: string;
+  image_url: string;
+  position_id: number | null;
+  role: string;
+  status: number;
+};
 
 export type MessageRequestType = {
   id?: number;
-  full_name : string;
-  email : string;
-  phone : number;
-  address : string;
-  message : string
-}
+  full_name: string;
+  email: string;
+  phone: number;
+  address: string;
+  message: string;
+};
 
 export type InternshipType = {
-  id? :number | undefined;
-  title : string;
-  description : string;
-  apply_link : string;
-}
+  id?: number | undefined;
+  title: string;
+  description: string;
+  apply_link: string;
+};
 
 export type OurWorkType = {
-  id?: number,
-  title : string;
-  description : string;
-  sector : string;
-  banner_image : File | string;
-  date : string;
-  location : string;
-  gallery : number | null;
-  objective : string;
-  activities : string
-}
+  id?: number;
+  title: string;
+  description: string;
+  sector: string;
+  banner_image: File | string;
+  date: string;
+  location: string;
+  gallery: number | null;
+  objective: string;
+  activities: string;
+};
 
 export type EventType = {
   id?: number;
-  title : string;
-  description : string;
-  banner_image : File | string;
-  date : string;
-  location : string;
-  gallery : number | null;
-}
+  title: string;
+  description: string;
+  banner_image: File | string;
+  date: string;
+  location: string;
+  gallery: number | null;
+};
+
+export type PaginationProps = {
+  total_records: number ;
+  current_page: number ;
+  total_pages: number ;
+  per_page: number ;
+  has_more_pages: boolean | false;
+};

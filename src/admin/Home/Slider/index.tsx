@@ -88,7 +88,7 @@ const SliderSection = () => {
     const fetchSliders = async () => {
       try {
         const response = await axiosInstance.get("/sliders/");
-        setRows(response.data.data);
+        setRows(response.data.data.data);
         setLoading(false);
       } catch (err) {
         console.log(err);

@@ -60,7 +60,9 @@ export interface CommonTableProps<T> {
   filterComponent?: React.ReactNode;
   isDraggable?: boolean;
   count?: number;
-  onPageChange?: () => void;
+  onPageChange?: (page: number) => void;
+  currentPage?: number;
+  pageSize?: number;
 }
 
 export interface TableHeadProps <T> {

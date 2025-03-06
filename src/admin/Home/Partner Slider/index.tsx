@@ -73,9 +73,7 @@ const PartnerSlider = () => {
       setLoading(true);
       try {
         const res = await axiosInstance.get("/partner");
-        console.log(res.data);
-
-        setRows(res.data.data);
+        setRows(res.data.data.data);
         setTriggerFetch(false);
         setLoading(false);
       } catch (e) {

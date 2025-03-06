@@ -59,7 +59,7 @@ const ImageSection = () => {
 
       try {
         const res = await axiosInstance.get("/gallery");
-        setRows(res.data.data);
+        setRows(res.data.data.data);
         setTriggerFetch(false);
         setLoading(false);
         // setLoading(false);
