@@ -4,7 +4,7 @@ import {
   FileUploadDropzone,
   FileUploadRoot,
 } from "@/components/ui/file-upload";
-import { compressMultiImage } from "@/utils/imageCompressor";
+import { compressMultiImage } from "@/helper/imageCompressor";
 import {
   Box,
   Image,

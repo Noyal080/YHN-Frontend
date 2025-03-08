@@ -3,8 +3,9 @@ import { axiosInstance } from "@/api/axios";
 import CommonModal from "@/common/CommonModal";
 import useCommonToast from "@/common/CommonToast";
 import CommonTable from "@/common/Table/CommonTable";
+import useDebounce from "@/helper/debounce";
 import { Column } from "@/utils";
-import { InternshipType } from "@/utils/types";
+import { InternshipType, PaginationProps } from "@/utils/types";
 import { Box, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -18,6 +19,11 @@ const InternshipSection = () => {
   const [selectedRow, setSelectedRow] = useState<InternshipType | null>(null);
   const [triggerFetch, setTriggerFetch] = useState(false);
   const { showToast } = useCommonToast();
+  const [paginationData, setPaginationData] = useState<PaginationProps>();
+  const [page, setPage] = useState<number>(1);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const debouncedSearch = useDebounce(searchQuery, 500);
+
   const columns: Column<InternshipType>[] = [
     { key: "id", label: "#", visible: true },
     { key: "title", label: "Title", visible: true },
@@ -74,8 +80,12 @@ const InternshipSection = () => {
     setLoading(true);
     const fetchIntershipData = async () => {
       try {
-        const res = await axiosInstance.get("/internships");
-        setRows(res.data.data.data);
+        const res = await axiosInstance.get("/internships", {
+          params: { page, search: debouncedSearch },
+        });
+        const data = res.data.data;
+        setRows(data.data);
+        setPaginationData(data.pagination);
         setLoading(false);
         setTriggerFetch(false);
       } catch (e) {
@@ -86,7 +96,7 @@ const InternshipSection = () => {
     };
 
     fetchIntershipData();
-  }, [triggerFetch]);
+  }, [triggerFetch, page, debouncedSearch]);
 
   return (
     <AdminLayout
@@ -107,11 +117,16 @@ const InternshipSection = () => {
           setModalOpen(true);
           setSelectedRow(row);
         }}
-        onSearch={(query) => console.log("Search", query)}
+        onSearch={(query) => setSearchQuery(query)}
         onAdd={() => navigate("/admin/internship/add")}
         // filterComponent={<SliderFilter />}
         isDraggable
-        count={100}
+        count={paginationData?.total_pages}
+        pageSize={paginationData?.per_page}
+        currentPage={page}
+        onPageChange={(page) => {
+          setPage(page);
+        }}
         addName="Add Internship"
       />
 

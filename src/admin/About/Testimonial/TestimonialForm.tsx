@@ -7,7 +7,6 @@ import { Field } from "@/components/ui/field";
 import CreatableSelect from "react-select/creatable";
 import {
   FileUploadDropzone,
-  FileUploadList,
   FileUploadRoot,
 } from "@/components/ui/file-upload";
 import { Switch } from "@/components/ui/switch";
@@ -17,6 +16,7 @@ import {
   CardRoot,
   Heading,
   HStack,
+  Image,
   Input,
   Text,
   VStack,
@@ -24,18 +24,28 @@ import {
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
+import { compressImage } from "@/helper/imageCompressor";
+
+interface DesignationOptions {
+  label: string;
+  value: number;
+}
 
 const TestimonialForm = () => {
   const { id } = useParams();
   const { showToast } = useCommonToast();
+  const [selectedImage, setSelectedImage] = useState<string | null>();
+  const [designationOption, setDesignationOption] = useState<
+    DesignationOptions[]
+  >([]);
   const navigate = useNavigate();
-  const [sliderData, setSliderData] = useState<TestimonialInput>({
-    status: true,
+  const [testimonialData, setTestimonialData] = useState<TestimonialInput>({
+    status: 1,
     image: "",
     name: "",
     description: "",
-    designation: "",
-    usercategory: "",
+    designation_id: null,
+    category: "",
   });
 
   const {
@@ -44,65 +54,113 @@ const TestimonialForm = () => {
     formState: { errors },
   } = useForm<TestimonialInput>({
     values: {
-      id: sliderData.id,
-      name: sliderData.name,
-      description: sliderData.description,
-      image: sliderData.image,
-      designation: sliderData.designation,
-      usercategory: sliderData.usercategory,
-      status: sliderData.status,
+      id: testimonialData.id,
+      name: testimonialData.name,
+      description: testimonialData.description,
+      image: testimonialData.image,
+      designation_id: testimonialData.designation_id,
+      category: testimonialData.category,
+      status: testimonialData.status,
     },
   });
   // const token = localStorage.getItem("accessToken");
   // axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
   useEffect(() => {
-    const fetchSliderData = async () => {
+    const fetchTestimonialData = async () => {
       try {
-        const res = await axiosInstance.get(`/slider/${id}`);
-        setSliderData(res.data.payload);
+        const res = await axiosInstance.get(`/testimonials/${id}`);
+        const result = res.data.data.data;
+        setTestimonialData(result);
       } catch (e) {
         console.error(e);
       }
     };
-    fetchSliderData();
+    fetchTestimonialData();
   }, [id]);
+
+  useEffect(() => {
+    const fetchDesignation = async () => {
+      try {
+        const res = await axiosInstance.get("/designations");
+        const result = res.data.data.data;
+        setDesignationOption(
+          result.map((position: { name: string; id: number }) => ({
+            label: position.name,
+            value: position.id,
+          }))
+        );
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    fetchDesignation();
+  }, []);
 
   const handleFieldChange = (
     field: keyof TestimonialInput,
-    value: string | number | boolean | File
+    value: string | number | boolean | File | null
   ) => {
-    setSliderData((prev) => ({ ...prev, [field]: value }));
+    setTestimonialData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const onSubmit = async (sliderData: TestimonialInput) => {
+  const handleImageUpload = async (file: File) => {
     try {
+      const compressedFile = await compressImage(file);
+      setSelectedImage(URL.createObjectURL(compressedFile)); // Preview image
+      handleFieldChange("image", compressedFile); // Update form state
+    } catch (error) {
+      console.error("Compression error:", error);
+    }
+  };
+
+  const onSubmit = async (data: TestimonialInput) => {
+    try {
+      const submissionData = { ...data };
+
+      // Check if the position is a new one (a string value)
+      if (typeof submissionData.designation_id === "string") {
+        // Create new position first
+        const positionResponse = await axiosInstance.post("/designations", {
+          name: submissionData.designation_id,
+        });
+
+        // Extract the new position ID from the response
+        const newPositionId = positionResponse.data.data.id;
+        console.log(newPositionId);
+
+        // Update the submission data with the new position ID
+        submissionData.designation_id = newPositionId;
+      }
+
       if (id) {
-        await axiosInstance.patch(`/slider/edit/${id}`, sliderData);
+        await axiosInstance.post(`/testimonials/${id}`, submissionData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
         showToast({
-          description: "Slider updated successfully!",
+          description: "Testimonial updated successfully",
           type: "success",
         });
+        navigate("/admin/testimonials");
       } else {
-        await axiosInstance.post(`/slider/add`, sliderData);
+        await axiosInstance.post("/testimonials", submissionData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
         showToast({
-          description: " Slider added successfully",
+          description: "Testimonial added successfully",
           type: "success",
         });
+        navigate("/admin/testimonials");
       }
     } catch (e) {
       console.error(e);
-      if (id) {
-        showToast({
-          description: "Failed to update the slider",
-          type: "error",
-        });
-      } else {
-        showToast({
-          description: "Failed to add the slider",
-          type: "error",
-        });
-      }
+      showToast({
+        description: id
+          ? `Failed to update the Testimonial`
+          : "Failed to add Testimonial",
+        type: "error",
+      });
     }
   };
 
@@ -166,6 +224,95 @@ const TestimonialForm = () => {
                   </Field>
                 )}
               />
+              <HStack>
+                <Controller
+                  name="designation_id"
+                  control={control}
+                  rules={{ required: "User Designation is required" }}
+                  render={({ field }) => (
+                    <Field label="User Designation">
+                      <CreatableSelect
+                        {...field}
+                        placeholder="Create or select user designation"
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        options={designationOption as any}
+                        value={
+                          // Find the matching option object if field.value is a number
+                          typeof field.value === "number"
+                            ? designationOption.find(
+                                (option) => option.value === field.value
+                              )
+                            : // If it's a custom value (string) or null, handle accordingly
+                            field.value
+                            ? { label: String(field.value), value: field.value }
+                            : null
+                        }
+                        onChange={(selectedOption) => {
+                          // Update both React Hook Form state and local state
+                          field.onChange(selectedOption?.value || null);
+                          handleFieldChange(
+                            "designation_id",
+                            selectedOption?.value || null
+                          );
+                        }}
+                        // onBlur={field.onBlur}
+                        styles={{
+                          container: (base) => ({
+                            ...base,
+                            width: "100%",
+                          }),
+                          control: (base) => ({
+                            ...base,
+                            width: "100%",
+                            borderColor: errors.designation_id
+                              ? "red"
+                              : base.borderColor,
+                          }),
+                          menu: (base) => ({
+                            ...base,
+                            width: "100%",
+                          }),
+                          valueContainer: (base) => ({
+                            ...base,
+                            width: "100%",
+                          }),
+                          input: (base) => ({
+                            ...base,
+                            width: "100%",
+                          }),
+                        }}
+                      />
+                      {errors.designation_id && (
+                        <Text textStyle="sm" color="red">
+                          {errors.designation_id.message}
+                        </Text>
+                      )}
+                    </Field>
+                  )}
+                />
+                <Controller
+                  name="category"
+                  control={control}
+                  rules={{ required: "User Category is required" }}
+                  render={({ field }) => (
+                    <Field label="User Category">
+                      <Input
+                        {...field}
+                        placeholder="Enter user category"
+                        size="md"
+                        onChange={(e) =>
+                          handleFieldChange("category", e.target.value)
+                        }
+                      />
+                      {errors.category && (
+                        <Text textStyle="sm" color="red">
+                          {errors.category.message}
+                        </Text>
+                      )}
+                    </Field>
+                  )}
+                />
+              </HStack>
               <Controller
                 name="image"
                 control={control}
@@ -179,91 +326,34 @@ const TestimonialForm = () => {
                       onFileAccept={(value) => {
                         const file = value.files[0];
                         field.onChange(file);
-                        handleFieldChange("image", file);
+                        handleImageUpload(file);
                       }}
                     >
                       <FileUploadDropzone
-                        value={field.value}
+                        value={
+                          typeof field.value === "string" ? field.value : ""
+                        }
                         label="Drag and drop here to upload"
                         description=".png, .jpg up to 5MB"
                       />
-                      <FileUploadList />
+                      {(selectedImage || testimonialData.image) && (
+                        <Image
+                          src={
+                            selectedImage ||
+                            (typeof testimonialData.image === "string"
+                              ? testimonialData.image
+                              : undefined)
+                          }
+                          alt="Uploaded or Existing Image"
+                          objectFit="contain"
+                          aspectRatio={2 / 1}
+                          mt={4}
+                        />
+                      )}
                     </FileUploadRoot>
                     {errors.image && (
                       <Text textStyle="sm" color="red">
                         {errors.image.message}
-                      </Text>
-                    )}
-                  </Field>
-                )}
-              />
-              <Controller
-                name="designation"
-                control={control}
-                rules={{ required: "User Designation is required" }}
-                render={({ field }) => (
-                  <Field label="User Designation">
-                    <CreatableSelect
-                      {...field}
-                      // options={designationOptions}
-                      placeholder="Enter or select user designation"
-                      // onChange={(selectedOption) => {
-                      //   const value = selectedOption?.value || "";
-                      //   field.onChange(value);
-                      //   handleFieldChange("designation", value);
-                      // }}
-                      // onBlur={field.onBlur}
-                      styles={{
-                        container: (base) => ({
-                          ...base,
-                          width: "100%",
-                        }),
-                        control: (base) => ({
-                          ...base,
-                          width: "100%",
-                          borderColor: errors.designation
-                            ? "red"
-                            : base.borderColor,
-                        }),
-                        menu: (base) => ({
-                          ...base,
-                          width: "100%",
-                        }),
-                        valueContainer: (base) => ({
-                          ...base,
-                          width: "100%",
-                        }),
-                        input: (base) => ({
-                          ...base,
-                          width: "100%",
-                        }),
-                      }}
-                    />
-                    {errors.designation && (
-                      <Text textStyle="sm" color="red">
-                        {errors.designation.message}
-                      </Text>
-                    )}
-                  </Field>
-                )}
-              />
-              <Controller
-                name="usercategory"
-                control={control}
-                rules={{ required: "User Category is required" }}
-                render={({ field }) => (
-                  <Field label="User Category">
-                    <Input
-                      {...field}
-                      placeholder="Enter user category"
-                      size="md"
-                      onChange={(e) =>
-                        handleFieldChange("usercategory", e.target.value)
-                      }
-                    />
-                    {errors.usercategory && (
-                      <Text textStyle="sm" color="red">
-                        {errors.usercategory.message}
                       </Text>
                     )}
                   </Field>
@@ -277,13 +367,14 @@ const TestimonialForm = () => {
                   <Field>
                     <HStack justify="space-between" align="center">
                       <Text fontWeight="500" textStyle="md">
-                        Show Image
+                        Show Testimonial
                       </Text>
                       <Switch
-                        checked={field.value}
+                        checked={field.value === 1}
                         onCheckedChange={(value) => {
-                          field.onChange(value);
-                          handleFieldChange("status", value.checked);
+                          const statusValue = value.checked ? 1 : 0;
+                          field.onChange(statusValue);
+                          handleFieldChange("status", statusValue);
                         }}
                         color="black"
                         colorPalette="blue"

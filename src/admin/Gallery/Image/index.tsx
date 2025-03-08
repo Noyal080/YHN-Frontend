@@ -1,7 +1,7 @@
 import AdminLayout from "@/admin/Layout";
 import CommonTable from "@/common/Table/CommonTable";
 import { Column } from "@/utils";
-import { ImageInputTypes } from "@/utils/types";
+import { ImageInputTypes, PaginationProps } from "@/utils/types";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ImageSlider from "./ImageSllider";
@@ -10,6 +10,7 @@ import { Switch } from "@/components/ui/switch";
 import useCommonToast from "@/common/CommonToast";
 import CommonModal from "@/common/CommonModal";
 import { Text } from "@chakra-ui/react";
+import useDebounce from "@/helper/debounce";
 
 const ImageSection = () => {
   const navigate = useNavigate();
@@ -18,6 +19,11 @@ const ImageSection = () => {
   const [selectedRow, setSelectedRow] = useState<ImageInputTypes | null>(null);
   const [triggerFetch, setTriggerFetch] = useState<boolean>(false);
   const { showToast } = useCommonToast();
+
+  const [paginationData, setPaginationData] = useState<PaginationProps>();
+  const [page, setPage] = useState<number>(1);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const debouncedSearch = useDebounce(searchQuery, 500);
 
   const columns: Column<ImageInputTypes>[] = [
     {
@@ -58,8 +64,14 @@ const ImageSection = () => {
       setLoading(true);
 
       try {
-        const res = await axiosInstance.get("/gallery");
-        setRows(res.data.data.data);
+        const res = await axiosInstance.get("/gallery", {
+          params: { page, search: debouncedSearch },
+        });
+        const resData = res.data.data;
+
+        setRows(resData.data);
+        setPaginationData(resData.pagination);
+
         setTriggerFetch(false);
         setLoading(false);
         // setLoading(false);
@@ -70,7 +82,7 @@ const ImageSection = () => {
     };
 
     fetchGallery();
-  }, [triggerFetch]);
+  }, [triggerFetch, debouncedSearch, page]);
 
   const handleDelete = async (row: ImageInputTypes) => {
     try {
@@ -110,8 +122,14 @@ const ImageSection = () => {
           setModalOpen(true);
           setSelectedRow(row);
         }}
-        onSearch={(query) => console.log("Search", query)}
+        onSearch={(query) => setSearchQuery(query)}
         onAdd={() => navigate("/admin/gallery/images/add")}
+        count={paginationData?.total_pages}
+        pageSize={paginationData?.per_page}
+        currentPage={page}
+        onPageChange={(page) => {
+          setPage(page);
+        }}
       />
 
       <CommonModal

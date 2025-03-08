@@ -5,7 +5,7 @@ import {
   FileUploadDropzone,
   FileUploadRoot,
 } from "@/components/ui/file-upload";
-import { compressImage } from "@/utils/imageCompressor";
+import { compressImage } from "@/helper/imageCompressor";
 import { TeamsInput } from "@/utils/types";
 import {
   CardBody,
@@ -69,6 +69,7 @@ const TeamsForms = () => {
       position_id: teamData.position_id,
       role: teamData.role,
       status: teamData.status,
+      image_url: teamData.image_url,
     },
   });
 
@@ -76,8 +77,6 @@ const TeamsForms = () => {
     field: keyof TeamsInput,
     value: string | number | boolean | File | null
   ) => {
-    console.log(value);
-
     setTeamData((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -95,7 +94,7 @@ const TeamsForms = () => {
     const fetchPositionData = async () => {
       try {
         const res = await axiosInstance.get("/positions");
-        const result = res.data.data;
+        const result = res.data.data.data;
         setPositionOption(
           result.map((position: { name: string; id: number }) => ({
             label: position.name,
@@ -136,14 +135,9 @@ const TeamsForms = () => {
 
         // Extract the new position ID from the response
         const newPositionId = positionResponse.data.data.id;
-        console.log(newPositionId);
 
         // Update the submission data with the new position ID
         submissionData.position_id = newPositionId;
-
-        console.log(
-          `Created new position "${data.position_id}" with ID ${newPositionId}`
-        );
       }
 
       if (id) {
@@ -328,7 +322,7 @@ const TeamsForms = () => {
               <Controller
                 name="image"
                 control={control}
-                rules={{ required: "Image URL is required" }}
+                rules={!id ? { required: "Image URL is required" } : {}}
                 render={({ field }) => (
                   <Field label="Image URL">
                     <FileUploadRoot
@@ -348,13 +342,16 @@ const TeamsForms = () => {
                         label="Drag and drop here to upload"
                         description=".png, .jpg up to 5MB"
                       />
-                      {(selectedImage || teamData.image) && (
+                      {(selectedImage ||
+                        teamData.image ||
+                        teamData.image_url) && (
                         <Image
                           src={
                             selectedImage ||
                             (typeof teamData.image === "string"
                               ? teamData.image
-                              : undefined)
+                              : undefined) ||
+                            teamData.image_url
                           }
                           alt="Uploaded or Existing Image"
                           objectFit="contain"

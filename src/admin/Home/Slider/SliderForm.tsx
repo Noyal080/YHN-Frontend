@@ -24,7 +24,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { axiosInstance } from "@/api/axios";
 import useCommonToast from "@/common/CommonToast";
 import CommonEditor from "@/common/Editor";
-import { compressImage } from "@/utils/imageCompressor";
+import { compressImage } from "@/helper/imageCompressor";
 const SliderForm = () => {
   const [showButtons, setShowButtons] = useState<boolean>(false);
   const navigate = useNavigate();

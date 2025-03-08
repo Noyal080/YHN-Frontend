@@ -4,8 +4,9 @@ import CommonModal from "@/common/CommonModal";
 import useCommonToast from "@/common/CommonToast";
 import CommonTable from "@/common/Table/CommonTable";
 import { Switch } from "@/components/ui/switch";
+import useDebounce from "@/helper/debounce";
 import { Column } from "@/utils";
-import { PartnerSliderType } from "@/utils/types";
+import { PaginationProps, PartnerSliderType } from "@/utils/types";
 import { Image, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -17,6 +18,12 @@ const PartnerSlider = () => {
   const [selectedRow, setSelectedRow] = useState<PartnerSliderType | null>(
     null
   );
+
+  const [paginationData, setPaginationData] = useState<PaginationProps>();
+  const [page, setPage] = useState<number>(1);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const debouncedSearch = useDebounce(searchQuery, 500);
+
   const columns: Column<PartnerSliderType>[] = [
     {
       key: "id",
@@ -72,8 +79,12 @@ const PartnerSlider = () => {
     const fetchPartners = async () => {
       setLoading(true);
       try {
-        const res = await axiosInstance.get("/partner");
-        setRows(res.data.data.data);
+        const res = await axiosInstance.get("/partner", {
+          params: { page, search: debouncedSearch },
+        });
+        const data = res.data.data;
+        setRows(data.data);
+        setPaginationData(data.pagination);
         setTriggerFetch(false);
         setLoading(false);
       } catch (e) {
@@ -87,7 +98,7 @@ const PartnerSlider = () => {
     };
 
     fetchPartners();
-  }, [triggerFetch]);
+  }, [triggerFetch, page, debouncedSearch]);
 
   const navigate = useNavigate();
 
@@ -149,9 +160,15 @@ const PartnerSlider = () => {
           setModalOpen(true);
           setSelectedRow(row);
         }}
-        onSearch={(query) => console.log("Search", query)}
+        onSearch={(query) => setSearchQuery(query)}
         onAdd={() => navigate("/admin/partners/add")}
         isDraggable={false}
+        count={paginationData?.total_pages}
+        pageSize={paginationData?.per_page}
+        currentPage={page}
+        onPageChange={(page) => {
+          setPage(page);
+        }}
       />
 
       <CommonModal

@@ -22,7 +22,6 @@ import Donations from "./admin/About/Donation";
 // import Services from "./admin/Services";
 // import ServiceForms from "./admin/Services/ServiceForm";
 import EventSection from "./admin/Events";
-import CareerSection from "./admin/About/Career";
 import ImageSection from "./admin/Gallery/Image";
 import VideoSection from "./admin/Gallery/Video";
 import TeamsForms from "./admin/About/Teams/TeamsForms";
@@ -214,14 +213,14 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route
+        {/* <Route
           path="/admin/careers"
           element={
             <ProtectedRoute>
               <CareerSection />
             </ProtectedRoute>
           }
-        />
+        /> */}
 
         <Route
           path="/admin/our-works"

@@ -21,7 +21,7 @@ import {
   FileUploadDropzone,
   FileUploadRoot,
 } from "@/components/ui/file-upload";
-import { compressImage } from "@/utils/imageCompressor";
+import { compressImage } from "@/helper/imageCompressor";
 
 const WorkForms = () => {
   //Gallery is missing

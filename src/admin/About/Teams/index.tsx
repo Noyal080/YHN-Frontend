@@ -9,6 +9,7 @@ import { PaginationProps, TeamsData } from "@/utils/types";
 import { axiosInstance } from "@/api/axios";
 import CommonModal from "@/common/CommonModal";
 import useCommonToast from "@/common/CommonToast";
+import useDebounce from "@/helper/debounce";
 
 const TeamSection = () => {
   const navigate = useNavigate();
@@ -22,15 +23,8 @@ const TeamSection = () => {
   //Pagination
   const [paginationData, setPaginationData] = useState<PaginationProps>();
   const [page, setPage] = useState<number>(1);
-  // const [paginationData , setPaginationData] = useState({
-  //   "total_records": 0,
-  //   "current_page": 1,
-  //   "total_pages": 1,
-  //   "next_page": null,
-  //   "prev_page": null,
-  //   "per_page": 5,
-  //   "has_more_pages": false
-  // })
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const debouncedSearch = useDebounce(searchQuery, 500);
 
   const columns: Column<TeamsData>[] = [
     { key: "id", label: "#", visible: true },
@@ -49,7 +43,12 @@ const TeamSection = () => {
         />
       ),
     },
-    { key: "position_id", label: "Position", visible: true },
+    {
+      key: "position",
+      label: "Position",
+      visible: true,
+      render: (row) => <Text>{row.position.Name}</Text>,
+    },
     { key: "role", label: "Role", visible: true },
     {
       key: "status",
@@ -70,7 +69,7 @@ const TeamSection = () => {
 
   const handleDelete = async (row: TeamsData) => {
     try {
-      await axiosInstance.delete(`/sliders/${row.id}`);
+      await axiosInstance.delete(`/teams/${row.id}`);
       showToast({
         description: `${row.name} deleted succesfully`,
         type: "success",
@@ -94,17 +93,20 @@ const TeamSection = () => {
     const fetchTeams = async () => {
       setLoading(true);
       try {
-        const res = await axiosInstance.get("/teams");
+        const res = await axiosInstance.get("/teams", {
+          params: { page, search: debouncedSearch },
+        });
         const data = res.data.data;
         setRows(data.data);
         setPaginationData(data.pagination);
         setLoading(false);
       } catch (e) {
         console.log(e);
+        setLoading(false);
       }
     };
     fetchTeams();
-  }, [triggerFetch]);
+  }, [triggerFetch, page, debouncedSearch]);
 
   return (
     <AdminLayout
@@ -125,7 +127,7 @@ const TeamSection = () => {
           setModalOpen(true);
           setSelectedRow(row);
         }}
-        onSearch={(query) => console.log("Search", query)}
+        onSearch={(query) => setSearchQuery(query)}
         onAdd={() => navigate("/admin/teams/add")}
         // filterComponent={<SliderFilter />}
         isDraggable
@@ -141,7 +143,7 @@ const TeamSection = () => {
       <CommonModal
         open={modalOpen}
         onOpenChange={() => setModalOpen(false)}
-        title={"Remove PartnerSlider"}
+        title={"Remove Team"}
         onButtonClick={() => handleDelete(selectedRow as TeamsData)}
       >
         <Text>

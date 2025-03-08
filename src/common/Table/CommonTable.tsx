@@ -41,7 +41,7 @@ const CommonTable = <T,>({
   onAdd,
   filterComponent,
   isDraggable,
-  count,
+  count = 0,
   addName,
   onView,
   onPageChange,
@@ -230,7 +230,7 @@ const CommonTable = <T,>({
             </select>
             <Text>entries</Text>
           </Flex> */}
-          {count && (
+          {count > 1 && (
             <Flex justifyContent={"flex-end"} alignItems="center" w={"100%"}>
               <PaginationRoot
                 page={currentPage}

@@ -39,13 +39,27 @@ export type PartnerSliderType = {
 
 export type TestimonialInput = {
   id?: number;
-  status: boolean;
-  image: string;
   name: string;
+  status: number;
+  image: string;
   description: string;
-  designation: string;
-  usercategory: string;
+  designation_id : number  | null;
+  // designation: string;
+  category: string;
 };
+
+export type TestimonialData = {
+  id?: number;
+  name: string;
+  status: number;
+  image: string;
+  description: string;
+  designation_id : number  | null;
+  designation: {
+    Name : string
+  };
+  category: string;
+}
 
 export type Option = {
   value: string;
@@ -88,6 +102,7 @@ export type TeamsInput = {
   name: string;
   image: string;
   position_id: number | null;
+  image_url?: string;
   role: string;
   status: number;
 };
@@ -96,7 +111,9 @@ export type TeamsData = {
   id?: number;
   name: string;
   image_url: string;
-  position_id: number | null;
+  position : {
+    Name : string
+  }
   role: string;
   status: number;
 };

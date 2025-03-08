@@ -8,7 +8,7 @@ import {
   FileUploadRoot,
 } from "@/components/ui/file-upload";
 import { Switch } from "@/components/ui/switch";
-import { compressMultiImage } from "@/utils/imageCompressor";
+import { compressMultiImage } from "@/helper/imageCompressor";
 import { Gallery, ImageType } from "@/utils/types";
 import {
   Box,

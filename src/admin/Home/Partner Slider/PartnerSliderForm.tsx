@@ -8,7 +8,7 @@ import {
   FileUploadRoot,
 } from "@/components/ui/file-upload";
 import { Switch } from "@/components/ui/switch";
-import { compressImage } from "@/utils/imageCompressor";
+import { compressImage } from "@/helper/imageCompressor";
 import { PartnerSliderType } from "@/utils/types";
 import {
   CardBody,

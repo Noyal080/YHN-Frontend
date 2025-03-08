@@ -1,7 +1,7 @@
 import CommonTable from "@/common/Table/CommonTable";
 import AdminLayout from "../../Layout";
 import { useEffect, useState } from "react";
-import { SliderInput } from "@/utils/types";
+import { PaginationProps, SliderInput } from "@/utils/types";
 import { Column } from "@/utils";
 import { Switch } from "@/components/ui/switch";
 import { Box, Image, Text } from "@chakra-ui/react";
@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "@/api/axios";
 import CommonModal from "@/common/CommonModal";
 import useCommonToast from "@/common/CommonToast";
+import useDebounce from "@/helper/debounce";
 
 const SliderSection = () => {
   const { showToast } = useCommonToast();
@@ -17,6 +18,12 @@ const SliderSection = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [selectedRow, setSelectedRow] = useState<SliderInput | null>(null);
   const [triggerFetch, setTriggerFetch] = useState(false);
+
+  const [paginationData, setPaginationData] = useState<PaginationProps>();
+  const [page, setPage] = useState<number>(1);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const debouncedSearch = useDebounce(searchQuery, 500);
+
   const columns: Column<SliderInput>[] = [
     { key: "id", label: "#", visible: true },
     { key: "title", label: "Title", visible: true },
@@ -87,8 +94,12 @@ const SliderSection = () => {
   useEffect(() => {
     const fetchSliders = async () => {
       try {
-        const response = await axiosInstance.get("/sliders/");
-        setRows(response.data.data.data);
+        const res = await axiosInstance.get("/sliders/", {
+          params: { page, search: debouncedSearch },
+        });
+        const data = res.data.data;
+        setRows(data.data);
+        setPaginationData(data.pagination);
         setLoading(false);
       } catch (err) {
         console.log(err);
@@ -96,7 +107,7 @@ const SliderSection = () => {
     };
 
     fetchSliders();
-  }, [triggerFetch]);
+  }, [triggerFetch, page, debouncedSearch]);
 
   const handleEdit = (row: SliderInput) => {
     navigate(`/admin/sliders/edit/${row.id}`);
@@ -158,11 +169,16 @@ const SliderSection = () => {
           setModalOpen(true);
           setSelectedRow(row);
         }}
-        onSearch={(query) => console.log("Search", query)}
+        onSearch={(query) => setSearchQuery(query)}
         onAdd={() => navigate("/admin/sliders/add")}
         // filterComponent={<SliderFilter />}
         isDraggable
-        count={100}
+        count={paginationData?.total_pages}
+        pageSize={paginationData?.per_page}
+        currentPage={page}
+        onPageChange={(page) => {
+          setPage(page);
+        }}
         addName="Add Slider"
       />
 

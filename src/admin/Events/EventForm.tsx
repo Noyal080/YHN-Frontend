@@ -19,7 +19,7 @@ import {
   FileUploadDropzone,
   FileUploadRoot,
 } from "@/components/ui/file-upload";
-import { compressImage } from "@/utils/imageCompressor";
+import { compressImage } from "@/helper/imageCompressor";
 import { Button } from "@/components/ui/button";
 
 const EventForm = () => {
