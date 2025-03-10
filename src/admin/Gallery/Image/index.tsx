@@ -141,7 +141,7 @@ const ImageSection = () => {
         <Text>
           {" "}
           Are you sure you want to remove {selectedRow?.title}? This will
-          permanently remove all the data regarding the gallery{" "}
+          permanently remove all the data regarding the gallery images.{" "}
         </Text>
       </CommonModal>
     </AdminLayout>

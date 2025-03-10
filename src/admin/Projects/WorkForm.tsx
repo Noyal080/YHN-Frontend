@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import AdminLayout from "../Layout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CreatableSelect from "react-select/creatable";
 import { OurWorkType } from "@/utils/types";
 import { Controller, useForm } from "react-hook-form";
@@ -22,6 +22,7 @@ import {
   FileUploadRoot,
 } from "@/components/ui/file-upload";
 import { compressImage } from "@/helper/imageCompressor";
+import { axiosInstance } from "@/api/axios";
 
 const WorkForms = () => {
   //Gallery is missing
@@ -58,6 +59,21 @@ const WorkForms = () => {
       activities: pageData.activities || "",
     },
   });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axiosInstance.get(`/works/${id}`);
+        setPageData(res.data);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    if (id) {
+      fetchData();
+    }
+  }, [id]);
 
   const onSubmit = (data: OurWorkType) => {
     console.log(data);
@@ -164,6 +180,94 @@ const WorkForms = () => {
               />
 
               <Controller
+                name="objective"
+                control={control}
+                rules={{ required: "Objective is required" }}
+                render={({ field }) => (
+                  <Field label="Objective">
+                    <CommonEditor
+                      value={field.value}
+                      onChange={(value) => {
+                        field.onChange(value);
+                        // handleFieldChange("sub_title", value);
+                      }}
+                    />
+
+                    {errors.objective && (
+                      <Text textStyle="sm" color="red">
+                        {errors.objective.message}
+                      </Text>
+                    )}
+                  </Field>
+                )}
+              />
+              <Controller
+                name="activities"
+                control={control}
+                rules={{ required: "Activities is required" }}
+                render={({ field }) => (
+                  <Field label="Activities">
+                    <CommonEditor
+                      value={field.value}
+                      onChange={(value) => {
+                        field.onChange(value);
+                        // handleFieldChange("sub_title", value);
+                      }}
+                    />
+
+                    {errors.activities && (
+                      <Text textStyle="sm" color="red">
+                        {errors.activities.message}
+                      </Text>
+                    )}
+                  </Field>
+                )}
+              />
+              <HStack>
+                <Controller
+                  name="date"
+                  control={control}
+                  rules={{ required: "Date is requried" }}
+                  render={({ field }) => (
+                    <Field label="Date">
+                      <Input
+                        {...field}
+                        type="date"
+                        placeholder="Enter a date"
+                        size={"md"}
+                        onChange={(value) => field.onChange(value)}
+                      />
+                      {errors.date && (
+                        <Text textStyle="sm" color="red">
+                          {errors.date.message}
+                        </Text>
+                      )}
+                    </Field>
+                  )}
+                />
+                <Controller
+                  name="location"
+                  control={control}
+                  rules={{ required: "Location is requried" }}
+                  render={({ field }) => (
+                    <Field label="Location">
+                      <Input
+                        {...field}
+                        placeholder="Enter location"
+                        size={"md"}
+                        onChange={(value) => field.onChange(value)}
+                      />
+                      {errors.location && (
+                        <Text textStyle="sm" color="red">
+                          {errors.location.message}
+                        </Text>
+                      )}
+                    </Field>
+                  )}
+                />
+              </HStack>
+
+              <Controller
                 name="banner_image"
                 control={control}
                 rules={{ required: "Image URL is required" }}
@@ -219,137 +323,6 @@ const WorkForms = () => {
                   </Field>
                 )}
               />
-              <Controller
-                name="objective"
-                control={control}
-                rules={{ required: "Objective is required" }}
-                render={({ field }) => (
-                  <Field label="Objective">
-                    <CommonEditor
-                      value={field.value}
-                      onChange={(value) => {
-                        field.onChange(value);
-                        // handleFieldChange("sub_title", value);
-                      }}
-                    />
-
-                    {errors.objective && (
-                      <Text textStyle="sm" color="red">
-                        {errors.objective.message}
-                      </Text>
-                    )}
-                  </Field>
-                )}
-              />
-              <Controller
-                name="activities"
-                control={control}
-                rules={{ required: "Activities is required" }}
-                render={({ field }) => (
-                  <Field label="Activities">
-                    <CommonEditor
-                      value={field.value}
-                      onChange={(value) => {
-                        field.onChange(value);
-                        // handleFieldChange("sub_title", value);
-                      }}
-                    />
-
-                    {errors.activities && (
-                      <Text textStyle="sm" color="red">
-                        {errors.activities.message}
-                      </Text>
-                    )}
-                  </Field>
-                )}
-              />
-              <HStack>
-                <Controller
-                  name="sector"
-                  control={control}
-                  rules={{ required: "Work Sector is required" }}
-                  render={({ field }) => (
-                    <Field label="Sector">
-                      <CreatableSelect
-                        {...field}
-                        placeholder="Create or select sector"
-                        styles={{
-                          container: (base) => ({
-                            ...base,
-                            width: "100%",
-                          }),
-                          control: (base) => ({
-                            ...base,
-                            width: "100%",
-                            borderColor: errors.sector
-                              ? "red"
-                              : base.borderColor,
-                          }),
-                          menu: (base) => ({
-                            ...base,
-                            width: "100%",
-                          }),
-                          valueContainer: (base) => ({
-                            ...base,
-                            width: "100%",
-                          }),
-                          input: (base) => ({
-                            ...base,
-                            width: "100%",
-                          }),
-                        }}
-                      />
-
-                      {errors.sector && (
-                        <Text textStyle="sm" color="red">
-                          {errors.sector.message}
-                        </Text>
-                      )}
-                    </Field>
-                  )}
-                />
-                <Controller
-                  name="date"
-                  control={control}
-                  rules={{ required: "Date is requried" }}
-                  render={({ field }) => (
-                    <Field label="Date">
-                      <Input
-                        {...field}
-                        type="date"
-                        placeholder="Enter a date"
-                        size={"md"}
-                        onChange={(value) => field.onChange(value)}
-                      />
-                      {errors.date && (
-                        <Text textStyle="sm" color="red">
-                          {errors.date.message}
-                        </Text>
-                      )}
-                    </Field>
-                  )}
-                />
-                <Controller
-                  name="location"
-                  control={control}
-                  rules={{ required: "Location is requried" }}
-                  render={({ field }) => (
-                    <Field label="Location">
-                      <Input
-                        {...field}
-                        placeholder="Enter location"
-                        size={"md"}
-                        onChange={(value) => field.onChange(value)}
-                      />
-                      {errors.location && (
-                        <Text textStyle="sm" color="red">
-                          {errors.location.message}
-                        </Text>
-                      )}
-                    </Field>
-                  )}
-                />
-              </HStack>
             </VStack>
 
             <HStack justifyContent="flex-end" mt={4}>

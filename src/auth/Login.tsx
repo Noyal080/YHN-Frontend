@@ -17,7 +17,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Field } from "@/components/ui/field";
 import { PasswordInput } from "@/components/ui/password-input";
-import { Checkbox } from "@/components/ui/checkbox";
 import { axiosInstance } from "@/api/axios";
 import useCommonToast from "@/common/CommonToast";
 import axios from "axios";
@@ -204,20 +203,7 @@ const Login = () => {
                     </Box>
                   )}
                 />
-                <MotionFlex
-                  justifyContent="space-between"
-                  alignItems="center"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.5, duration: 0.3 }}
-                >
-                  <Checkbox variant={"outline"} colorPalette={"blue.500"}>
-                    Remember me
-                  </Checkbox>
-                  <Text color="blue.600" cursor="pointer" fontSize="sm">
-                    Forgot password?
-                  </Text>
-                </MotionFlex>
+
                 <MotionButton
                   type="submit"
                   background={"blue.600"}

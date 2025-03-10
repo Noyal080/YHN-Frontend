@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AdminLayout from "../Layout";
 import { EventType } from "@/utils/types";
 import { useNavigate, useParams } from "react-router-dom";
@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/file-upload";
 import { compressImage } from "@/helper/imageCompressor";
 import { Button } from "@/components/ui/button";
+import { axiosInstance } from "@/api/axios";
 
 const EventForm = () => {
   //Gallery is missing
@@ -51,6 +52,21 @@ const EventForm = () => {
       gallery: pageData.gallery || null,
     },
   });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axiosInstance.get(`/events/${id}`);
+        setPageData(res.data);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    if (id) {
+      fetchData();
+    }
+  }, [id]);
 
   const onSubmit = (data: EventType) => {
     console.log(data);

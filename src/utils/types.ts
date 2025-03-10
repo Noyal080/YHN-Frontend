@@ -164,3 +164,11 @@ export type PaginationProps = {
   per_page: number ;
   has_more_pages: boolean | false;
 };
+
+export type VideoInputTypes = {
+  id? : number;
+  title : string;
+  description? : string;
+  video_url : string;
+  status : number
+}
