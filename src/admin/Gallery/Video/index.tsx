@@ -8,6 +8,9 @@ import { Column } from "@/utils";
 import { PaginationProps, VideoInputTypes } from "@/utils/types";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { axiosInstance } from "@/api/axios";
+import CommonModal from "@/common/CommonModal";
+import { Text } from "@chakra-ui/react";
 
 const VideoSection = () => {
   const navigate = useNavigate();
@@ -22,19 +25,6 @@ const VideoSection = () => {
   const [page, setPage] = useState<number>(1);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const debouncedSearch = useDebounce(searchQuery, 500);
-
-  useEffect(() => {
-    setRows([
-      {
-        id: 1,
-        title: "Sample Video",
-        description: "This is a sample video",
-        video_url:
-          "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4",
-        status: 1,
-      },
-    ]);
-  }, []);
 
   const columns: Column<VideoInputTypes>[] = [
     {
@@ -77,6 +67,49 @@ const VideoSection = () => {
     },
   ];
 
+  useEffect(() => {
+    const fetchGallery = async () => {
+      setLoading(true);
+
+      try {
+        const res = await axiosInstance.get("/video", {
+          params: { page, search: debouncedSearch },
+        });
+        const resData = res.data.data;
+
+        setRows(resData.data);
+        setPaginationData(resData.pagination);
+
+        setTriggerFetch(false);
+        setLoading(false);
+        // setLoading(false);
+      } catch (e) {
+        console.log(e);
+        setLoading(false);
+      }
+    };
+
+    fetchGallery();
+  }, [triggerFetch, debouncedSearch, page]);
+
+  const handleDelete = async (row: VideoInputTypes) => {
+    try {
+      await axiosInstance.delete(`/videos/${row.id}`);
+      showToast({
+        description: `${row.title} deleted succesfully`,
+        type: "success",
+      });
+      setModalOpen(false);
+      setTriggerFetch(true);
+    } catch (e) {
+      console.log(e);
+      showToast({
+        description: "Error while removing video data",
+        type: "error",
+      });
+    }
+  };
+
   return (
     <AdminLayout
       breadcrumbItems={[
@@ -106,6 +139,19 @@ const VideoSection = () => {
           setPage(page);
         }}
       />
+
+      <CommonModal
+        open={modalOpen}
+        onOpenChange={() => setModalOpen(false)}
+        title={"Remove Gallery Image"}
+        onButtonClick={() => handleDelete(selectedRow as VideoInputTypes)}
+      >
+        <Text>
+          {" "}
+          Are you sure you want to remove {selectedRow?.title}? This will
+          permanently remove all the data regarding the videos.{" "}
+        </Text>
+      </CommonModal>
     </AdminLayout>
   );
 };

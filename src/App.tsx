@@ -36,6 +36,7 @@ import WorkForms from "./admin/Projects/WorkForm";
 import EventForm from "./admin/Events/EventForm";
 import ImageViewSection from "./admin/Gallery/Image/ImageViewSection";
 import { ProtectedRoute, ReverseProtectedRoute } from "./common/ProtectedRoute";
+import VideoForm from "./admin/Gallery/Video/VideoForm";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -379,11 +380,29 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        {/* Video Section */}
         <Route
           path="/admin/gallery/videos"
           element={
             <ProtectedRoute>
               <VideoSection />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/gallery/videos/edit/:id"
+          element={
+            <ProtectedRoute>
+              <VideoForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/gallery/videos/add"
+          element={
+            <ProtectedRoute>
+              <VideoForm />
             </ProtectedRoute>
           }
         />

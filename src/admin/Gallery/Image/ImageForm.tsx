@@ -122,7 +122,7 @@ const ImageForm = () => {
     >
       <CardRoot m="auto" maxWidth="800px" mt={8} boxShadow="lg">
         <CardBody>
-          <Heading mb={6}>Add Images</Heading>
+          <Heading mb={6}>{id ? "Edit" : "Add"} Image</Heading>
           <form onSubmit={handleSubmit(onSubmit)}>
             <VStack gap={4} align={"stretch"}>
               <Controller
