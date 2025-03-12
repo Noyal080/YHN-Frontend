@@ -10,25 +10,60 @@ import AdminLayout from "../Layout";
 import { Controller, useForm } from "react-hook-form";
 import CommonEditor from "@/common/Editor";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { axiosInstance } from "@/api/axios";
+import useCommonToast from "@/common/CommonToast";
+
+type AboutType = {
+  description: string;
+};
 
 const Donations = () => {
-  const [editorData, setEditorData] = useState<string>("");
+  const [editorData, setEditorData] = useState<AboutType>({
+    description: "",
+  });
+  const { showToast } = useCommonToast();
+
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm({
+  } = useForm<AboutType>({
     values: {
-      editorData: editorData || "",
+      description: editorData.description || "",
     },
   });
-  // const token = localStorage.getItem("accessToken");
-  // const token = useSelector((state: RootState) => state.auth.token);
-  // axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
-  const onSubmit = () => {
-    console.log("posted");
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axiosInstance.get("/donation");
+        setEditorData(res.data.data);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const onSubmit = async (data: AboutType) => {
+    try {
+      await axiosInstance.put(`/donation`, data);
+      showToast({
+        description: "Updated Successfully",
+        type: "success",
+      });
+    } catch (e) {
+      console.log(e);
+      showToast({
+        description: "Failed",
+        type: "error",
+      });
+    }
+  };
+
+  const handleFieldChange = (field: keyof AboutType, value: string) => {
+    setEditorData((prev) => ({ ...prev, [field]: value }));
   };
   return (
     <AdminLayout
@@ -51,7 +86,7 @@ const Donations = () => {
           <form onSubmit={handleSubmit(onSubmit)}>
             <VStack gap={4} align="stretch">
               <Controller
-                name="editorData"
+                name="description"
                 control={control}
                 render={({ field }) => (
                   <>
@@ -59,12 +94,12 @@ const Donations = () => {
                       value={field.value}
                       onChange={(value) => {
                         field.onChange(value);
-                        setEditorData(value);
+                        handleFieldChange("description", value);
                       }}
                     />
-                    {errors.editorData && (
+                    {errors.description && (
                       <Text textStyle="sm" color="red">
-                        {errors.editorData.message}
+                        {errors.description.message}
                       </Text>
                     )}
                   </>

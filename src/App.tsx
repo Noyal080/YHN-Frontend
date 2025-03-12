@@ -26,7 +26,7 @@ import ImageSection from "./admin/Gallery/Image";
 import VideoSection from "./admin/Gallery/Video";
 import TeamsForms from "./admin/About/Teams/TeamsForms";
 import MessageRequest from "./admin/Home/Message Request";
-import MessageView from "./admin/Home/Message Request/MessageView";
+// import MessageView from "./admin/Home/Message Request/MessageView";
 import ImageForm from "./admin/Gallery/Image/ImageForm";
 import InternshipSection from "./admin/Join Us/Internship";
 import VolunteerSection from "./admin/Join Us/Volunteer";
@@ -129,14 +129,14 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route
+        {/* <Route
           path="/admin/messages/view/:id"
           element={
             <ProtectedRoute>
               <MessageView />
             </ProtectedRoute>
           }
-        />
+        /> */}
         {/* About us Section */}
         <Route
           path="/admin/about"

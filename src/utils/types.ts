@@ -119,10 +119,10 @@ export type TeamsData = {
 };
 
 export type MessageRequestType = {
-  id?: number;
-  full_name: string;
+  id: number;
+  name: string;
   email: string;
-  phone: number;
+  phone: string;
   address: string;
   message: string;
 };

@@ -38,7 +38,7 @@ const UsSection = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axiosInstance.get("/aboutus/1");
+        const res = await axiosInstance.get("/aboutus");
         setEditorData(res.data.data);
       } catch (e) {
         console.log(e);
@@ -49,7 +49,7 @@ const UsSection = () => {
 
   const onSubmit = async (data: AboutType) => {
     try {
-      await axiosInstance.put(`/aboutus/1`, data);
+      await axiosInstance.put(`/aboutus`, data);
       showToast({
         description: "Updated Successfully",
         type: "success",
@@ -85,9 +85,6 @@ const UsSection = () => {
       >
         <CardBody>
           <Heading mb={6}>Who are we Section</Heading>
-          <div
-            dangerouslySetInnerHTML={{ __html: editorData.description }}
-          ></div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <VStack gap={4} align="stretch">
               <Controller
