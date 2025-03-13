@@ -6,8 +6,9 @@ import CommonTable from "@/common/Table/CommonTable";
 import useDebounce from "@/helper/debounce";
 import { Column } from "@/utils";
 import { MessageRequestType, PaginationProps } from "@/utils/types";
-import { Box, Text } from "@chakra-ui/react";
+import { Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import MessageContent from "./MessageComponent";
 
 const MessageRequest = () => {
   const [selectedRow, setSelectedRow] = useState<MessageRequestType | null>(
@@ -18,18 +19,11 @@ const MessageRequest = () => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [triggerFetch, setTriggerFetch] = useState(false);
   const { showToast } = useCommonToast();
-  const [expandedMessages, setExpandedMessages] = useState<number[]>([]);
 
   const [paginationData, setPaginationData] = useState<PaginationProps>();
   const [page, setPage] = useState<number>(1);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const debouncedSearch = useDebounce(searchQuery, 500);
-
-  const toggleMessage = (id: number) => {
-    setExpandedMessages((prev) =>
-      prev.includes(id) ? prev.filter((msgId) => msgId !== id) : [...prev, id]
-    );
-  };
 
   const columns: Column<MessageRequestType>[] = [
     {
@@ -61,35 +55,7 @@ const MessageRequest = () => {
       key: "message",
       label: "Message",
       visible: true,
-      render: (row) => (
-        <Box width="300px">
-          <div
-            style={{
-              display: "-webkit-box",
-              WebkitBoxOrient: "vertical",
-              overflow: "hidden",
-              WebkitLineClamp: expandedMessages.includes(row.id) ? "none" : 2,
-              cursor: "pointer",
-            }}
-            onClick={() => toggleMessage(row.id)}
-          >
-            {row.message}
-          </div>
-          {row.message.length > 100 && (
-            <div
-              onClick={() => toggleMessage(row.id)}
-              style={{
-                color: "teal",
-                cursor: "pointer",
-                marginTop: "8px",
-                fontWeight: "bold",
-              }}
-            >
-              {expandedMessages.includes(row.id) ? "Show Less" : "Show More"}
-            </div>
-          )}
-        </Box>
-      ),
+      render: (row) => <MessageContent message={row.message} />,
     },
   ];
 
