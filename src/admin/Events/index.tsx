@@ -7,9 +7,10 @@ import CommonTable from "@/common/Table/CommonTable";
 import useDebounce from "@/helper/debounce";
 import { axiosInstance } from "@/api/axios";
 import CommonModal from "@/common/CommonModal";
-import { Text } from "@chakra-ui/react";
+import { Box, Image, Text } from "@chakra-ui/react";
 import useCommonToast from "@/common/CommonToast";
 import { Switch } from "@/components/ui/switch";
+import ImageSlider from "../Gallery/Image/ImageSllider";
 
 const EventSection = () => {
   const [selectedRow, setSelectedRow] = useState<EventType | null>(null);
@@ -28,12 +29,48 @@ const EventSection = () => {
   const columns: Column<EventType>[] = [
     { key: "id", label: "#", visible: true },
     { key: "title", label: "Title", visible: true },
-    { key: "description", label: "Description", visible: false },
-    { key: "banner_image", label: "Banner", visible: true },
+    {
+      key: "description",
+      label: "Description",
+      visible: false,
+      render: (row) => {
+        return (
+          <Box
+            whiteSpace="normal" // Allow text wrapping
+            wordBreak="break-word" // Break long words
+            maxW={"400px"}
+          >
+            <Text
+              truncate
+              dangerouslySetInnerHTML={{ __html: row.description }}
+              lineClamp={2}
+            />
+          </Box>
+        );
+      },
+    },
+    {
+      key: "banner_image",
+      label: "Banner",
+      visible: true,
+      render: (row) => (
+        <Image
+          rounded="md"
+          h="200px"
+          w="300px"
+          fit="contain"
+          src={row["banner_image"]}
+        />
+      ),
+    },
     { key: "banner_date", label: "Date", visible: false },
     { key: "banner_location", label: "Location", visible: false },
-    { key: "gallery", label: "Gallery", visible: false },
-    { key: "status", label: "Ststus", visible: false },
+    {
+      key: "gallery",
+      label: "Gallery",
+      visible: false,
+      render: (row) => <ImageSlider images={row.gallery.gallery_images} />,
+    },
     {
       key: "status",
       label: "Status",

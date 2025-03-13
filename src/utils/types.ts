@@ -151,12 +151,20 @@ export type EventType = {
   id?: number;
   title: string;
   description: string;
-  banner_image: File | string;
+  banner_image: string;
   banner_date: string;
   banner_location: string;
-  gallery: ImageInputTypes;
+  gallery: GallerEventType;
   status : number
 };
+
+export type GallerEventType = {
+  id?: number;
+  title: string;
+  gallery_images: Gallery[];
+  status: number;
+}
+
 
 export type EventInputs = {
   id?: number;

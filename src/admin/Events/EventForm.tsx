@@ -25,6 +25,7 @@ import { axiosInstance } from "@/api/axios";
 import { Switch } from "@/components/ui/switch";
 import Select from "react-select";
 import useDebounce from "@/helper/debounce";
+import useCommonToast from "@/common/CommonToast";
 
 interface GalleryOptions {
   label: string;
@@ -36,6 +37,7 @@ const EventForm = () => {
   const { id } = useParams();
   const [selectedImage, setSelectedImage] = useState<string | null>();
   const [options, setOptions] = useState<GalleryOptions[]>([]);
+  const { showToast } = useCommonToast();
   const [pageData, setPageData] = useState<EventInputs>({
     title: "",
     description: "",
@@ -98,8 +100,8 @@ const EventForm = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axiosInstance.get(`/events/${id}`);
-        setPageData(res.data);
+        const res = await axiosInstance.get(`/newsandevents/${id}`);
+        setPageData(res.data.data);
       } catch (e) {
         console.log(e);
       }
@@ -110,9 +112,52 @@ const EventForm = () => {
     }
   }, [id]);
 
-  const onSubmit = (data: EventInputs) => {
-    console.log(data);
+  const handleImageUpload = async (file: File) => {
+    try {
+      const compressedFile = await compressImage(file);
+      setSelectedImage(URL.createObjectURL(compressedFile));
+      handleFieldChange("banner_image", compressedFile);
+    } catch (error) {
+      console.error("Compression error:", error);
+    }
   };
+
+  const onSubmit = async (data: EventInputs) => {
+    try {
+      if (id) {
+        await axiosInstance.post(`/newsandevents/${id}`, data, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        showToast({
+          description: "News and Event updated successfully!",
+          type: "success",
+        });
+      } else {
+        await axiosInstance.post(`/newsandevents`, data, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        showToast({
+          description: "News and Event added successfully",
+          type: "success",
+        });
+      }
+      navigate("/admin/events");
+    } catch (e) {
+      console.error(e);
+      if (id) {
+        showToast({
+          description: "Failed to update the news and events",
+          type: "error",
+        });
+      } else {
+        showToast({
+          description: "Failed to add the news and events",
+          type: "error",
+        });
+      }
+    }
+  };
+
   return (
     <AdminLayout
       breadcrumbItems={[
@@ -138,7 +183,9 @@ const EventForm = () => {
                       {...field}
                       placeholder="Enter a title"
                       size={"md"}
-                      onChange={(value) => field.onChange(value)}
+                      onChange={(e) => {
+                        handleFieldChange("title", e.target.value);
+                      }}
                     />
                     {errors.title && (
                       <Text textStyle="sm" color="red">
@@ -158,7 +205,7 @@ const EventForm = () => {
                       value={field.value}
                       onChange={(value) => {
                         field.onChange(value);
-                        // handleFieldChange("sub_title", value);
+                        handleFieldChange("description", value);
                       }}
                     />
 
@@ -239,7 +286,9 @@ const EventForm = () => {
                         type="date"
                         placeholder="Enter a date"
                         size={"md"}
-                        onChange={(value) => field.onChange(value)}
+                        onChange={(e) =>
+                          handleFieldChange("banner_date", e.target.value)
+                        }
                       />
                       {errors.banner_date && (
                         <Text textStyle="sm" color="red">
@@ -259,7 +308,9 @@ const EventForm = () => {
                         {...field}
                         placeholder="Enter location"
                         size={"md"}
-                        onChange={(value) => field.onChange(value)}
+                        onChange={(e) =>
+                          handleFieldChange("banner_location", e.target.value)
+                        }
                       />
                       {errors.banner_location && (
                         <Text textStyle="sm" color="red">
@@ -281,20 +332,10 @@ const EventForm = () => {
                       alignItems="stretch"
                       maxFiles={1}
                       accept={["image/*"]}
-                      onFileAccept={async (value) => {
+                      onFileAccept={(value) => {
                         const file = value.files[0];
-                        try {
-                          // Compress the image and get the compressed file
-                          const compressedFile = await compressImage(file);
-
-                          // Set the preview image URL (you can remove this line if not needed)
-                          setSelectedImage(URL.createObjectURL(compressedFile));
-
-                          // Update the form state with the compressed image file
-                          field.onChange(compressedFile);
-                        } catch (error) {
-                          console.error("Compression error:", error);
-                        }
+                        field.onChange(file);
+                        handleImageUpload(file);
                       }}
                     >
                       <FileUploadDropzone
