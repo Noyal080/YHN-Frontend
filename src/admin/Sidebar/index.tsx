@@ -132,7 +132,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
       ],
     },
     { id: 4, label: "Our Works", icon: FiFolder, link: "/admin/our-works" },
-    { id: 5, label: "Events", icon: FiCalendar, link: "/admin/events" },
+    { id: 5, label: "News & Events", icon: FiCalendar, link: "/admin/events" },
     // { id: 6, label: "Services", icon: FiSettings, link: "/admin/services" },
     {
       id: 7,

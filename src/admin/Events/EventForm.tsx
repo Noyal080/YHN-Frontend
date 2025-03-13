@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import AdminLayout from "../Layout";
-import { EventType } from "@/utils/types";
+import { EventInputs, ImageInputTypes } from "@/utils/types";
 import { useNavigate, useParams } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
 import {
@@ -22,36 +22,78 @@ import {
 import { compressImage } from "@/helper/imageCompressor";
 import { Button } from "@/components/ui/button";
 import { axiosInstance } from "@/api/axios";
+import { Switch } from "@/components/ui/switch";
+import Select from "react-select";
+import useDebounce from "@/helper/debounce";
+
+interface GalleryOptions {
+  label: string;
+  value: number;
+}
 
 const EventForm = () => {
   //Gallery is missing
   const { id } = useParams();
   const [selectedImage, setSelectedImage] = useState<string | null>();
-  const [pageData, setPageData] = useState<EventType>({
+  const [options, setOptions] = useState<GalleryOptions[]>([]);
+  const [pageData, setPageData] = useState<EventInputs>({
     title: "",
     description: "",
     banner_image: "",
-    date: "",
-    location: "",
-    gallery: null,
+    banner_date: "",
+    banner_location: "",
+    gallery_id: null,
+    status: 1,
   });
   const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const debouncedSearch = useDebounce(searchQuery, 500);
 
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<EventType>({
+  } = useForm<EventInputs>({
     values: {
       id: pageData.id,
       title: pageData.title || "",
       description: pageData.description || "",
       banner_image: pageData.banner_image || "",
-      date: pageData.date || "",
-      location: pageData.location || "",
-      gallery: pageData.gallery || null,
+      banner_date: pageData.banner_date || "",
+      banner_location: pageData.banner_location || "",
+      gallery_id: pageData.gallery_id || null,
+      status: pageData.status || 1,
     },
   });
+
+  useEffect(() => {
+    const fetchGallery = async () => {
+      try {
+        const res = await axiosInstance.get("/gallery", {
+          params: { search: debouncedSearch },
+        });
+        const resData = res.data.data;
+
+        const mappedOptions = resData.data.map((item: ImageInputTypes) => ({
+          value: item.id,
+          label: item.title, // Ensure this field exists in your API response
+        }));
+        setOptions(mappedOptions);
+        // setLoading(false);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    fetchGallery();
+  }, [debouncedSearch]);
+
+  const handleFieldChange = (
+    field: keyof EventInputs,
+    value: string | number | boolean | File
+  ) => {
+    setPageData((prev) => ({ ...prev, [field]: value }));
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -68,22 +110,22 @@ const EventForm = () => {
     }
   }, [id]);
 
-  const onSubmit = (data: EventType) => {
+  const onSubmit = (data: EventInputs) => {
     console.log(data);
   };
   return (
     <AdminLayout
       breadcrumbItems={[
         { label: "Dashboard", link: "/admin" },
-        { label: "Events", link: "/events" },
-        { label: `${id ? "Edit" : "Add"} Events` },
+        { label: "News & Events", link: "/admin/events" },
+        { label: `${id ? "Edit" : "Add"} News & Events` },
       ]}
-      title={`Events Section`}
-      activeSidebarItem="Events"
+      title={`News & Events Section`}
+      activeSidebarItem="News & Events"
     >
       <CardRoot m="auto" maxWidth="800px" mt={8} boxShadow="lg">
         <CardBody>
-          <Heading mb={6}>{id ? "Edit Our Works" : "Add Our Works"}</Heading>
+          <Heading mb={6}>{id ? "Edit" : "Add"} News & Events</Heading>
           <form onSubmit={handleSubmit(onSubmit)}>
             <VStack gap={4} align={"stretch"}>
               <Controller
@@ -128,6 +170,106 @@ const EventForm = () => {
                   </Field>
                 )}
               />
+
+              <Controller
+                name="gallery_id"
+                control={control}
+                rules={{ required: "Gallery is required" }}
+                render={({ field }) => (
+                  <Field label="Gallery">
+                    <Select
+                      {...field}
+                      isClearable
+                      options={options}
+                      value={options.find(
+                        (option) => option.value === field.value
+                      )}
+                      onChange={(selectedOption) =>
+                        handleFieldChange(
+                          "gallery_id",
+                          selectedOption?.value || ""
+                        )
+                      }
+                      placeholder="Select Gallery related to the event"
+                      onInputChange={(inputValue) => setSearchQuery(inputValue)}
+                      styles={{
+                        container: (base) => ({
+                          ...base,
+                          width: "100%",
+                        }),
+                        control: (base) => ({
+                          ...base,
+                          width: "100%",
+                          borderColor: errors.gallery_id
+                            ? "red"
+                            : base.borderColor,
+                        }),
+                        menu: (base) => ({
+                          ...base,
+                          width: "100%",
+                        }),
+                        valueContainer: (base) => ({
+                          ...base,
+                          width: "100%",
+                        }),
+                        input: (base) => ({
+                          ...base,
+                          width: "100%",
+                        }),
+                      }}
+                    />
+                    {errors.gallery_id && (
+                      <Text textStyle="sm" color="red">
+                        {errors.gallery_id.message}
+                      </Text>
+                    )}
+                  </Field>
+                )}
+              />
+
+              <HStack>
+                <Controller
+                  name="banner_date"
+                  control={control}
+                  rules={{ required: "Date is requried" }}
+                  render={({ field }) => (
+                    <Field label="Date">
+                      <Input
+                        {...field}
+                        type="date"
+                        placeholder="Enter a date"
+                        size={"md"}
+                        onChange={(value) => field.onChange(value)}
+                      />
+                      {errors.banner_date && (
+                        <Text textStyle="sm" color="red">
+                          {errors.banner_date.message}
+                        </Text>
+                      )}
+                    </Field>
+                  )}
+                />
+                <Controller
+                  name="banner_location"
+                  control={control}
+                  rules={{ required: "Location is requried" }}
+                  render={({ field }) => (
+                    <Field label="Location">
+                      <Input
+                        {...field}
+                        placeholder="Enter location"
+                        size={"md"}
+                        onChange={(value) => field.onChange(value)}
+                      />
+                      {errors.banner_location && (
+                        <Text textStyle="sm" color="red">
+                          {errors.banner_location.message}
+                        </Text>
+                      )}
+                    </Field>
+                  )}
+                />
+              </HStack>
 
               <Controller
                 name="banner_image"
@@ -186,49 +328,29 @@ const EventForm = () => {
                 )}
               />
 
-              <HStack>
-                <Controller
-                  name="date"
-                  control={control}
-                  rules={{ required: "Date is requried" }}
-                  render={({ field }) => (
-                    <Field label="Date">
-                      <Input
-                        {...field}
-                        type="date"
-                        placeholder="Enter a date"
-                        size={"md"}
-                        onChange={(value) => field.onChange(value)}
+              <Controller
+                name="status"
+                control={control}
+                render={({ field }) => (
+                  <Field>
+                    <HStack justify="space-between" align="center">
+                      <Text fontWeight="500" textStyle="md">
+                        Show Events
+                      </Text>
+                      <Switch
+                        checked={field.value === 1}
+                        onCheckedChange={(value) => {
+                          const numericValue = value.checked ? 1 : 0; // Convert `true`/`false` to `1`/`0`
+                          field.onChange(numericValue);
+                          handleFieldChange("status", numericValue);
+                        }}
+                        color="black"
+                        colorPalette="blue"
                       />
-                      {errors.date && (
-                        <Text textStyle="sm" color="red">
-                          {errors.date.message}
-                        </Text>
-                      )}
-                    </Field>
-                  )}
-                />
-                <Controller
-                  name="location"
-                  control={control}
-                  rules={{ required: "Location is requried" }}
-                  render={({ field }) => (
-                    <Field label="Location">
-                      <Input
-                        {...field}
-                        placeholder="Enter location"
-                        size={"md"}
-                        onChange={(value) => field.onChange(value)}
-                      />
-                      {errors.location && (
-                        <Text textStyle="sm" color="red">
-                          {errors.location.message}
-                        </Text>
-                      )}
-                    </Field>
-                  )}
-                />
-              </HStack>
+                    </HStack>
+                  </Field>
+                )}
+              />
             </VStack>
 
             <HStack justifyContent="flex-end" mt={4}>

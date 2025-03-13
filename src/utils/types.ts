@@ -152,9 +152,21 @@ export type EventType = {
   title: string;
   description: string;
   banner_image: File | string;
-  date: string;
-  location: string;
-  gallery: number | null;
+  banner_date: string;
+  banner_location: string;
+  gallery: ImageInputTypes;
+  status : number
+};
+
+export type EventInputs = {
+  id?: number;
+  title: string;
+  description: string;
+  banner_image: File | string;
+  banner_date: string;
+  banner_location: string;
+  gallery_id : number | null;
+  status : number
 };
 
 export type PaginationProps = {

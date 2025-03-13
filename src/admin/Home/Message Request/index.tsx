@@ -87,26 +87,7 @@ const MessageRequest = () => {
           params: { page, search: debouncedSearch },
         });
         const data = res.data.data;
-        setRows([
-          {
-            id: 1,
-            name: "John Doe",
-            email: "john.doe@example.com",
-            phone: "123-456-7890",
-            address: "123 Main St, City, Country",
-            message:
-              "This is a long message that can be expanded.This is a long message that can be expanded.This is a long message that can be expanded.This is a long message that can be expanded.This is a long message that can be expanded.This is a long message that can be expanded.This is a long message that can be expanded.This is a long message that can be expanded.This is a long message that can be expanded.This is a long message that can be expanded.",
-          },
-          {
-            id: 2,
-            name: "Jane Smith",
-            email: "jane.smith@example.com",
-            phone: "987-654-3210",
-            address: "456 Elm St, City, Country",
-            message:
-              "Another long message that can be expanded. This is a long message that can be expanded.This is a long message that can be expanded.This is a long message that can be expanded.This is a long message that can be expanded.This is a long message that can be expanded.This is a long message that can be expanded.This is a long message that can be expanded.This is a long message that can be expanded.This is a long message that can be expanded.This is a long message that can be expanded.",
-          },
-        ]);
+        setRows(data.data);
         setPaginationData(data.pagination);
         setLoading(false);
         setTriggerFetch(false);
@@ -152,7 +133,7 @@ const MessageRequest = () => {
       <CommonModal
         open={modalOpen}
         onOpenChange={() => setModalOpen(false)}
-        title={"Remove Volunteer Data"}
+        title={"Remove Message Request Data"}
         onButtonClick={() => handleDelete(selectedRow as MessageRequestType)}
       >
         <Text>
@@ -161,7 +142,8 @@ const MessageRequest = () => {
             {" "}
             {selectedRow?.name}{" "}
           </strong>{" "}
-          ? This will permanently remove all the data regarding the volunteer{" "}
+          ? This will permanently remove all the data regarding the message
+          requests{" "}
         </Text>
       </CommonModal>
     </AdminLayout>
