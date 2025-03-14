@@ -83,3 +83,12 @@ export interface TableSkeletonProps<T> {
 export interface ImageSliderProps {
   images: Gallery[];
 }
+
+
+export interface User {
+  name: string;
+  email: string;
+  phone: string ;
+  address: string ;
+  image: string;
+}

@@ -37,6 +37,7 @@ import EventForm from "./admin/Events/EventForm";
 import ImageViewSection from "./admin/Gallery/Image/ImageViewSection";
 import { ProtectedRoute, ReverseProtectedRoute } from "./common/ProtectedRoute";
 import VideoForm from "./admin/Gallery/Video/VideoForm";
+import ProfilePage from "./admin/profile";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -214,6 +215,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+
         {/* <Route
           path="/admin/careers"
           element={
@@ -403,6 +405,15 @@ function App() {
           element={
             <ProtectedRoute>
               <VideoForm />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
             </ProtectedRoute>
           }
         />

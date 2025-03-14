@@ -76,7 +76,7 @@ const AdminNavbar: React.FC<NavbarProps> = ({ title, breadcrumbItems }) => {
             />
           </MenuTrigger>
           <MenuContent>
-            <MenuItem value="prof" onClick={() => navigate("/admin/sliders")}>
+            <MenuItem value="prof" onClick={() => navigate("/admin/profile")}>
               {" "}
               My Profile{" "}
             </MenuItem>
