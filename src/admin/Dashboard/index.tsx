@@ -21,7 +21,9 @@ import {
   SelectTrigger,
   SelectValueText,
 } from "@/components/ui/select";
-import { createListCollection } from "@chakra-ui/react";
+import { Container, createListCollection } from "@chakra-ui/react";
+import InsightCard from "./InsightCard";
+import DashboardMessageRequest from "./MessageRequestTable";
 
 const projectDataByProvince = [
   { name: "Bagmati", projects: 120 },
@@ -161,6 +163,10 @@ const AdminDashboard = () => {
       title="Admin HomePage"
       activeSidebarItem="Dashboard"
     >
+      <Container maxW="container.xl">
+        <InsightCard />
+      </Container>
+
       <div
         style={{
           background: "white",
@@ -256,6 +262,9 @@ const AdminDashboard = () => {
             </div>
           </div>
         </div>
+      </div>
+      <div>
+        <DashboardMessageRequest />
       </div>
     </AdminLayout>
   );
