@@ -47,7 +47,7 @@ const InternshipForm = () => {
     const fetchData = async () => {
       try {
         const res = await axiosInstance.get(`/internships/${id}`);
-        setInternshipData(res.data);
+        setInternshipData(res.data.data);
       } catch (e) {
         console.log(e);
       }

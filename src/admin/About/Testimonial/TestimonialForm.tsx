@@ -40,12 +40,12 @@ const TestimonialForm = () => {
   >([]);
   const navigate = useNavigate();
   const [testimonialData, setTestimonialData] = useState<TestimonialInput>({
-    status: 1,
-    image: "",
     name: "",
     description: "",
     designation_id: null,
     category: "",
+    image: "",
+    status: 1,
   });
 
   const {
@@ -55,16 +55,14 @@ const TestimonialForm = () => {
   } = useForm<TestimonialInput>({
     values: {
       id: testimonialData.id,
-      name: testimonialData.name,
-      description: testimonialData.description,
-      image: testimonialData.image,
-      designation_id: testimonialData.designation_id,
-      category: testimonialData.category,
-      status: testimonialData.status,
+      name: testimonialData.name || "",
+      description: testimonialData.description || "",
+      image: testimonialData.image || "",
+      designation_id: testimonialData.designation_id || null,
+      category: testimonialData.category || "",
+      status: testimonialData.status || 1,
     },
   });
-  // const token = localStorage.getItem("accessToken");
-  // axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
   useEffect(() => {
     const fetchTestimonialData = async () => {
@@ -76,7 +74,9 @@ const TestimonialForm = () => {
         console.error(e);
       }
     };
-    fetchTestimonialData();
+    if (id) {
+      fetchTestimonialData();
+    }
   }, [id]);
 
   useEffect(() => {
@@ -118,6 +118,7 @@ const TestimonialForm = () => {
   const onSubmit = async (data: TestimonialInput) => {
     try {
       const submissionData = { ...data };
+      const formData = new FormData();
 
       // Check if the position is a new one (a string value)
       if (typeof submissionData.designation_id === "string") {
@@ -134,8 +135,16 @@ const TestimonialForm = () => {
         submissionData.designation_id = newPositionId;
       }
 
+      Object.entries(submissionData).forEach(([key, value]) => {
+        if (key === "image" && typeof value === "string") {
+          formData.append(key, "");
+        } else {
+          formData.append(key, value as Blob);
+        }
+      });
+
       if (id) {
-        await axiosInstance.post(`/testimonials/${id}`, submissionData, {
+        await axiosInstance.post(`/testimonials/${id}`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         showToast({

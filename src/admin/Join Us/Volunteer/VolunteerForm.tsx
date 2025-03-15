@@ -47,7 +47,7 @@ const VolunteerForm = () => {
     const fetchData = async () => {
       try {
         const res = await axiosInstance.get(`/volunteers/${id}`);
-        setVolunteerData(res.data);
+        setVolunteerData(res.data.data);
       } catch (e) {
         console.log(e);
       }

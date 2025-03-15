@@ -57,7 +57,11 @@ const SliderSection = () => {
           h="200px"
           w="300px"
           fit="contain"
-          src={row["image"]}
+          src={
+            typeof row["image"] === "string"
+              ? row["image"]
+              : URL.createObjectURL(row["image"])
+          }
         />
       ),
     },

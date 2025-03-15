@@ -19,7 +19,7 @@ export type SliderInput = {
   title: string;
   sub_title: string;
   priority_order: number;
-  image: string;
+  image: string | File;
   status: number;
   button_title?: string;
   button_route?: string;
@@ -41,7 +41,7 @@ export type TestimonialInput = {
   id?: number;
   name: string;
   status: number;
-  image: string;
+  image: string | File;
   description: string;
   designation_id : number  | null;
   // designation: string;

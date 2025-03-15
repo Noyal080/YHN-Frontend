@@ -83,8 +83,19 @@ const SliderForm = () => {
 
   const onSubmit = async (sliderData: SliderInput) => {
     try {
+      const data = new FormData();
+      Object.entries(sliderData).forEach(([key, value]) => {
+        if (key === "image" && typeof value === "string") {
+          data.append(key, "");
+        } else {
+          data.append(key, value as Blob);
+        }
+      });
+
       if (id) {
-        await axiosInstance.post(`/sliders/${id}`, sliderData);
+        await axiosInstance.post(`/sliders/${id}`, data, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
         showToast({
           description: "Slider updated successfully!",
           type: "success",
