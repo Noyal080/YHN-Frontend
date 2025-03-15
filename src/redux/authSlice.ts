@@ -9,6 +9,7 @@ interface UserData {
   id: string;
   name: string;
   email: string;
+  image :string
   // role_id: 1,
 }
 
@@ -17,7 +18,8 @@ const initialState : AuthSlice = {
     user : {
         id : "", 
         name : "",
-        email : ""
+        email : "",
+        image : ""
     }
 }
 
@@ -31,10 +33,13 @@ const authSlice = createSlice({
         },
         logout: (state) => {
             state.token = "";
-            state.user = { id: "", name: "", email: "" };
+            state.user = { id: "", name: "", email: ""  , image : ""};
+          },
+        updateUser: (state, action: PayloadAction<Partial<UserData>>) => {
+            state.user = { ...state.user, ...action.payload };
           },
     }
 })
 
-export const {loginSuccess , logout} = authSlice.actions;
+export const {loginSuccess , logout , updateUser } = authSlice.actions;
 export default authSlice.reducer

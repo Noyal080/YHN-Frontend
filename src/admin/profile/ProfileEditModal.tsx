@@ -29,6 +29,8 @@ import {
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
+import { useDispatch } from "react-redux";
+import { updateUser } from "@/redux/authSlice";
 
 interface ProfileEditModalProps {
   isOpen: boolean;
@@ -40,14 +42,9 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
   onClose,
   profileData,
 }) => {
-  const [data, setData] = useState<User>({
-    name: "",
-    email: "",
-    phone: " ",
-    address: "",
-    image: "",
-  });
+  const [data, setData] = useState<User>(profileData);
   const [selectedImage, setSelectedImage] = useState<string | null>();
+  const dispatch = useDispatch();
   const { showToast } = useCommonToast();
   const {
     control,
@@ -56,11 +53,11 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
     formState: { errors },
   } = useForm<User>({
     values: {
-      name: profileData.name || "",
-      email: profileData.email || "",
-      phone: profileData.phone,
-      address: profileData.address || "",
-      image: profileData.image || "",
+      name: data.name || "",
+      email: data.email || "",
+      phone: data.phone,
+      address: data.address || "",
+      image: data.image || "",
     },
   });
 
@@ -83,9 +80,21 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
 
   const onSubmit = async (formData: User) => {
     try {
-      await axiosInstance.post("/profile/update", formData, {
+      const data = new FormData();
+
+      Object.entries(formData).forEach(([key, value]) => {
+        if (key === "image" && typeof value === "string") {
+          data.append(key, "");
+        } else {
+          data.append(key, value as Blob);
+        }
+      });
+
+      const res = await axiosInstance.post("/profile/update", data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
+      dispatch(updateUser(res.data.data.user));
+
       reset();
       setSelectedImage(null);
       onClose();
@@ -239,14 +248,9 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                         label="Drag and drop here to upload"
                         description=".png, .jpg up to 5MB"
                       />
-                      {(selectedImage || data.image) && (
+                      {(selectedImage || profileData.image) && (
                         <Image
-                          src={
-                            selectedImage ||
-                            (typeof data.image === "string"
-                              ? data.image
-                              : undefined)
-                          }
+                          src={selectedImage || profileData.image}
                           alt="Uploaded or Existing Image"
                           objectFit="contain"
                           aspectRatio={2 / 1}

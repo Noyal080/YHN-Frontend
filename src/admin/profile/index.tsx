@@ -23,6 +23,7 @@ const ProfilePage = () => {
   const [loading, setLoading] = useState(true);
   const [imageError, setImageError] = useState(false);
   const [editModal, setEditModal] = useState(false);
+  const [refetchData, setRefetchData] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,10 +34,11 @@ const ProfilePage = () => {
         console.log(e);
       } finally {
         setLoading(false);
+        setRefetchData(false);
       }
     };
     fetchData();
-  }, []);
+  }, [refetchData]);
 
   console.log(profileData);
 
@@ -199,7 +201,10 @@ const ProfilePage = () => {
       {profileData && (
         <ProfileEditModal
           isOpen={editModal}
-          onClose={() => setEditModal(false)}
+          onClose={() => {
+            setEditModal(false);
+            setRefetchData(true);
+          }}
           profileData={profileData}
         />
       )}

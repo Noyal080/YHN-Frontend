@@ -12,9 +12,13 @@ import {
 } from "@/components/ui/menu";
 import { useNavigate } from "react-router-dom";
 import useCommonToast from "@/common/CommonToast";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const AdminNavbar: React.FC<NavbarProps> = ({ title, breadcrumbItems }) => {
   const navigate = useNavigate();
+  const { image, name } = useSelector((state: RootState) => state.auth.user);
+
   const { showToast } = useCommonToast();
   const logout = async () => {
     try {
@@ -69,8 +73,8 @@ const AdminNavbar: React.FC<NavbarProps> = ({ title, breadcrumbItems }) => {
         <MenuRoot size={"md"} positioning={{ placement: "bottom" }}>
           <MenuTrigger>
             <Avatar
-              name="Segun Adebayo"
-              src="https://bit.ly/sage-adebayo"
+              name={name}
+              src={image}
               variant="outline"
               cursor={"pointer"}
             />
