@@ -2,7 +2,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import AdminLayout from "../Layout";
 import { useEffect, useState } from "react";
 import CreatableSelect from "react-select/creatable";
-import { OurWorkType } from "@/utils/types";
+import Select from "react-select";
+import { ImageInputTypes, OurWorkType } from "@/utils/types";
 import { Controller, useForm } from "react-hook-form";
 import {
   CardBody,
@@ -23,21 +24,36 @@ import {
 } from "@/components/ui/file-upload";
 import { compressImage } from "@/helper/imageCompressor";
 import { axiosInstance } from "@/api/axios";
+import { GalleryOptions } from "@/utils";
+import useDebounce from "@/helper/debounce";
+import { Switch } from "@/components/ui/switch";
+import useCommonToast from "@/common/CommonToast";
+
+interface SectorOptions {
+  label: string;
+  value: number;
+}
 
 const WorkForms = () => {
   //Gallery is missing
   const { id } = useParams();
   const [selectedImage, setSelectedImage] = useState<string | null>();
+  const [options, setOptions] = useState<GalleryOptions[]>([]);
+  const [sectorOptions, setSectorOptions] = useState<SectorOptions[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const debouncedSearch = useDebounce(searchQuery, 500);
+  const { showToast } = useCommonToast();
   const [pageData, setPageData] = useState<OurWorkType>({
     title: "",
-    sector: "",
+    sector_id: null,
     description: "",
     banner_image: "",
-    date: "",
-    location: "",
-    gallery: null,
-    objective: "",
+    banner_date: "",
+    banner_location: "",
+    gallery_id: null,
+    objectives: "",
     activities: "",
+    status: 1,
   });
   const navigate = useNavigate();
 
@@ -49,16 +65,48 @@ const WorkForms = () => {
     values: {
       id: pageData.id,
       title: pageData.title || "",
-      sector: pageData.sector || "",
+      sector_id: pageData.sector_id,
       description: pageData.description || "",
       banner_image: pageData.banner_image || "",
-      date: pageData.date || "",
-      location: pageData.location || "",
-      gallery: pageData.gallery || null,
-      objective: pageData.objective || "",
+      banner_date: pageData.banner_date || "",
+      banner_location: pageData.banner_location || "",
+      gallery_id: pageData.gallery_id || null,
+      objectives: pageData.objectives || "",
       activities: pageData.activities || "",
+      status: pageData.status || 1,
     },
   });
+
+  useEffect(() => {
+    const fetchGalleryandSectors = async () => {
+      try {
+        const res = await axiosInstance.get("/gallery", {
+          params: { search: debouncedSearch },
+        });
+        const sectorRes = await axiosInstance.get("/sectors");
+
+        const resData = res.data.data;
+        const mappedOptions = resData.data.map((item: ImageInputTypes) => ({
+          value: item.id,
+          label: item.title, // Ensure this field exists in your API response
+        }));
+        setOptions(mappedOptions);
+        const result = sectorRes.data.data.data;
+        setSectorOptions(
+          result.map((sector: { name: string; id: number }) => ({
+            label: sector.name,
+            value: sector.id,
+          }))
+        );
+
+        // setLoading(false);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    fetchGalleryandSectors();
+  }, [debouncedSearch]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -75,8 +123,43 @@ const WorkForms = () => {
     }
   }, [id]);
 
-  const onSubmit = (data: OurWorkType) => {
-    console.log(data);
+  const onSubmit = async (data: OurWorkType) => {
+    try {
+      const submissionData = { ...data };
+      if (typeof submissionData.sector_id === "string") {
+        // Create new position first
+        const positionResponse = await axiosInstance.post("/sectors", {
+          name: submissionData.sector_id,
+        });
+
+        // Extract the new position ID from the response
+        const newPositionId = positionResponse.data.data.id;
+
+        // Update the submission data with the new position ID
+        submissionData.sector_id = newPositionId;
+      }
+      if (id) {
+        await axiosInstance.post(`/ourworks/${id}`, submissionData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        showToast({
+          description: "Work updated successfully",
+          type: "success",
+        });
+        navigate("/admin/our-works");
+      } else {
+        await axiosInstance.post("/ourworks", submissionData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        showToast({
+          description: "Work added successfully",
+          type: "success",
+        });
+        navigate("/admin/our-works");
+      }
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
@@ -136,51 +219,169 @@ const WorkForms = () => {
                   </Field>
                 )}
               />
-              <Controller
-                name="sector"
-                control={control}
-                rules={{ required: "Work Sector is required" }}
-                render={({ field }) => (
-                  <Field label="Sector">
-                    <CreatableSelect
-                      {...field}
-                      placeholder="Create or select sector"
-                      styles={{
-                        container: (base) => ({
-                          ...base,
-                          width: "100%",
-                        }),
-                        control: (base) => ({
-                          ...base,
-                          width: "100%",
-                          borderColor: errors.sector ? "red" : base.borderColor,
-                        }),
-                        menu: (base) => ({
-                          ...base,
-                          width: "100%",
-                        }),
-                        valueContainer: (base) => ({
-                          ...base,
-                          width: "100%",
-                        }),
-                        input: (base) => ({
-                          ...base,
-                          width: "100%",
-                        }),
-                      }}
-                    />
+              <HStack>
+                <Controller
+                  name="sector_id"
+                  control={control}
+                  rules={{ required: "Work Sector is required" }}
+                  render={({ field }) => (
+                    <Field label="Sector">
+                      <CreatableSelect
+                        {...field}
+                        placeholder="Create or select sector"
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        options={sectorOptions as any}
+                        value={
+                          // Find the matching option object if field.value is a number
+                          typeof field.value === "number"
+                            ? sectorOptions.find(
+                                (option) => option.value === field.value
+                              )
+                            : // If it's a custom value (string) or null, handle accordingly
+                            field.value
+                            ? { label: String(field.value), value: field.value }
+                            : null
+                        }
+                        onChange={(selectedOption) => {
+                          // Update both React Hook Form state and local state
+                          field.onChange(selectedOption?.value || null);
+                        }}
+                        styles={{
+                          container: (base) => ({
+                            ...base,
+                            width: "100%",
+                          }),
+                          control: (base) => ({
+                            ...base,
+                            width: "100%",
+                            borderColor: errors.sector_id
+                              ? "red"
+                              : base.borderColor,
+                          }),
+                          menu: (base) => ({
+                            ...base,
+                            width: "100%",
+                          }),
+                          valueContainer: (base) => ({
+                            ...base,
+                            width: "100%",
+                          }),
+                          input: (base) => ({
+                            ...base,
+                            width: "100%",
+                          }),
+                        }}
+                      />
 
-                    {errors.sector && (
-                      <Text textStyle="sm" color="red">
-                        {errors.sector.message}
-                      </Text>
-                    )}
-                  </Field>
-                )}
-              />
+                      {errors.sector_id && (
+                        <Text textStyle="sm" color="red">
+                          {errors.sector_id.message}
+                        </Text>
+                      )}
+                    </Field>
+                  )}
+                />
+                <Controller
+                  name="gallery_id"
+                  control={control}
+                  render={({ field }) => (
+                    <Field label="Gallery">
+                      <Select
+                        {...field}
+                        isClearable
+                        options={options}
+                        value={options.find(
+                          (option) => option.value === field.value
+                        )}
+                        onChange={(selectedOption) =>
+                          field.onChange(selectedOption?.value)
+                        }
+                        placeholder="Select Gallery related to the work"
+                        onInputChange={(inputValue) =>
+                          setSearchQuery(inputValue)
+                        }
+                        styles={{
+                          container: (base) => ({
+                            ...base,
+                            width: "100%",
+                          }),
+                          control: (base) => ({
+                            ...base,
+                            width: "100%",
+                            borderColor: errors.gallery_id
+                              ? "red"
+                              : base.borderColor,
+                          }),
+                          menu: (base) => ({
+                            ...base,
+                            width: "100%",
+                          }),
+                          valueContainer: (base) => ({
+                            ...base,
+                            width: "100%",
+                          }),
+                          input: (base) => ({
+                            ...base,
+                            width: "100%",
+                          }),
+                        }}
+                      />
+                      {errors.gallery_id && (
+                        <Text textStyle="sm" color="red">
+                          {errors.gallery_id.message}
+                        </Text>
+                      )}
+                    </Field>
+                  )}
+                />
+              </HStack>
+
+              <HStack>
+                <Controller
+                  name="banner_date"
+                  control={control}
+                  rules={{ required: "Date is requried" }}
+                  render={({ field }) => (
+                    <Field label="Date">
+                      <Input
+                        {...field}
+                        type="date"
+                        placeholder="Enter a date"
+                        size={"md"}
+                        onChange={(value) => field.onChange(value)}
+                      />
+                      {errors.banner_date && (
+                        <Text textStyle="sm" color="red">
+                          {errors.banner_date.message}
+                        </Text>
+                      )}
+                    </Field>
+                  )}
+                />
+                <Controller
+                  name="banner_location"
+                  control={control}
+                  rules={{ required: "Location is requried" }}
+                  render={({ field }) => (
+                    <Field label="Location">
+                      <Input
+                        {...field}
+                        placeholder="Enter location"
+                        size={"md"}
+                        onChange={(value) => field.onChange(value)}
+                      />
+                      {errors.banner_location && (
+                        <Text textStyle="sm" color="red">
+                          {errors.banner_location.message}
+                        </Text>
+                      )}
+                    </Field>
+                  )}
+                />
+              </HStack>
 
               <Controller
-                name="objective"
+                name="objectives"
                 control={control}
                 rules={{ required: "Objective is required" }}
                 render={({ field }) => (
@@ -193,9 +394,9 @@ const WorkForms = () => {
                       }}
                     />
 
-                    {errors.objective && (
+                    {errors.objectives && (
                       <Text textStyle="sm" color="red">
-                        {errors.objective.message}
+                        {errors.objectives.message}
                       </Text>
                     )}
                   </Field>
@@ -223,49 +424,6 @@ const WorkForms = () => {
                   </Field>
                 )}
               />
-              <HStack>
-                <Controller
-                  name="date"
-                  control={control}
-                  rules={{ required: "Date is requried" }}
-                  render={({ field }) => (
-                    <Field label="Date">
-                      <Input
-                        {...field}
-                        type="date"
-                        placeholder="Enter a date"
-                        size={"md"}
-                        onChange={(value) => field.onChange(value)}
-                      />
-                      {errors.date && (
-                        <Text textStyle="sm" color="red">
-                          {errors.date.message}
-                        </Text>
-                      )}
-                    </Field>
-                  )}
-                />
-                <Controller
-                  name="location"
-                  control={control}
-                  rules={{ required: "Location is requried" }}
-                  render={({ field }) => (
-                    <Field label="Location">
-                      <Input
-                        {...field}
-                        placeholder="Enter location"
-                        size={"md"}
-                        onChange={(value) => field.onChange(value)}
-                      />
-                      {errors.location && (
-                        <Text textStyle="sm" color="red">
-                          {errors.location.message}
-                        </Text>
-                      )}
-                    </Field>
-                  )}
-                />
-              </HStack>
 
               <Controller
                 name="banner_image"
@@ -320,6 +478,29 @@ const WorkForms = () => {
                         {errors.banner_image.message}
                       </Text>
                     )}
+                  </Field>
+                )}
+              />
+
+              <Controller
+                name="status"
+                control={control}
+                render={({ field }) => (
+                  <Field>
+                    <HStack justify="space-between" align="center">
+                      <Text fontWeight="500" textStyle="md">
+                        Show Work
+                      </Text>
+                      <Switch
+                        checked={field.value === 1}
+                        onCheckedChange={(value) => {
+                          const statusValue = value.checked ? 1 : 0;
+                          field.onChange(statusValue);
+                        }}
+                        color="black"
+                        colorPalette="blue"
+                      />
+                    </HStack>
                   </Field>
                 )}
               />

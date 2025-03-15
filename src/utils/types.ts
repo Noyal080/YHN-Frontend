@@ -134,17 +134,38 @@ export type InternshipType = {
   apply_link: string;
 };
 
+export type OurWorks = {
+  id?: number;
+  title: string;
+  description: string;
+  sector_id: number | null,
+  sector : {
+    name : string
+  }
+  banner_image: File | string;
+  banner_date: string;
+  banner_location: string;
+  gallery_id : number | null;
+  gallery : {
+    name : string
+  }
+  objectives: string;
+  activities: string;
+  status : number
+}
+
 export type OurWorkType = {
   id?: number;
   title: string;
   description: string;
-  sector: string;
+  sector_id: number | null,
   banner_image: File | string;
-  date: string;
-  location: string;
-  gallery: number | null;
-  objective: string;
+  banner_date: string;
+  banner_location: string;
+  gallery_id : number | null;
+  objectives: string;
   activities: string;
+  status : number
 };
 
 export type EventType = {

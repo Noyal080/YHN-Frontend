@@ -92,3 +92,8 @@ export interface User {
   address: string ;
   image: string;
 }
+
+export interface GalleryOptions {
+  label: string;
+  value: number;
+}

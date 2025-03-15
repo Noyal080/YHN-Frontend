@@ -12,11 +12,13 @@ import {
   Legend,
 } from "recharts";
 import { useState } from "react";
-import { Box, Heading, Flex } from "@chakra-ui/react";
+import { Box, Heading, Flex, VStack, Text } from "@chakra-ui/react";
 import { ChartData } from "@/utils/types";
 import { FiBarChart2, FiPieChart, FiTable } from "react-icons/fi";
 import { LuChartLine } from "react-icons/lu";
 import TooltipButton from "./ToolTipButton";
+import { Skeleton } from "@/components/ui/skeleton";
+import { HiSwatch } from "react-icons/hi2";
 
 interface GraphContainerProps {
   data: ChartData[];
@@ -24,6 +26,7 @@ interface GraphContainerProps {
   title: string;
   xLabel?: string;
   yLabel?: string;
+  loading: boolean;
 }
 
 const GraphContainer = ({
@@ -32,12 +35,42 @@ const GraphContainer = ({
   title,
   xLabel,
   yLabel,
+  loading = false,
 }: GraphContainerProps) => {
   const [chartType, setChartType] = useState<"Bar" | "Line" | "Pie" | "Table">(
     "Bar"
   );
 
   const renderChart = () => {
+    if (loading) {
+      return (
+        <Box textAlign="center" py={10}>
+          <VStack gap={4} align="stretch">
+            <Skeleton height="20px" />
+            <Skeleton height="200px" />
+            <Skeleton height="20px" />
+          </VStack>
+        </Box>
+      );
+    }
+
+    if (data.length === 0) {
+      return (
+        <Box textAlign="center" py={10}>
+          <Box
+            as={HiSwatch} // Use the HISwatch icon component
+            boxSize="100px"
+            opacity={0.5}
+            mx="auto"
+            mb={4}
+          />
+          <Text fontSize="lg" color="gray.500">
+            No data found.
+          </Text>
+        </Box>
+      );
+    }
+
     switch (chartType) {
       case "Line":
         return (

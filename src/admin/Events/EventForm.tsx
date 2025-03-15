@@ -26,14 +26,9 @@ import { Switch } from "@/components/ui/switch";
 import Select from "react-select";
 import useDebounce from "@/helper/debounce";
 import useCommonToast from "@/common/CommonToast";
-
-interface GalleryOptions {
-  label: string;
-  value: number;
-}
+import { GalleryOptions } from "@/utils";
 
 const EventForm = () => {
-  //Gallery is missing
   const { id } = useParams();
   const [selectedImage, setSelectedImage] = useState<string | null>();
   const [options, setOptions] = useState<GalleryOptions[]>([]);
@@ -124,8 +119,17 @@ const EventForm = () => {
 
   const onSubmit = async (data: EventInputs) => {
     try {
+      const formData = new FormData();
+
+      Object.entries(data).forEach(([key, value]) => {
+        if (key === "banner_image" && typeof value === "string") {
+          formData.append(key, "");
+        } else {
+          formData.append(key, value as Blob);
+        }
+      });
       if (id) {
-        await axiosInstance.post(`/newsandevents/${id}`, data, {
+        await axiosInstance.post(`/newsandevents/${id}`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         showToast({
@@ -133,7 +137,7 @@ const EventForm = () => {
           type: "success",
         });
       } else {
-        await axiosInstance.post(`/newsandevents`, data, {
+        await axiosInstance.post(`/newsandevents`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         showToast({
