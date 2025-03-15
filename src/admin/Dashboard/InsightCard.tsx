@@ -9,9 +9,12 @@ import {
   Skeleton,
   useBreakpointValue,
   CardRoot,
+  HStack,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { FiBriefcase, FiCalendar, FiMail, FiUsers } from "react-icons/fi";
+import { LuQuote } from "react-icons/lu";
 
 interface InsightData {
   counts: {
@@ -59,6 +62,14 @@ const InsightCard = () => {
   // Responsive columns for the grid
   const columns = useBreakpointValue({ base: 1, md: 3, lg: 5 });
 
+  const iconMap: Record<string, JSX.Element> = {
+    works: <FiBriefcase size={24} />,
+    events: <FiCalendar size={24} />,
+    teams: <FiUsers size={24} />,
+    testimonials: <LuQuote size={24} />,
+    messages: <FiMail size={24} />,
+  };
+
   return (
     <Box>
       <Heading mb={5}>Dashboard Insights</Heading>
@@ -87,7 +98,10 @@ const InsightCard = () => {
               >
                 <CardRoot textAlign="center" p={4}>
                   <CardHeader>
-                    <Heading size="md">{capitalizeFirstWord(key)}</Heading>
+                    <HStack justify="center" gap={2}>
+                      {iconMap[key]} {/* Icon beside heading */}
+                      <Heading size="md">{capitalizeFirstWord(key)}</Heading>
+                    </HStack>
                   </CardHeader>
                   <CardBody>
                     <Text fontSize="xl" fontWeight="bold">
