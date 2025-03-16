@@ -9,7 +9,6 @@ interface ProtectedRouteProps {
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   // const token = Cookies.get("accessToken");
   const token = useSelector((state: RootState) => state.auth.token);
-  console.log(token);
 
   return token ? children : <Navigate to="/login" replace />;
 };

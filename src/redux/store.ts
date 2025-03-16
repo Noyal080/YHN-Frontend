@@ -1,6 +1,6 @@
 // src/store.ts
 import { configureStore } from "@reduxjs/toolkit";
-import { persistStore, persistReducer } from "redux-persist";
+import { persistStore, persistReducer, FLUSH } from "redux-persist";
 import storage from "redux-persist/lib/storage"; 
 import sidebarReducer from './sidebarSlice'
 import authReducer from "./authSlice"
@@ -17,6 +17,12 @@ export const store = configureStore({
     auth : persistedAuth,
     sidebar: sidebarReducer, // Add more reducers as needed
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH], // Ignore FLUSH action
+      },
+    }),
 });
 
 

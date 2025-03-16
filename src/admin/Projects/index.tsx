@@ -37,7 +37,7 @@ const ProjectSection = () => {
   const debouncedSearch = useDebounce(searchQuery, 500);
 
   const handleEdit = (row: OurWorks) => {
-    navigate(`/admin/internship/edit/${row.id}`);
+    navigate(`/admin/our-works/edit/${row.id}`);
   };
 
   const handleDelete = async (row: OurWorks) => {

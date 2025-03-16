@@ -22,13 +22,14 @@ const AdminNavbar: React.FC<NavbarProps> = ({ title, breadcrumbItems }) => {
   const logout = async () => {
     try {
       // await axiosInstance.post("/logout");
-      persistor.purge();
+      await persistor.purge();
       localStorage.removeItem("accessToken");
       localStorage.removeItem("userData");
       showToast({
         description: "Logged out successfully",
         type: "success",
       });
+
       navigate("/login");
     } catch (e) {
       console.error(e);
