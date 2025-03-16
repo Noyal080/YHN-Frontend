@@ -1,7 +1,6 @@
 import AdminLayout from "@/admin/Layout";
 import useCommonToast from "@/common/CommonToast";
 import CommonTable from "@/common/Table/CommonTable";
-import { Switch } from "@/components/ui/switch";
 import ReactPlayer from "react-player";
 import useDebounce from "@/helper/debounce";
 import { Column } from "@/utils";
@@ -48,21 +47,10 @@ const VideoSection = () => {
           <ReactPlayer
             url={row.video_url}
             controls={true}
-            width="100%" // Takes 100% of the parent container's width
-            height="100%" // Takes 100% of the parent container's height
+            width="100%"
+            height="100%"
           />
         </div>
-      ),
-    },
-    {
-      key: "status",
-      label: "Status",
-      visible: true,
-      render: (row) => (
-        <Switch
-          checked={row.status === 1}
-          onCheckedChange={() => console.log(row.id)}
-        />
       ),
     },
   ];
@@ -125,7 +113,7 @@ const VideoSection = () => {
         columns={columns}
         rows={rows}
         addName="Add Videos"
-        onView={(row) => navigate(`/admin/gallery/videos/view/${row.id}`)}
+        onEdit={(row) => navigate(`/admin/gallery/videos/edit/${row.id}`)}
         onDelete={(row) => {
           setModalOpen(true);
           setSelectedRow(row);

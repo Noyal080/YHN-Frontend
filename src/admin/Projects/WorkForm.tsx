@@ -111,8 +111,8 @@ const WorkForms = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axiosInstance.get(`/works/${id}`);
-        setPageData(res.data);
+        const res = await axiosInstance.get(`/ourwork/${id}`);
+        setPageData(res.data.data);
       } catch (e) {
         console.log(e);
       }
@@ -138,8 +138,10 @@ const WorkForms = () => {
         // Update the submission data with the new position ID
         submissionData.sector_id = newPositionId;
       }
+      console.log(submissionData);
+
       if (id) {
-        await axiosInstance.post(`/ourworks/${id}`, submissionData, {
+        await axiosInstance.post(`/ourwork/${id}`, submissionData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         showToast({
@@ -148,7 +150,7 @@ const WorkForms = () => {
         });
         navigate("/admin/our-works");
       } else {
-        await axiosInstance.post("/ourworks", submissionData, {
+        await axiosInstance.post("/ourwork", submissionData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         showToast({

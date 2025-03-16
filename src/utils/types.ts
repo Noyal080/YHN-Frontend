@@ -209,7 +209,6 @@ export type PaginationProps = {
 export type VideoInputTypes = {
   id? : number;
   title : string;
-  description? : string;
   video_url : string;
-  status : number
+
 }
