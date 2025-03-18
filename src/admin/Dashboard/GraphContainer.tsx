@@ -23,7 +23,7 @@ import { HiSwatch } from "react-icons/hi2";
 interface GraphContainerProps {
   data: ChartData[];
   dataKey: string;
-  title: string;
+  title: string | React.ReactNode;
   xLabel?: string;
   yLabel?: string;
   loading: boolean;
@@ -40,6 +40,7 @@ const GraphContainer = ({
   const [chartType, setChartType] = useState<"Bar" | "Line" | "Pie" | "Table">(
     "Bar"
   );
+  console.log(data);
 
   const renderChart = () => {
     if (loading) {
@@ -59,7 +60,7 @@ const GraphContainer = ({
         <Box textAlign="center" py={10}>
           <Box
             as={HiSwatch} // Use the HISwatch icon component
-            boxSize="100px"
+            boxSize="50px"
             opacity={0.5}
             mx="auto"
             mb={4}

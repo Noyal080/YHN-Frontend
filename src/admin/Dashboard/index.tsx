@@ -8,62 +8,96 @@ import { useEffect, useState } from "react";
 import { axiosInstance } from "@/api/axios";
 import { ChartData } from "@/utils/types";
 
-interface DashboardGraph extends ChartData {
+interface EventDashboardGraph extends ChartData {
   name: string;
   events: number;
+}
+
+interface WorkDashboardGraph extends ChartData {
+  name: string;
+  works: number;
 }
 
 const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   // Set the default chartType to "Line"
   const breadcrumbItems = [{ label: "Dashboard", link: "/admin" }];
-  const [eventByCity, setEventByCity] = useState<DashboardGraph[]>([]);
-  const [eventByDate, setEventByDate] = useState<DashboardGraph[]>([]);
-  const [workByCity, setWorkByCity] = useState<DashboardGraph[]>([]);
-  const [workByDate, setWorkByDate] = useState<DashboardGraph[]>([]);
+  const [eventByProvince, setEventByProvince] = useState<EventDashboardGraph[]>(
+    []
+  );
+  const [eventByCity, setEventByCity] = useState<EventDashboardGraph[]>([]);
+  const [eventByDate, setEventByDate] = useState<EventDashboardGraph[]>([]);
+  const [workByCity, setWorkByCity] = useState<WorkDashboardGraph[]>([]);
+  const [workByProvince, setWorkByProvince] = useState<WorkDashboardGraph[]>(
+    []
+  );
+  const [workByDate, setWorkByDate] = useState<WorkDashboardGraph[]>([]);
 
   useEffect(() => {
     const fetchGraphData = async () => {
       try {
         const res = await axiosInstance.get("/dashboard/graphs");
         const result = res.data.data;
-        const eventLocationCounts = result.event_location_counts;
-        const eventDateCounts = result.event_date_counts;
-        const workLocationCounts = result.work_location_counts;
-        const workDateCounts = result.work_date_counts;
-        // Transform the data into the desired format
-        const eventDataByCity: DashboardGraph[] = Object.entries(
-          eventLocationCounts
+
+        const eventDataByCity: EventDashboardGraph[] = Object.entries(
+          result.event_location_counts_by_category
+            .banner_location_cityordistrict
         ).map(([name, events]) => ({
           name,
-          events: events as number, // Ensure events is treated as a number
+          events: events as number,
         }));
 
-        const eventDataByDate: DashboardGraph[] = Object.entries(
-          eventDateCounts
+        const eventDataByProvince: EventDashboardGraph[] = Object.entries(
+          result.event_location_counts_by_category
+            .banner_location_stateorprovince
         ).map(([name, events]) => ({
           name,
-          events: events as number, // Ensure events is treated as a number
+          events: events as number,
         }));
 
-        const workDataByDate: DashboardGraph[] = Object.entries(
-          workDateCounts
+        const eventDataByDate: EventDashboardGraph[] = Object.entries(
+          result.event_date_counts
         ).map(([name, events]) => ({
           name,
-          events: events as number, // Ensure events is treated as a number
+          events: events as number,
         }));
 
-        const workDataByLocation: DashboardGraph[] = Object.entries(
-          workLocationCounts
+        const workDataByCity: WorkDashboardGraph[] = Object.entries(
+          result.work_location_counts_by_category.banner_location_cityordistrict
         ).map(([name, events]) => ({
           name,
-          events: events as number, // Ensure events is treated as a number
+          works: events as number,
         }));
+
+        const workDataByProvince: WorkDashboardGraph[] = Object.entries(
+          result.work_location_counts_by_category
+            .banner_location_stateorprovince
+        ).map(([name, events]) => ({
+          name,
+          works: events as number,
+        }));
+
+        const workDataByDate: WorkDashboardGraph[] = Object.entries(
+          result.work_date_counts
+        ).map(([name, events]) => ({
+          name,
+          works: events as number,
+        }));
+
+        // Log the transformed data for debugging
+        console.log("Event Data by City:", eventDataByCity);
+        console.log("Event Data by Province:", eventDataByProvince);
+        console.log("Event Data by Date:", eventDataByDate);
+        console.log("Work Data by City:", workDataByCity);
+        console.log("Work Data by Province:", workDataByProvince);
+        console.log("Work Data by Date:", workDataByDate);
 
         // Set the state with the transformed data
         setEventByCity(eventDataByCity);
+        setEventByProvince(eventDataByProvince);
         setEventByDate(eventDataByDate);
-        setWorkByCity(workDataByLocation);
+        setWorkByCity(workDataByCity);
+        setWorkByProvince(workDataByProvince);
         setWorkByDate(workDataByDate);
       } catch (e) {
         console.error(e);
@@ -90,18 +124,31 @@ const AdminDashboard = () => {
           flexWrap: "wrap",
           gap: "20px",
           marginTop: "25px",
+          width: "100%", // Ensure the container takes full width
         }}
       >
-        <div style={{ flex: "1 1 calc(50% - 10px)", marginBottom: "20px" }}>
+        <div
+          style={{
+            flex: "1 1 calc(50% - 10px)",
+            marginBottom: "20px",
+            minWidth: "300px",
+          }}
+        >
           <GraphContainer
             loading={loading}
             data={workByCity}
             dataKey="works"
-            title="Works by Province"
+            title="Works by City"
             yLabel="No. of Work"
           />
         </div>
-        <div style={{ flex: "1 1 calc(50% - 10px)", marginBottom: "20px" }}>
+        <div
+          style={{
+            flex: "1 1 calc(50% - 10px)",
+            marginBottom: "20px",
+            minWidth: "300px",
+          }}
+        >
           <GraphContainer
             loading={loading}
             data={workByDate}
@@ -117,23 +164,76 @@ const AdminDashboard = () => {
           flexWrap: "wrap",
           gap: "20px",
           marginTop: "25px",
+          width: "100%", // Ensure the container takes full width
         }}
       >
-        <div style={{ flex: "1 1 calc(50% - 10px)", marginBottom: "20px" }}>
+        <div
+          style={{
+            flex: "1 1 calc(50% - 10px)",
+            marginBottom: "20px",
+            minWidth: "300px",
+          }}
+        >
           <GraphContainer
             loading={loading}
-            data={eventByDate}
-            dataKey="events"
-            title="Events by Date"
-            yLabel="No. of Events"
+            data={workByProvince}
+            dataKey="works"
+            title="Works by Province"
+            yLabel="No. of Work"
           />
         </div>
-        <div style={{ flex: "1 1 calc(50% - 10px)", marginBottom: "20px" }}>
+        <div
+          style={{
+            flex: "1 1 calc(50% - 10px)",
+            marginBottom: "20px",
+            minWidth: "300px",
+          }}
+        >
+          <GraphContainer
+            loading={loading}
+            data={eventByProvince}
+            dataKey="events"
+            title="Event by Province"
+            yLabel="No. of Work"
+          />
+        </div>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "20px",
+          marginTop: "25px",
+          width: "100%", // Ensure the container takes full width
+        }}
+      >
+        <div
+          style={{
+            flex: "1 1 calc(50% - 10px)",
+            marginBottom: "20px",
+            minWidth: "300px",
+          }}
+        >
           <GraphContainer
             loading={loading}
             data={eventByCity}
             dataKey="events"
             title="Events by City"
+            yLabel="No. of Events"
+          />
+        </div>
+        <div
+          style={{
+            flex: "1 1 calc(50% - 10px)",
+            marginBottom: "20px",
+            minWidth: "300px",
+          }}
+        >
+          <GraphContainer
+            loading={loading}
+            data={eventByDate}
+            dataKey="events"
+            title="Events by Date"
             yLabel="No. of Events"
           />
         </div>

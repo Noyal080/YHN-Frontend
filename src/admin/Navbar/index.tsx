@@ -11,33 +11,28 @@ import {
 } from "@/components/ui/menu";
 import { useNavigate } from "react-router-dom";
 import useCommonToast from "@/common/CommonToast";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { persistor, RootState } from "@/redux/store";
+import { logout } from "@/redux/authSlice";
 
 const AdminNavbar: React.FC<NavbarProps> = ({ title, breadcrumbItems }) => {
   const navigate = useNavigate();
   const { image, name } = useSelector((state: RootState) => state.auth.user);
-
+  const dispatch = useDispatch();
   const { showToast } = useCommonToast();
-  const logout = async () => {
-    try {
-      // await axiosInstance.post("/logout");
-      await persistor.purge();
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("userData");
-      showToast({
-        description: "Logged out successfully",
-        type: "success",
-      });
+  const onLogout = async () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("userData");
+    // await axiosInstance.post("/logout");
+    dispatch(logout());
+    localStorage.removeItem("persist:auth");
+    await persistor.purge();
+    showToast({
+      description: "Logged out successfully",
+      type: "success",
+    });
 
-      navigate("/login");
-    } catch (e) {
-      console.error(e);
-      showToast({
-        description: "Error while logging out",
-        type: "error",
-      });
-    }
+    navigate("/login");
   };
   return (
     <Flex
@@ -84,7 +79,7 @@ const AdminNavbar: React.FC<NavbarProps> = ({ title, breadcrumbItems }) => {
               {" "}
               My Profile{" "}
             </MenuItem>
-            <MenuItem value="prog" onClick={() => logout()}>
+            <MenuItem value="prog" onClick={() => onLogout()}>
               {" "}
               Logout
             </MenuItem>
