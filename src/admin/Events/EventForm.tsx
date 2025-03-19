@@ -3,6 +3,8 @@ import AdminLayout from "../Layout";
 import { EventInputs, ImageInputTypes } from "@/utils/types";
 import { useNavigate, useParams } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
+import nepalData from "../../common/cities.json";
+
 import {
   CardBody,
   CardRoot,
@@ -25,15 +27,14 @@ import { axiosInstance } from "@/api/axios";
 import { Switch } from "@/components/ui/switch";
 import Select from "react-select";
 import useDebounce from "@/helper/debounce";
-// import useCommonToast from "@/common/CommonToast";
+import useCommonToast from "@/common/CommonToast";
 import { GalleryOptions } from "@/utils";
-import StateCitySelector from "@/common/StateCitySelector";
 
 const EventForm = () => {
   const { id } = useParams();
   const [selectedImage, setSelectedImage] = useState<string | null>();
   const [options, setOptions] = useState<GalleryOptions[]>([]);
-  // const { showToast } = useCommonToast();
+  const { showToast } = useCommonToast();
   const [pageData, setPageData] = useState<EventInputs>({
     title: "",
     description: "",
@@ -70,6 +71,30 @@ const EventForm = () => {
     },
   });
 
+  const stateOptions = nepalData.map((item) => ({
+    value: item.state,
+    label: item.state,
+  }));
+
+  const [cityOptions, setCityOptions] = useState<
+    { value: string; label: string }[]
+  >([]);
+
+  // Handle state selection
+  const handleStateChange = (
+    selectedOption: { value: string; label: string } | null,
+    onChange: (value: string | undefined) => void
+  ) => {
+    onChange(selectedOption?.value || "");
+    setCityOptions(
+      selectedOption
+        ? nepalData
+            .find((item) => item.state === selectedOption.value)
+            ?.cities.map((city) => ({ value: city, label: city })) || []
+        : []
+    );
+  };
+
   useEffect(() => {
     const fetchGallery = async () => {
       try {
@@ -104,6 +129,14 @@ const EventForm = () => {
       try {
         const res = await axiosInstance.get(`/newsandevents/${id}`);
         setPageData(res.data.data);
+        const selectedState = res.data.data.banner_location_stateorprovince;
+        if (selectedState) {
+          const cities =
+            nepalData
+              .find((item) => item.state === selectedState)
+              ?.cities.map((city) => ({ value: city, label: city })) || [];
+          setCityOptions(cities);
+        }
       } catch (e) {
         console.log(e);
       }
@@ -125,7 +158,48 @@ const EventForm = () => {
   };
 
   const onSubmit = async (data: EventInputs) => {
-    console.log(data);
+    try {
+      const formData = new FormData();
+      formData.append("banner_location_country", "Nepal");
+      Object.entries(data).forEach(([key, value]) => {
+        if (key === "banner_image" && typeof value === "string") {
+          formData.append(key, "");
+        } else {
+          formData.append(key, value as Blob);
+        }
+      });
+      if (id) {
+        await axiosInstance.post(`/newsandevents/${id}`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        showToast({
+          description: "News and Event updated successfully!",
+          type: "success",
+        });
+      } else {
+        await axiosInstance.post(`/newsandevents`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        showToast({
+          description: "News and Event added successfully",
+          type: "success",
+        });
+      }
+      navigate("/admin/events");
+    } catch (e) {
+      console.error(e);
+      if (id) {
+        showToast({
+          description: "Failed to update the news and events",
+          type: "error",
+        });
+      } else {
+        showToast({
+          description: "Failed to add the news and events",
+          type: "error",
+        });
+      }
+    }
   };
 
   return (
@@ -271,24 +345,120 @@ const EventForm = () => {
                   )}
                 />
               </HStack>
-              <StateCitySelector
-                control={
-                  useForm({
-                    values: {
-                      banner_location_stateorprovince:
-                        pageData.banner_location_stateorprovince || "",
-                      banner_location_cityordistrict:
-                        pageData.banner_location_cityordistrict || "",
-                    },
-                  }).control
-                }
-                errors={{
-                  banner_location_stateorprovince:
-                    errors.banner_location_stateorprovince,
-                  banner_location_cityordistrict:
-                    errors.banner_location_cityordistrict,
-                }}
-              />
+              <HStack>
+                <Controller
+                  name={"banner_location_stateorprovince"}
+                  control={control}
+                  rules={{ required: "State is required" }}
+                  render={({ field }) => (
+                    <Field>
+                      State
+                      <Select
+                        {...field}
+                        options={stateOptions}
+                        value={stateOptions.find(
+                          (option) => option.value === field.value
+                        )}
+                        onChange={(selectedOption) => {
+                          handleStateChange(selectedOption, field.onChange);
+                          handleFieldChange(
+                            "banner_location_stateorprovince",
+                            selectedOption?.value || ""
+                          );
+                        }}
+                        placeholder="Select State"
+                        styles={{
+                          container: (base) => ({
+                            ...base,
+                            width: "100%",
+                          }),
+                          control: (base) => ({
+                            ...base,
+                            width: "100%",
+                            borderColor: errors.gallery_id
+                              ? "red"
+                              : base.borderColor,
+                          }),
+                          menu: (base) => ({
+                            ...base,
+                            width: "100%",
+                          }),
+                          valueContainer: (base) => ({
+                            ...base,
+                            width: "100%",
+                          }),
+                          input: (base) => ({
+                            ...base,
+                            width: "100%",
+                          }),
+                        }}
+                      />
+                      {errors.banner_location_stateorprovince && (
+                        <Text textStyle="sm" color="red">
+                          {errors.banner_location_stateorprovince.message}
+                        </Text>
+                      )}
+                    </Field>
+                  )}
+                />
+
+                <Controller
+                  name={"banner_location_cityordistrict"}
+                  control={control}
+                  rules={{ required: "City is required" }}
+                  render={({ field }) => (
+                    <Field>
+                      City
+                      <Select
+                        {...field}
+                        options={cityOptions}
+                        value={cityOptions.find(
+                          (option) => option.value === field.value
+                        )}
+                        onChange={(selectedOption) => {
+                          field.onChange(selectedOption?.value || "");
+                          handleFieldChange(
+                            "banner_location_cityordistrict",
+                            selectedOption?.value || ""
+                          );
+                        }}
+                        placeholder="Select City"
+                        isDisabled={cityOptions.length === 0}
+                        styles={{
+                          container: (base) => ({
+                            ...base,
+                            width: "100%",
+                          }),
+                          control: (base) => ({
+                            ...base,
+                            width: "100%",
+                            borderColor: errors.gallery_id
+                              ? "red"
+                              : base.borderColor,
+                          }),
+                          menu: (base) => ({
+                            ...base,
+                            width: "100%",
+                          }),
+                          valueContainer: (base) => ({
+                            ...base,
+                            width: "100%",
+                          }),
+                          input: (base) => ({
+                            ...base,
+                            width: "100%",
+                          }),
+                        }}
+                      />
+                    </Field>
+                  )}
+                />
+                {errors.banner_location_cityordistrict && (
+                  <Text textStyle="sm" color="red">
+                    {errors.banner_location_cityordistrict.message}
+                  </Text>
+                )}
+              </HStack>
 
               <Controller
                 name="banner_image"

@@ -267,8 +267,6 @@ const CommonEditor = ({
                 data={value}
                 onChange={(_event, editor) => {
                   const data = editor.getData();
-                  console.log(JSON.stringify(data));
-
                   onChange(data);
                 }}
               />
