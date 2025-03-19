@@ -1,0 +1,116 @@
+[
+  {
+    "state": "Province 1",
+    "cities": [
+      "Biratnagar",
+      "Dharan",
+      "Itahari",
+      "Birtamod",
+      "Damak",
+      "Inaruwa",
+      "Urlabari",
+      "Belbari",
+      "Rajgadh",
+      "Phidim",
+      "Khandbari",
+      "Dhankuta"
+    ]
+  },
+  {
+    "state": "Madhesh Province",
+    "cities": [
+      "Janakpur",
+      "Birgunj",
+      "Lahan",
+      "Rajbiraj",
+      "Gaur",
+      "Malangwa",
+      "Kalaiya",
+      "Gaushala",
+      "Simara",
+      "Siraha",
+      "Kalyanpur",
+      "Jaleshwar"
+    ]
+  },
+  {
+    "state": "Bagmati Province",
+    "cities": [
+      "Kathmandu",
+      "Bhaktapur",
+      "Lalitpur",
+      "Hetauda",
+      "Banepa",
+      "Dhulikhel",
+      "Chitwan",
+      "Kirtipur",
+      "Bharatpur",
+      "Bidur",
+      "Panauti",
+      "Sindhuli"
+    ]
+  },
+  {
+    "state": "Gandaki Province",
+    "cities": [
+      "Pokhara",
+      "Baglung",
+      "Gorkha",
+      "Lamjung",
+      "Besisahar",
+      "Putalibazar",
+      "Damauli",
+      "Waling",
+      "Parbat",
+      "Tanahun",
+      "Myagdi"
+    ]
+  },
+  {
+    "state": "Lumbini Province",
+    "cities": [
+      "Butwal",
+      "Kapilvastu",
+      "Tansen",
+      "Siddharthanagar",
+      "Gulariya",
+      "Nepalgunj",
+      "Bardiya",
+      "Pyuthan",
+      "Dang",
+      "Lamahi",
+      "Ghorahi"
+    ]
+  },
+  {
+    "state": "Karnali Province",
+    "cities": [
+      "Surkhet",
+      "Jumla",
+      "Dailekh",
+      "Kalikot",
+      "Dolpa",
+      "Mugu",
+      "Rukum",
+      "Salyan",
+      "Jajarkot",
+      "Simikot",
+      "Chaurjahari"
+    ]
+  },
+  {
+    "state": "Sudurpashchim Province",
+    "cities": [
+      "Dhangadhi",
+      "Mahendranagar",
+      "Dadeldhura",
+      "Baitadi",
+      "Dipayal",
+      "Amargadhi",
+      "Tikapur",
+      "Bhimdatta",
+      "Jhalari",
+      "Sanfebagar"
+    ]
+  }
+]

@@ -193,7 +193,9 @@ export type EventInputs = {
   description: string;
   banner_image: File | string;
   banner_date: string;
-  banner_location: string;
+  banner_location_country: string,
+  banner_location_stateorprovince: string,
+  banner_location_cityordistrict: string,
   gallery_id : number | null;
   status : number
 };

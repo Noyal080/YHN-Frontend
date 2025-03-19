@@ -84,15 +84,6 @@ const AdminDashboard = () => {
           works: events as number,
         }));
 
-        // Log the transformed data for debugging
-        console.log("Event Data by City:", eventDataByCity);
-        console.log("Event Data by Province:", eventDataByProvince);
-        console.log("Event Data by Date:", eventDataByDate);
-        console.log("Work Data by City:", workDataByCity);
-        console.log("Work Data by Province:", workDataByProvince);
-        console.log("Work Data by Date:", workDataByDate);
-
-        // Set the state with the transformed data
         setEventByCity(eventDataByCity);
         setEventByProvince(eventDataByProvince);
         setEventByDate(eventDataByDate);
@@ -102,7 +93,7 @@ const AdminDashboard = () => {
       } catch (e) {
         console.error(e);
       } finally {
-        setLoading(false); // Set loading to false after fetching
+        setLoading(false);
       }
     };
 

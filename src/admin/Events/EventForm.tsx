@@ -25,20 +25,23 @@ import { axiosInstance } from "@/api/axios";
 import { Switch } from "@/components/ui/switch";
 import Select from "react-select";
 import useDebounce from "@/helper/debounce";
-import useCommonToast from "@/common/CommonToast";
+// import useCommonToast from "@/common/CommonToast";
 import { GalleryOptions } from "@/utils";
+import StateCitySelector from "@/common/StateCitySelector";
 
 const EventForm = () => {
   const { id } = useParams();
   const [selectedImage, setSelectedImage] = useState<string | null>();
   const [options, setOptions] = useState<GalleryOptions[]>([]);
-  const { showToast } = useCommonToast();
+  // const { showToast } = useCommonToast();
   const [pageData, setPageData] = useState<EventInputs>({
     title: "",
     description: "",
     banner_image: "",
     banner_date: "",
-    banner_location: "",
+    banner_location_country: "",
+    banner_location_stateorprovince: "",
+    banner_location_cityordistrict: "",
     gallery_id: null,
     status: 1,
   });
@@ -57,7 +60,11 @@ const EventForm = () => {
       description: pageData.description || "",
       banner_image: pageData.banner_image || "",
       banner_date: pageData.banner_date || "",
-      banner_location: pageData.banner_location || "",
+      banner_location_country: pageData.banner_location_country || "",
+      banner_location_stateorprovince:
+        pageData.banner_location_stateorprovince || "",
+      banner_location_cityordistrict:
+        pageData.banner_location_cityordistrict || "",
       gallery_id: pageData.gallery_id || null,
       status: pageData.status || 1,
     },
@@ -118,48 +125,7 @@ const EventForm = () => {
   };
 
   const onSubmit = async (data: EventInputs) => {
-    try {
-      const formData = new FormData();
-
-      Object.entries(data).forEach(([key, value]) => {
-        if (key === "banner_image" && typeof value === "string") {
-          formData.append(key, "");
-        } else {
-          formData.append(key, value as Blob);
-        }
-      });
-      if (id) {
-        await axiosInstance.post(`/newsandevents/${id}`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-        showToast({
-          description: "News and Event updated successfully!",
-          type: "success",
-        });
-      } else {
-        await axiosInstance.post(`/newsandevents`, formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-        showToast({
-          description: "News and Event added successfully",
-          type: "success",
-        });
-      }
-      navigate("/admin/events");
-    } catch (e) {
-      console.error(e);
-      if (id) {
-        showToast({
-          description: "Failed to update the news and events",
-          type: "error",
-        });
-      } else {
-        showToast({
-          description: "Failed to add the news and events",
-          type: "error",
-        });
-      }
-    }
+    console.log(data);
   };
 
   return (
@@ -222,63 +188,65 @@ const EventForm = () => {
                 )}
               />
 
-              <Controller
-                name="gallery_id"
-                control={control}
-                rules={{ required: "Gallery is required" }}
-                render={({ field }) => (
-                  <Field label="Gallery">
-                    <Select
-                      {...field}
-                      isClearable
-                      options={options}
-                      value={options.find(
-                        (option) => option.value === field.value
-                      )}
-                      onChange={(selectedOption) =>
-                        handleFieldChange(
-                          "gallery_id",
-                          selectedOption?.value || ""
-                        )
-                      }
-                      placeholder="Select Gallery related to the event"
-                      onInputChange={(inputValue) => setSearchQuery(inputValue)}
-                      styles={{
-                        container: (base) => ({
-                          ...base,
-                          width: "100%",
-                        }),
-                        control: (base) => ({
-                          ...base,
-                          width: "100%",
-                          borderColor: errors.gallery_id
-                            ? "red"
-                            : base.borderColor,
-                        }),
-                        menu: (base) => ({
-                          ...base,
-                          width: "100%",
-                        }),
-                        valueContainer: (base) => ({
-                          ...base,
-                          width: "100%",
-                        }),
-                        input: (base) => ({
-                          ...base,
-                          width: "100%",
-                        }),
-                      }}
-                    />
-                    {errors.gallery_id && (
-                      <Text textStyle="sm" color="red">
-                        {errors.gallery_id.message}
-                      </Text>
-                    )}
-                  </Field>
-                )}
-              />
-
               <HStack>
+                <Controller
+                  name="gallery_id"
+                  control={control}
+                  rules={{ required: "Gallery is required" }}
+                  render={({ field }) => (
+                    <Field label="Gallery">
+                      <Select
+                        {...field}
+                        isClearable
+                        options={options}
+                        value={options.find(
+                          (option) => option.value === field.value
+                        )}
+                        onChange={(selectedOption) =>
+                          handleFieldChange(
+                            "gallery_id",
+                            selectedOption?.value || ""
+                          )
+                        }
+                        placeholder="Select Gallery related to the event"
+                        onInputChange={(inputValue) =>
+                          setSearchQuery(inputValue)
+                        }
+                        styles={{
+                          container: (base) => ({
+                            ...base,
+                            width: "100%",
+                          }),
+                          control: (base) => ({
+                            ...base,
+                            width: "100%",
+                            borderColor: errors.gallery_id
+                              ? "red"
+                              : base.borderColor,
+                          }),
+                          menu: (base) => ({
+                            ...base,
+                            width: "100%",
+                          }),
+                          valueContainer: (base) => ({
+                            ...base,
+                            width: "100%",
+                          }),
+                          input: (base) => ({
+                            ...base,
+                            width: "100%",
+                          }),
+                        }}
+                      />
+                      {errors.gallery_id && (
+                        <Text textStyle="sm" color="red">
+                          {errors.gallery_id.message}
+                        </Text>
+                      )}
+                    </Field>
+                  )}
+                />
+
                 <Controller
                   name="banner_date"
                   control={control}
@@ -302,29 +270,25 @@ const EventForm = () => {
                     </Field>
                   )}
                 />
-                <Controller
-                  name="banner_location"
-                  control={control}
-                  rules={{ required: "Location is requried" }}
-                  render={({ field }) => (
-                    <Field label="Location">
-                      <Input
-                        {...field}
-                        placeholder="Enter location"
-                        size={"md"}
-                        onChange={(e) =>
-                          handleFieldChange("banner_location", e.target.value)
-                        }
-                      />
-                      {errors.banner_location && (
-                        <Text textStyle="sm" color="red">
-                          {errors.banner_location.message}
-                        </Text>
-                      )}
-                    </Field>
-                  )}
-                />
               </HStack>
+              <StateCitySelector
+                control={
+                  useForm({
+                    values: {
+                      banner_location_stateorprovince:
+                        pageData.banner_location_stateorprovince || "",
+                      banner_location_cityordistrict:
+                        pageData.banner_location_cityordistrict || "",
+                    },
+                  }).control
+                }
+                errors={{
+                  banner_location_stateorprovince:
+                    errors.banner_location_stateorprovince,
+                  banner_location_cityordistrict:
+                    errors.banner_location_cityordistrict,
+                }}
+              />
 
               <Controller
                 name="banner_image"
