@@ -64,7 +64,13 @@ const EventSection = () => {
       ),
     },
     { key: "banner_date", label: "Date", visible: false },
-    { key: "banner_location", label: "Location", visible: false },
+    { key: "banner_location_country", label: "Country", visible: false },
+    {
+      key: "banner_location_stateorprovince",
+      label: "Province",
+      visible: false,
+    },
+    { key: "banner_location_cityordistrict", label: "City", visible: false },
     {
       key: "gallery",
       label: "Gallery",

@@ -144,7 +144,9 @@ export type OurWorks = {
   }
   banner_image: File | string;
   banner_date: string;
-  banner_location: string;
+  banner_location_country: string,
+  banner_location_stateorprovince: string,
+  banner_location_cityordistrict: string,
   gallery_id : number | null;
   gallery : {
     name : string
@@ -161,7 +163,9 @@ export type OurWorkType = {
   sector_id: number | null,
   banner_image: File | string;
   banner_date: string;
-  banner_location: string;
+  banner_location_country: string,
+  banner_location_stateorprovince: string,
+  banner_location_cityordistrict: string,
   gallery_id : number | null;
   objectives: string;
   activities: string;
@@ -174,7 +178,9 @@ export type EventType = {
   description: string;
   banner_image: string;
   banner_date: string;
-  banner_location: string;
+  banner_location_country: string,
+  banner_location_stateorprovince: string,
+  banner_location_cityordistrict: string,
   gallery: GallerEventType;
   status : number
 };

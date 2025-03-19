@@ -28,6 +28,7 @@ import { GalleryOptions } from "@/utils";
 import useDebounce from "@/helper/debounce";
 import { Switch } from "@/components/ui/switch";
 import useCommonToast from "@/common/CommonToast";
+import nepalData from "../../common/cities.json";
 
 interface SectorOptions {
   label: string;
@@ -49,7 +50,9 @@ const WorkForms = () => {
     description: "",
     banner_image: "",
     banner_date: "",
-    banner_location: "",
+    banner_location_country: "",
+    banner_location_stateorprovince: "",
+    banner_location_cityordistrict: "",
     gallery_id: null,
     objectives: "",
     activities: "",
@@ -69,13 +72,41 @@ const WorkForms = () => {
       description: pageData.description || "",
       banner_image: pageData.banner_image || "",
       banner_date: pageData.banner_date || "",
-      banner_location: pageData.banner_location || "",
+      banner_location_country: pageData.banner_location_country || "",
+      banner_location_stateorprovince:
+        pageData.banner_location_stateorprovince || "",
+      banner_location_cityordistrict:
+        pageData.banner_location_cityordistrict || "",
       gallery_id: pageData.gallery_id || null,
       objectives: pageData.objectives || "",
       activities: pageData.activities || "",
       status: pageData.status || 1,
     },
   });
+
+  const stateOptions = nepalData.map((item) => ({
+    value: item.state,
+    label: item.state,
+  }));
+
+  const [cityOptions, setCityOptions] = useState<
+    { value: string; label: string }[]
+  >([]);
+
+  // Handle state selection
+  const handleStateChange = (
+    selectedOption: { value: string; label: string } | null,
+    onChange: (value: string | undefined) => void
+  ) => {
+    onChange(selectedOption?.value || "");
+    setCityOptions(
+      selectedOption
+        ? nepalData
+            .find((item) => item.state === selectedOption.value)
+            ?.cities.map((city) => ({ value: city, label: city })) || []
+        : []
+    );
+  };
 
   useEffect(() => {
     const fetchGalleryandSectors = async () => {
@@ -112,7 +143,16 @@ const WorkForms = () => {
     const fetchData = async () => {
       try {
         const res = await axiosInstance.get(`/ourwork/${id}`);
-        setPageData(res.data.data);
+        const result = res.data.data;
+        setPageData(result);
+        const selectedState = result.banner_location_stateorprovince;
+        if (selectedState) {
+          const cities =
+            nepalData
+              .find((item) => item.state === selectedState)
+              ?.cities.map((city) => ({ value: city, label: city })) || [];
+          setCityOptions(cities);
+        }
       } catch (e) {
         console.log(e);
       }
@@ -126,6 +166,11 @@ const WorkForms = () => {
   const onSubmit = async (data: OurWorkType) => {
     try {
       const submissionData = { ...data };
+      if (submissionData.banner_location_country) {
+        submissionData.banner_location_country += ", Nepal";
+      } else {
+        submissionData.banner_location_country = "Nepal";
+      }
       if (typeof submissionData.sector_id === "string") {
         // Create new position first
         const positionResponse = await axiosInstance.post("/sectors", {
@@ -318,9 +363,11 @@ const WorkForms = () => {
                           menu: (base) => ({
                             ...base,
                             width: "100%",
+                            zIndex: 10,
                           }),
                           valueContainer: (base) => ({
                             ...base,
+                            zIndex: 10,
                             width: "100%",
                           }),
                           input: (base) => ({
@@ -345,7 +392,7 @@ const WorkForms = () => {
                   control={control}
                   rules={{ required: "Date is requried" }}
                   render={({ field }) => (
-                    <Field label="Date">
+                    <Field label="Date" className="w-1/2">
                       <Input
                         {...field}
                         type="date"
@@ -361,26 +408,118 @@ const WorkForms = () => {
                     </Field>
                   )}
                 />
+              </HStack>
+
+              <HStack>
                 <Controller
-                  name="banner_location"
+                  name={"banner_location_stateorprovince"}
                   control={control}
-                  rules={{ required: "Location is requried" }}
+                  rules={{ required: "State is required" }}
                   render={({ field }) => (
-                    <Field label="Location">
-                      <Input
+                    <Field>
+                      State
+                      <Select
                         {...field}
-                        placeholder="Enter location"
-                        size={"md"}
-                        onChange={(value) => field.onChange(value)}
+                        options={stateOptions}
+                        value={stateOptions.find(
+                          (option) => option.value === field.value
+                        )}
+                        onChange={(selectedOption) => {
+                          handleStateChange(selectedOption, field.onChange);
+                          field.onChange(selectedOption?.value);
+                        }}
+                        placeholder="Select State"
+                        styles={{
+                          container: (base) => ({
+                            ...base,
+                            width: "100%",
+                          }),
+                          control: (base) => ({
+                            ...base,
+                            width: "100%",
+                            borderColor: errors.gallery_id
+                              ? "red"
+                              : base.borderColor,
+                          }),
+                          menu: (base) => ({
+                            ...base,
+                            width: "100%",
+                            zIndex: 10,
+                          }),
+                          valueContainer: (base) => ({
+                            ...base,
+                            zIndex: 10,
+                            width: "100%",
+                          }),
+                          input: (base) => ({
+                            ...base,
+                            width: "100%",
+                          }),
+                        }}
                       />
-                      {errors.banner_location && (
+                      {errors.banner_location_stateorprovince && (
                         <Text textStyle="sm" color="red">
-                          {errors.banner_location.message}
+                          {errors.banner_location_stateorprovince.message}
                         </Text>
                       )}
                     </Field>
                   )}
                 />
+
+                <Controller
+                  name={"banner_location_cityordistrict"}
+                  control={control}
+                  rules={{ required: "City is required" }}
+                  render={({ field }) => (
+                    <Field>
+                      City
+                      <Select
+                        {...field}
+                        options={cityOptions}
+                        value={cityOptions.find(
+                          (option) => option.value === field.value
+                        )}
+                        onChange={(selectedOption) => {
+                          field.onChange(selectedOption?.value || "");
+                        }}
+                        placeholder="Select City"
+                        isDisabled={cityOptions.length === 0}
+                        styles={{
+                          container: (base) => ({
+                            ...base,
+                            width: "100%",
+                          }),
+                          control: (base) => ({
+                            ...base,
+                            width: "100%",
+                            borderColor: errors.gallery_id
+                              ? "red"
+                              : base.borderColor,
+                          }),
+                          menu: (base) => ({
+                            ...base,
+                            width: "100%",
+                            zIndex: 10,
+                          }),
+                          valueContainer: (base) => ({
+                            ...base,
+                            zIndex: 10,
+                            width: "100%",
+                          }),
+                          input: (base) => ({
+                            ...base,
+                            width: "100%",
+                          }),
+                        }}
+                      />
+                    </Field>
+                  )}
+                />
+                {errors.banner_location_cityordistrict && (
+                  <Text textStyle="sm" color="red">
+                    {errors.banner_location_cityordistrict.message}
+                  </Text>
+                )}
               </HStack>
 
               <Controller
