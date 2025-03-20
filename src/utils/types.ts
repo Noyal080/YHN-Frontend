@@ -148,9 +148,7 @@ export type OurWorks = {
   banner_location_stateorprovince: string,
   banner_location_cityordistrict: string,
   gallery_id : number | null;
-  gallery : {
-    name : string
-  }
+  gallery : GallerEventType
   objectives: string;
   activities: string;
   status : number

@@ -8,16 +8,58 @@ import useDebounce from "@/helper/debounce";
 import { axiosInstance } from "@/api/axios";
 import useCommonToast from "@/common/CommonToast";
 import CommonModal from "@/common/CommonModal";
-import { Text } from "@chakra-ui/react";
+import { Box, Image, Text } from "@chakra-ui/react";
+import ImageSlider from "../Gallery/Image/ImageSllider";
 
 const ProjectSection = () => {
   const navigate = useNavigate();
   const columns: Column<OurWorks>[] = [
     { key: "id", label: "#", visible: true },
     { key: "title", label: "Title", visible: true },
-    { key: "description", label: "Description", visible: false },
-    { key: "sector", label: "Sector", visible: true },
-    { key: "banner_image", label: "Banner", visible: true },
+    {
+      key: "description",
+      label: "Description",
+      visible: false,
+      render: (row) => {
+        return (
+          <Box
+            whiteSpace="normal" // Allow text wrapping
+            wordBreak="break-word" // Break long words
+            maxW={"400px"}
+          >
+            <Text
+              truncate
+              dangerouslySetInnerHTML={{ __html: row.description }}
+              lineClamp={2}
+            />
+          </Box>
+        );
+      },
+    },
+    {
+      key: "sector",
+      label: "Sector",
+      visible: true,
+      render: (row) => <Text> {row.sector.name} </Text>,
+    },
+    {
+      key: "banner_image",
+      label: "Banner",
+      visible: true,
+      render: (row) => (
+        <Image
+          rounded="md"
+          h="200px"
+          w="300px"
+          fit="contain"
+          src={
+            typeof row["banner_image"] === "string"
+              ? row["banner_image"]
+              : URL.createObjectURL(row["banner_image"])
+          }
+        />
+      ),
+    },
     { key: "banner_date", label: "Date", visible: false },
     { key: "banner_location_country", label: "Country", visible: false },
     {
@@ -26,7 +68,12 @@ const ProjectSection = () => {
       visible: false,
     },
     { key: "banner_location_cityordistrict", label: "City", visible: false },
-    { key: "gallery", label: "Gallery", visible: false },
+    {
+      key: "gallery",
+      label: "Gallery",
+      visible: false,
+      render: (row) => <ImageSlider images={row.gallery.gallery_images} />,
+    },
     { key: "objectives", label: "Objective", visible: false },
     { key: "activities", label: "Activities", visible: false },
   ];

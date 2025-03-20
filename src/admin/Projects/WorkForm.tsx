@@ -184,10 +184,16 @@ const WorkForms = () => {
         // Update the submission data with the new position ID
         submissionData.sector_id = newPositionId;
       }
-      console.log(submissionData);
-
+      const formData = new FormData();
+      Object.entries(submissionData).forEach(([key, value]) => {
+        if (key === "banner_image" && typeof value === "string") {
+          formData.append(key, "");
+        } else {
+          formData.append(key, value as Blob);
+        }
+      });
       if (id) {
-        await axiosInstance.post(`/ourwork/${id}`, submissionData, {
+        await axiosInstance.post(`/ourwork/${id}`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         showToast({
@@ -196,7 +202,7 @@ const WorkForms = () => {
         });
         navigate("/admin/our-works");
       } else {
-        await axiosInstance.post("/ourwork", submissionData, {
+        await axiosInstance.post("/ourwork", formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         showToast({
