@@ -105,7 +105,7 @@ const CommonTable = <T,>({
         {loading ? (
           <TableSkeleton visibleColumns={visibleColumns} rowCount={5} />
         ) : (
-          <TableRoot variant={"outline"}>
+          <TableRoot variant={"outline"} tableLayout={"fixed"}>
             <TableHeader>
               <TableRow>
                 {visibleColumns
@@ -116,6 +116,7 @@ const CommonTable = <T,>({
                       onClick={() => handleSort(column.key)}
                       cursor="pointer"
                       alignItems="center"
+                      // width={`${100 / visibleColumns.length}%`}
                     >
                       <Flex align={"center"}>
                         <Text mr={4}>{column.label}</Text>

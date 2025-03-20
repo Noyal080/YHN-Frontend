@@ -105,13 +105,13 @@ const MessageRequest = () => {
     <AdminLayout
       breadcrumbItems={[
         { label: "Dashboard", link: "/admin" },
-        { label: "Message Request" },
+        { label: "Messages" },
       ]}
-      title={`Message Request`}
-      activeSidebarItem="Message Request"
+      title={`Messages`}
+      activeSidebarItem="Messages"
     >
       <CommonTable
-        title="Message Requests"
+        title="Messages"
         columns={columns}
         rows={rows}
         onDelete={(row) => {
@@ -142,8 +142,7 @@ const MessageRequest = () => {
             {" "}
             {selectedRow?.name}{" "}
           </strong>{" "}
-          ? This will permanently remove all the data regarding the message
-          requests{" "}
+          ? This will permanently remove all the data regarding the message.
         </Text>
       </CommonModal>
     </AdminLayout>

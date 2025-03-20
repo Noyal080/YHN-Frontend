@@ -2,11 +2,12 @@ import AdminLayout from "@/admin/Layout";
 import { axiosInstance } from "@/api/axios";
 import CommonModal from "@/common/CommonModal";
 import useCommonToast from "@/common/CommonToast";
+import EditorTextView from "@/common/EditorTextView";
 import CommonTable from "@/common/Table/CommonTable";
 import useDebounce from "@/helper/debounce";
 import { Column } from "@/utils";
 import { InternshipType, PaginationProps } from "@/utils/types";
-import { Box, Text } from "@chakra-ui/react";
+import { Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -32,21 +33,7 @@ const VolunteerSection = () => {
       key: "description",
       label: "Description",
       visible: true,
-      render: (row) => {
-        return (
-          <Box
-            whiteSpace="normal" // Allow text wrapping
-            wordBreak="break-word" // Break long words
-            maxW={"400px"}
-          >
-            <Text
-              truncate
-              dangerouslySetInnerHTML={{ __html: row.description }}
-              lineClamp={2}
-            />
-          </Box>
-        );
-      },
+      render: (row) => <EditorTextView message={row.description} />,
     },
     { key: "apply_link", label: "Apply Link", visible: true },
   ];

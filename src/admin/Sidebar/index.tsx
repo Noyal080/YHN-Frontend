@@ -29,7 +29,12 @@ import {
   FiUserCheck,
   FiBookOpen,
 } from "react-icons/fi";
-import { LuImagePlay, LuLayoutDashboard, LuQuote } from "react-icons/lu";
+import {
+  LuBell,
+  LuImagePlay,
+  LuLayoutDashboard,
+  LuQuote,
+} from "react-icons/lu";
 import { Tooltip } from "@/components/ui/tooltip";
 import { SidebarProps } from "@/utils";
 import { useNavigate } from "react-router-dom";
@@ -65,17 +70,24 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
       link: "/admin",
     },
     {
+      id: 8,
+      label: "Notification",
+      icon: LuBell,
+      children: [
+        {
+          id: 22,
+          label: "Messages",
+          icon: FiMail,
+          link: "/admin/messages",
+        },
+      ],
+    },
+    {
       id: 2,
       label: "Home Section",
       icon: FiHome,
       children: [
         { id: 21, label: "Sliders", icon: LuImagePlay, link: "/admin/sliders" },
-        {
-          id: 22,
-          label: "Message Request",
-          icon: FiMail,
-          link: "/admin/messages",
-        },
         {
           id: 23,
           label: "Partner Slider",
