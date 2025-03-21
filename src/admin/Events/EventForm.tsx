@@ -6,12 +6,14 @@ import { Controller, useForm } from "react-hook-form";
 import nepalData from "../../common/cities.json";
 
 import {
+  Box,
   CardBody,
   CardRoot,
   Heading,
   HStack,
   Image,
   Input,
+  Spinner,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -33,6 +35,7 @@ import { GalleryOptions } from "@/utils";
 const EventForm = () => {
   const { id } = useParams();
   const [selectedImage, setSelectedImage] = useState<string | null>();
+  const [isLoading, setIsLoading] = useState(false);
   const [options, setOptions] = useState<GalleryOptions[]>([]);
   const { showToast } = useCommonToast();
   const [pageData, setPageData] = useState<EventInputs>({
@@ -125,6 +128,7 @@ const EventForm = () => {
   };
 
   useEffect(() => {
+    setIsLoading(true);
     const fetchData = async () => {
       try {
         const res = await axiosInstance.get(`/newsandevents/${id}`);
@@ -139,6 +143,8 @@ const EventForm = () => {
         }
       } catch (e) {
         console.log(e);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -158,6 +164,7 @@ const EventForm = () => {
   };
 
   const onSubmit = async (data: EventInputs) => {
+    setIsLoading(true);
     try {
       const formData = new FormData();
       formData.append("banner_location_country", "Nepal");
@@ -199,6 +206,8 @@ const EventForm = () => {
           type: "error",
         });
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -212,339 +221,358 @@ const EventForm = () => {
       title={`News & Events Section`}
       activeSidebarItem="News & Events"
     >
-      <CardRoot m="auto" maxWidth="800px" mt={8} boxShadow="lg">
-        <CardBody>
-          <Heading mb={6}>{id ? "Edit" : "Add"} News & Events</Heading>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <VStack gap={4} align={"stretch"}>
-              <Controller
-                name="title"
-                control={control}
-                rules={{ required: "Title is requried" }}
-                render={({ field }) => (
-                  <Field label="Title">
-                    <Input
-                      {...field}
-                      placeholder="Enter a title"
-                      size={"md"}
-                      onChange={(e) => {
-                        handleFieldChange("title", e.target.value);
-                      }}
-                    />
-                    {errors.title && (
-                      <Text textStyle="sm" color="red">
-                        {errors.title.message}
-                      </Text>
-                    )}
-                  </Field>
-                )}
-              />
-              <Controller
-                name="description"
-                control={control}
-                rules={{ required: "Description is required" }}
-                render={({ field }) => (
-                  <Field label="Description">
-                    <CommonEditor
-                      value={field.value}
-                      onChange={(value) => {
-                        field.onChange(value);
-                        handleFieldChange("description", value);
-                      }}
-                    />
-
-                    {errors.description && (
-                      <Text textStyle="sm" color="red">
-                        {errors.description.message}
-                      </Text>
-                    )}
-                  </Field>
-                )}
-              />
-
-              <HStack>
+      <Box position="relative">
+        {/* Overlay and Spinner */}
+        {isLoading && (
+          <Box
+            position="absolute"
+            top={0}
+            left={0}
+            right={0}
+            bottom={0}
+            bg="rgba(255, 255, 255, 0.8)" // Semi-transparent white background
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            zIndex={1} // Ensure it's above the form
+          >
+            <Spinner size="xl" color="blue.500" />
+          </Box>
+        )}
+        <CardRoot m="auto" maxWidth="800px" mt={8} boxShadow="lg">
+          <CardBody>
+            <Heading mb={6}>{id ? "Edit" : "Add"} News & Events</Heading>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <VStack gap={4} align={"stretch"}>
                 <Controller
-                  name="gallery_id"
+                  name="title"
                   control={control}
-                  rules={{ required: "Gallery is required" }}
+                  rules={{ required: "Title is requried" }}
                   render={({ field }) => (
-                    <Field label="Gallery">
-                      <Select
-                        {...field}
-                        isClearable
-                        options={options}
-                        value={options.find(
-                          (option) => option.value === field.value
-                        )}
-                        onChange={(selectedOption) =>
-                          handleFieldChange(
-                            "gallery_id",
-                            selectedOption?.value || ""
-                          )
-                        }
-                        placeholder="Select Gallery related to the event"
-                        onInputChange={(inputValue) =>
-                          setSearchQuery(inputValue)
-                        }
-                        styles={{
-                          container: (base) => ({
-                            ...base,
-                            width: "100%",
-                          }),
-                          control: (base) => ({
-                            ...base,
-                            width: "100%",
-                            borderColor: errors.gallery_id
-                              ? "red"
-                              : base.borderColor,
-                          }),
-                          menu: (base) => ({
-                            ...base,
-                            width: "100%",
-                          }),
-                          valueContainer: (base) => ({
-                            ...base,
-                            width: "100%",
-                          }),
-                          input: (base) => ({
-                            ...base,
-                            width: "100%",
-                          }),
-                        }}
-                      />
-                      {errors.gallery_id && (
-                        <Text textStyle="sm" color="red">
-                          {errors.gallery_id.message}
-                        </Text>
-                      )}
-                    </Field>
-                  )}
-                />
-
-                <Controller
-                  name="banner_date"
-                  control={control}
-                  rules={{ required: "Date is requried" }}
-                  render={({ field }) => (
-                    <Field label="Date">
+                    <Field label="Title">
                       <Input
                         {...field}
-                        type="date"
-                        placeholder="Enter a date"
+                        placeholder="Enter a title"
                         size={"md"}
-                        onChange={(e) =>
-                          handleFieldChange("banner_date", e.target.value)
-                        }
+                        onChange={(e) => {
+                          handleFieldChange("title", e.target.value);
+                        }}
                       />
-                      {errors.banner_date && (
+                      {errors.title && (
                         <Text textStyle="sm" color="red">
-                          {errors.banner_date.message}
+                          {errors.title.message}
                         </Text>
                       )}
                     </Field>
                   )}
                 />
-              </HStack>
-              <HStack>
                 <Controller
-                  name={"banner_location_stateorprovince"}
+                  name="description"
                   control={control}
-                  rules={{ required: "State is required" }}
+                  rules={{ required: "Description is required" }}
                   render={({ field }) => (
-                    <Field>
-                      State
-                      <Select
-                        {...field}
-                        options={stateOptions}
-                        value={stateOptions.find(
-                          (option) => option.value === field.value
-                        )}
-                        onChange={(selectedOption) => {
-                          handleStateChange(selectedOption, field.onChange);
-                          handleFieldChange(
-                            "banner_location_stateorprovince",
-                            selectedOption?.value || ""
-                          );
-                        }}
-                        placeholder="Select State"
-                        styles={{
-                          container: (base) => ({
-                            ...base,
-                            width: "100%",
-                          }),
-                          control: (base) => ({
-                            ...base,
-                            width: "100%",
-                            borderColor: errors.gallery_id
-                              ? "red"
-                              : base.borderColor,
-                          }),
-                          menu: (base) => ({
-                            ...base,
-                            width: "100%",
-                          }),
-                          valueContainer: (base) => ({
-                            ...base,
-                            width: "100%",
-                          }),
-                          input: (base) => ({
-                            ...base,
-                            width: "100%",
-                          }),
+                    <Field label="Description">
+                      <CommonEditor
+                        value={field.value}
+                        onChange={(value) => {
+                          field.onChange(value);
+                          handleFieldChange("description", value);
                         }}
                       />
-                      {errors.banner_location_stateorprovince && (
+
+                      {errors.description && (
                         <Text textStyle="sm" color="red">
-                          {errors.banner_location_stateorprovince.message}
+                          {errors.description.message}
                         </Text>
                       )}
                     </Field>
                   )}
                 />
 
-                <Controller
-                  name={"banner_location_cityordistrict"}
-                  control={control}
-                  rules={{ required: "City is required" }}
-                  render={({ field }) => (
-                    <Field>
-                      City
-                      <Select
-                        {...field}
-                        options={cityOptions}
-                        value={cityOptions.find(
-                          (option) => option.value === field.value
-                        )}
-                        onChange={(selectedOption) => {
-                          field.onChange(selectedOption?.value || "");
-                          handleFieldChange(
-                            "banner_location_cityordistrict",
-                            selectedOption?.value || ""
-                          );
-                        }}
-                        placeholder="Select City"
-                        isDisabled={cityOptions.length === 0}
-                        styles={{
-                          container: (base) => ({
-                            ...base,
-                            width: "100%",
-                          }),
-                          control: (base) => ({
-                            ...base,
-                            width: "100%",
-                            borderColor: errors.gallery_id
-                              ? "red"
-                              : base.borderColor,
-                          }),
-                          menu: (base) => ({
-                            ...base,
-                            width: "100%",
-                          }),
-                          valueContainer: (base) => ({
-                            ...base,
-                            width: "100%",
-                          }),
-                          input: (base) => ({
-                            ...base,
-                            width: "100%",
-                          }),
-                        }}
-                      />
-                    </Field>
-                  )}
-                />
-                {errors.banner_location_cityordistrict && (
-                  <Text textStyle="sm" color="red">
-                    {errors.banner_location_cityordistrict.message}
-                  </Text>
-                )}
-              </HStack>
-
-              <Controller
-                name="banner_image"
-                control={control}
-                rules={{ required: "Image URL is required" }}
-                render={({ field }) => (
-                  <Field label="Image URL">
-                    <FileUploadRoot
-                      alignItems="stretch"
-                      maxFiles={1}
-                      accept={["image/*"]}
-                      onFileAccept={(value) => {
-                        const file = value.files[0];
-                        field.onChange(file);
-                        handleImageUpload(file);
-                      }}
-                    >
-                      <FileUploadDropzone
-                        value={
-                          typeof field.value === "string" ? field.value : ""
-                        }
-                        label="Drag and drop here to upload"
-                        description=".png, .jpg up to 5MB"
-                      />
-                      {(selectedImage || pageData.banner_image) && (
-                        <Image
-                          src={
-                            selectedImage ||
-                            (typeof pageData.banner_image === "string"
-                              ? pageData.banner_image
-                              : undefined)
+                <HStack>
+                  <Controller
+                    name="gallery_id"
+                    control={control}
+                    rules={{ required: "Gallery is required" }}
+                    render={({ field }) => (
+                      <Field label="Gallery">
+                        <Select
+                          {...field}
+                          isClearable
+                          options={options}
+                          value={options.find(
+                            (option) => option.value === field.value
+                          )}
+                          onChange={(selectedOption) =>
+                            handleFieldChange(
+                              "gallery_id",
+                              selectedOption?.value || ""
+                            )
                           }
-                          alt="Uploaded or Existing Image"
-                          objectFit="contain"
-                          aspectRatio={2 / 1}
-                          mt={4}
+                          placeholder="Select Gallery related to the event"
+                          onInputChange={(inputValue) =>
+                            setSearchQuery(inputValue)
+                          }
+                          styles={{
+                            container: (base) => ({
+                              ...base,
+                              width: "100%",
+                            }),
+                            control: (base) => ({
+                              ...base,
+                              width: "100%",
+                              borderColor: errors.gallery_id
+                                ? "red"
+                                : base.borderColor,
+                            }),
+                            menu: (base) => ({
+                              ...base,
+                              width: "100%",
+                            }),
+                            valueContainer: (base) => ({
+                              ...base,
+                              width: "100%",
+                            }),
+                            input: (base) => ({
+                              ...base,
+                              width: "100%",
+                            }),
+                          }}
                         />
-                      )}
-                    </FileUploadRoot>
-                    {errors.banner_image && (
-                      <Text textStyle="sm" color="red">
-                        {errors.banner_image.message}
-                      </Text>
+                        {errors.gallery_id && (
+                          <Text textStyle="sm" color="red">
+                            {errors.gallery_id.message}
+                          </Text>
+                        )}
+                      </Field>
                     )}
-                  </Field>
-                )}
-              />
+                  />
 
-              <Controller
-                name="status"
-                control={control}
-                render={({ field }) => (
-                  <Field>
-                    <HStack justify="space-between" align="center">
-                      <Text fontWeight="500" textStyle="md">
-                        Show Events
-                      </Text>
-                      <Switch
-                        checked={field.value === 1}
-                        onCheckedChange={(value) => {
-                          const numericValue = value.checked ? 1 : 0; // Convert `true`/`false` to `1`/`0`
-                          field.onChange(numericValue);
-                          handleFieldChange("status", numericValue);
+                  <Controller
+                    name="banner_date"
+                    control={control}
+                    rules={{ required: "Date is requried" }}
+                    render={({ field }) => (
+                      <Field label="Date">
+                        <Input
+                          {...field}
+                          type="date"
+                          placeholder="Enter a date"
+                          size={"md"}
+                          onChange={(e) =>
+                            handleFieldChange("banner_date", e.target.value)
+                          }
+                        />
+                        {errors.banner_date && (
+                          <Text textStyle="sm" color="red">
+                            {errors.banner_date.message}
+                          </Text>
+                        )}
+                      </Field>
+                    )}
+                  />
+                </HStack>
+                <HStack>
+                  <Controller
+                    name={"banner_location_stateorprovince"}
+                    control={control}
+                    rules={{ required: "State is required" }}
+                    render={({ field }) => (
+                      <Field>
+                        State
+                        <Select
+                          {...field}
+                          options={stateOptions}
+                          value={stateOptions.find(
+                            (option) => option.value === field.value
+                          )}
+                          onChange={(selectedOption) => {
+                            handleStateChange(selectedOption, field.onChange);
+                            handleFieldChange(
+                              "banner_location_stateorprovince",
+                              selectedOption?.value || ""
+                            );
+                          }}
+                          placeholder="Select State"
+                          styles={{
+                            container: (base) => ({
+                              ...base,
+                              width: "100%",
+                            }),
+                            control: (base) => ({
+                              ...base,
+                              width: "100%",
+                              borderColor: errors.gallery_id
+                                ? "red"
+                                : base.borderColor,
+                            }),
+                            menu: (base) => ({
+                              ...base,
+                              width: "100%",
+                            }),
+                            valueContainer: (base) => ({
+                              ...base,
+                              width: "100%",
+                            }),
+                            input: (base) => ({
+                              ...base,
+                              width: "100%",
+                            }),
+                          }}
+                        />
+                        {errors.banner_location_stateorprovince && (
+                          <Text textStyle="sm" color="red">
+                            {errors.banner_location_stateorprovince.message}
+                          </Text>
+                        )}
+                      </Field>
+                    )}
+                  />
+
+                  <Controller
+                    name={"banner_location_cityordistrict"}
+                    control={control}
+                    rules={{ required: "City is required" }}
+                    render={({ field }) => (
+                      <Field>
+                        City
+                        <Select
+                          {...field}
+                          options={cityOptions}
+                          value={cityOptions.find(
+                            (option) => option.value === field.value
+                          )}
+                          onChange={(selectedOption) => {
+                            field.onChange(selectedOption?.value || "");
+                            handleFieldChange(
+                              "banner_location_cityordistrict",
+                              selectedOption?.value || ""
+                            );
+                          }}
+                          placeholder="Select City"
+                          isDisabled={cityOptions.length === 0}
+                          styles={{
+                            container: (base) => ({
+                              ...base,
+                              width: "100%",
+                            }),
+                            control: (base) => ({
+                              ...base,
+                              width: "100%",
+                              borderColor: errors.gallery_id
+                                ? "red"
+                                : base.borderColor,
+                            }),
+                            menu: (base) => ({
+                              ...base,
+                              width: "100%",
+                            }),
+                            valueContainer: (base) => ({
+                              ...base,
+                              width: "100%",
+                            }),
+                            input: (base) => ({
+                              ...base,
+                              width: "100%",
+                            }),
+                          }}
+                        />
+                      </Field>
+                    )}
+                  />
+                  {errors.banner_location_cityordistrict && (
+                    <Text textStyle="sm" color="red">
+                      {errors.banner_location_cityordistrict.message}
+                    </Text>
+                  )}
+                </HStack>
+
+                <Controller
+                  name="banner_image"
+                  control={control}
+                  rules={{ required: "Image URL is required" }}
+                  render={({ field }) => (
+                    <Field label="Image URL">
+                      <FileUploadRoot
+                        alignItems="stretch"
+                        maxFiles={1}
+                        accept={["image/*"]}
+                        onFileAccept={(value) => {
+                          const file = value.files[0];
+                          field.onChange(file);
+                          handleImageUpload(file);
                         }}
-                        color="black"
-                        colorPalette="blue"
-                      />
-                    </HStack>
-                  </Field>
-                )}
-              />
-            </VStack>
+                      >
+                        <FileUploadDropzone
+                          value={
+                            typeof field.value === "string" ? field.value : ""
+                          }
+                          label="Drag and drop here to upload"
+                          description=".png, .jpg up to 5MB"
+                        />
+                        {(selectedImage || pageData.banner_image) && (
+                          <Image
+                            src={
+                              selectedImage ||
+                              (typeof pageData.banner_image === "string"
+                                ? pageData.banner_image
+                                : undefined)
+                            }
+                            alt="Uploaded or Existing Image"
+                            objectFit="contain"
+                            aspectRatio={2 / 1}
+                            mt={4}
+                          />
+                        )}
+                      </FileUploadRoot>
+                      {errors.banner_image && (
+                        <Text textStyle="sm" color="red">
+                          {errors.banner_image.message}
+                        </Text>
+                      )}
+                    </Field>
+                  )}
+                />
 
-            <HStack justifyContent="flex-end" mt={4}>
-              <Button variant={"ghost"} onClick={() => navigate(-1)}>
-                {" "}
-                Cancel{" "}
-              </Button>
-              <Button type="submit" colorPalette={"blue"}>
-                {" "}
-                Submit
-              </Button>
-            </HStack>
-          </form>
-        </CardBody>
-      </CardRoot>
+                <Controller
+                  name="status"
+                  control={control}
+                  render={({ field }) => (
+                    <Field>
+                      <HStack justify="space-between" align="center">
+                        <Text fontWeight="500" textStyle="md">
+                          Show Events
+                        </Text>
+                        <Switch
+                          checked={field.value === 1}
+                          onCheckedChange={(value) => {
+                            const numericValue = value.checked ? 1 : 0; // Convert `true`/`false` to `1`/`0`
+                            field.onChange(numericValue);
+                            handleFieldChange("status", numericValue);
+                          }}
+                          color="black"
+                          colorPalette="blue"
+                        />
+                      </HStack>
+                    </Field>
+                  )}
+                />
+              </VStack>
+
+              <HStack justifyContent="flex-end" mt={4}>
+                <Button variant={"ghost"} onClick={() => navigate(-1)}>
+                  {" "}
+                  Cancel{" "}
+                </Button>
+                <Button type="submit" colorPalette={"blue"}>
+                  {" "}
+                  Submit
+                </Button>
+              </HStack>
+            </form>
+          </CardBody>
+        </CardRoot>
+      </Box>
     </AdminLayout>
   );
 };

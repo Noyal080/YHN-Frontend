@@ -8,12 +8,14 @@ import {
 import { compressImage } from "@/helper/imageCompressor";
 import { TeamsInput } from "@/utils/types";
 import {
+  Box,
   CardBody,
   CardRoot,
   Heading,
   HStack,
   Image,
   Input,
+  Spinner,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -41,6 +43,7 @@ const TeamsForms = () => {
   const { showToast } = useCommonToast();
   const [selectedImage, setSelectedImage] = useState<string | null>();
   const [positionOption, setPositionOption] = useState<PositionOption[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [teamData, setTeamData] = useState<TeamsInput>({
     name: "",
     image: "",
@@ -109,12 +112,15 @@ const TeamsForms = () => {
   }, []);
 
   useEffect(() => {
+    setIsLoading(true);
     const fetchTeamData = async () => {
       try {
         const res = await axiosInstance.get(`/teams/${id}`);
         setTeamData(res.data.data);
       } catch (e) {
         console.error(e);
+      } finally {
+        setIsLoading(false);
       }
     };
     if (id) {
@@ -123,6 +129,7 @@ const TeamsForms = () => {
   }, [id]);
 
   const onSubmit = async (data: TeamsInput) => {
+    setIsLoading(true);
     try {
       const submissionData = { ...data };
 
@@ -162,6 +169,8 @@ const TeamsForms = () => {
         description: id ? `Failed to update the team` : "Failed to add team",
         type: "error",
       });
+    } finally {
+      setIsLoading(false); // Set loading to false when submission ends (success or error)
     }
   };
 
@@ -175,237 +184,264 @@ const TeamsForms = () => {
       activeSidebarItem="Our Team"
       title={`${id ? "Edit" : "Add"} Team`}
     >
-      <CardRoot m="auto" maxWidth="800px" mt={8} boxShadow="lg">
-        <CardBody>
-          <Heading mb={6}> {id ? "Edit" : "Add"} Teams </Heading>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <VStack gap={4} align="stretch">
-              <Controller
-                name="name"
-                control={control}
-                rules={{ required: "Name is required" }}
-                render={({ field }) => (
-                  <Field label="Name">
-                    <Input
-                      {...field}
-                      placeholder="Enter user name"
-                      size={"md"}
-                      onChange={(e) =>
-                        handleFieldChange("name", e.target.value)
-                      }
-                    />
-                    {errors.name && (
-                      <Text textStyle="sm" color="red">
-                        {errors.name.message}
-                      </Text>
-                    )}
-                  </Field>
-                )}
-              />
-              <HStack>
+      <Box position="relative">
+        {/* Overlay and Spinner */}
+        {isLoading && (
+          <Box
+            position="absolute"
+            top={0}
+            left={0}
+            right={0}
+            bottom={0}
+            bg="rgba(255, 255, 255, 0.8)" // Semi-transparent white background
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            zIndex={1} // Ensure it's above the form
+          >
+            <Spinner size="xl" color="blue.500" />
+          </Box>
+        )}
+        <CardRoot m="auto" maxWidth="800px" mt={8} boxShadow="lg">
+          <CardBody>
+            <Heading mb={6}> {id ? "Edit" : "Add"} Teams </Heading>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <VStack gap={4} align="stretch">
                 <Controller
-                  name="position_id"
+                  name="name"
                   control={control}
-                  rules={{ required: "Position is required" }}
+                  rules={{ required: "Name is required" }}
                   render={({ field }) => (
-                    <Field label="Position">
-                      <CreatableSelect
+                    <Field label="Name">
+                      <Input
                         {...field}
-                        placeholder="Create or select user position"
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        options={positionOption as any}
-                        onChange={(selectedOption) => {
-                          // Update both React Hook Form state and local state
-                          field.onChange(selectedOption?.value || null);
-                          handleFieldChange(
-                            "position_id",
-                            selectedOption?.value || null
-                          );
-                        }}
-                        value={
-                          // Find the matching option object if field.value is a number
-                          typeof field.value === "number"
-                            ? positionOption.find(
-                                (option) => option.value === field.value
-                              )
-                            : // If it's a custom value (string) or null, handle accordingly
-                            field.value
-                            ? { label: String(field.value), value: field.value }
-                            : null
+                        placeholder="Enter user name"
+                        size={"md"}
+                        onChange={(e) =>
+                          handleFieldChange("name", e.target.value)
                         }
-                        styles={{
-                          container: (base) => ({
-                            ...base,
-                            width: "100%",
-                          }),
-                          control: (base) => ({
-                            ...base,
-                            width: "100%",
-                            borderColor: errors.position_id
-                              ? "red"
-                              : base.borderColor,
-                          }),
-                          menu: (base) => ({
-                            ...base,
-                            width: "100%",
-                          }),
-                          valueContainer: (base) => ({
-                            ...base,
-                            width: "100%",
-                          }),
-                          input: (base) => ({
-                            ...base,
-                            width: "100%",
-                          }),
-                        }}
                       />
-                      {errors.position_id && (
+                      {errors.name && (
                         <Text textStyle="sm" color="red">
-                          {errors.position_id.message}
+                          {errors.name.message}
                         </Text>
                       )}
                     </Field>
                   )}
                 />
-
-                <Controller
-                  name="role"
-                  control={control}
-                  rules={{ required: "Role is required" }}
-                  render={({ field }) => (
-                    <Field label="Role">
-                      <Select
-                        {...field}
-                        isClearable
-                        options={options}
-                        value={options.find(
-                          (option) => option.value === field.value
-                        )}
-                        onChange={(selectedOption) =>
-                          handleFieldChange("role", selectedOption?.value || "")
-                        }
-                        placeholder="Select user role"
-                        styles={{
-                          container: (base) => ({
-                            ...base,
-                            width: "100%",
-                          }),
-                          control: (base) => ({
-                            ...base,
-                            width: "100%",
-                            borderColor: errors.role ? "red" : base.borderColor,
-                          }),
-                          menu: (base) => ({
-                            ...base,
-                            width: "100%",
-                          }),
-                          valueContainer: (base) => ({
-                            ...base,
-                            width: "100%",
-                          }),
-                          input: (base) => ({
-                            ...base,
-                            width: "100%",
-                          }),
-                        }}
-                      />
-                      {errors.role && (
-                        <Text textStyle="sm" color="red">
-                          {errors.role.message}
-                        </Text>
-                      )}
-                    </Field>
-                  )}
-                />
-              </HStack>
-
-              <Controller
-                name="image"
-                control={control}
-                rules={!id ? { required: "Image URL is required" } : {}}
-                render={({ field }) => (
-                  <Field label="Image URL">
-                    <FileUploadRoot
-                      alignItems="stretch"
-                      maxFiles={1}
-                      accept={["image/*"]}
-                      onFileAccept={(value) => {
-                        const file = value.files[0];
-                        field.onChange(file);
-                        handleImageUpload(file);
-                      }}
-                    >
-                      <FileUploadDropzone
-                        value={
-                          typeof field.value === "string" ? field.value : ""
-                        }
-                        label="Drag and drop here to upload"
-                        description=".png, .jpg up to 5MB"
-                      />
-                      {(selectedImage ||
-                        teamData.image ||
-                        teamData.image_url) && (
-                        <Image
-                          src={
-                            selectedImage ||
-                            (typeof teamData.image === "string"
-                              ? teamData.image
-                              : undefined) ||
-                            teamData.image_url
+                <HStack>
+                  <Controller
+                    name="position_id"
+                    control={control}
+                    rules={{ required: "Position is required" }}
+                    render={({ field }) => (
+                      <Field label="Position">
+                        <CreatableSelect
+                          {...field}
+                          placeholder="Create or select user position"
+                          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                          options={positionOption as any}
+                          onChange={(selectedOption) => {
+                            // Update both React Hook Form state and local state
+                            field.onChange(selectedOption?.value || null);
+                            handleFieldChange(
+                              "position_id",
+                              selectedOption?.value || null
+                            );
+                          }}
+                          value={
+                            // Find the matching option object if field.value is a number
+                            typeof field.value === "number"
+                              ? positionOption.find(
+                                  (option) => option.value === field.value
+                                )
+                              : // If it's a custom value (string) or null, handle accordingly
+                              field.value
+                              ? {
+                                  label: String(field.value),
+                                  value: field.value,
+                                }
+                              : null
                           }
-                          alt="Uploaded or Existing Image"
-                          objectFit="contain"
-                          aspectRatio={2 / 1}
-                          mt={4}
+                          styles={{
+                            container: (base) => ({
+                              ...base,
+                              width: "100%",
+                            }),
+                            control: (base) => ({
+                              ...base,
+                              width: "100%",
+                              borderColor: errors.position_id
+                                ? "red"
+                                : base.borderColor,
+                            }),
+                            menu: (base) => ({
+                              ...base,
+                              width: "100%",
+                            }),
+                            valueContainer: (base) => ({
+                              ...base,
+                              width: "100%",
+                            }),
+                            input: (base) => ({
+                              ...base,
+                              width: "100%",
+                            }),
+                          }}
                         />
-                      )}
-                    </FileUploadRoot>
-                    {errors.image && (
-                      <Text textStyle="sm" color="red">
-                        {errors.image.message}
-                      </Text>
+                        {errors.position_id && (
+                          <Text textStyle="sm" color="red">
+                            {errors.position_id.message}
+                          </Text>
+                        )}
+                      </Field>
                     )}
-                  </Field>
-                )}
-              />
+                  />
 
-              <Controller
-                name="status"
-                control={control}
-                render={({ field }) => (
-                  <Field>
-                    <HStack justify="space-between" align="center">
-                      <Text fontWeight="500" textStyle="md">
-                        Show Team
-                      </Text>
-                      <Switch
-                        checked={field.value === 1}
-                        onCheckedChange={(value) => {
-                          const statusValue = value.checked ? 1 : 0;
-                          field.onChange(statusValue);
-                          handleFieldChange("status", statusValue);
+                  <Controller
+                    name="role"
+                    control={control}
+                    rules={{ required: "Role is required" }}
+                    render={({ field }) => (
+                      <Field label="Role">
+                        <Select
+                          {...field}
+                          isClearable
+                          options={options}
+                          value={options.find(
+                            (option) => option.value === field.value
+                          )}
+                          onChange={(selectedOption) =>
+                            handleFieldChange(
+                              "role",
+                              selectedOption?.value || ""
+                            )
+                          }
+                          placeholder="Select user role"
+                          styles={{
+                            container: (base) => ({
+                              ...base,
+                              width: "100%",
+                            }),
+                            control: (base) => ({
+                              ...base,
+                              width: "100%",
+                              borderColor: errors.role
+                                ? "red"
+                                : base.borderColor,
+                            }),
+                            menu: (base) => ({
+                              ...base,
+                              width: "100%",
+                            }),
+                            valueContainer: (base) => ({
+                              ...base,
+                              width: "100%",
+                            }),
+                            input: (base) => ({
+                              ...base,
+                              width: "100%",
+                            }),
+                          }}
+                        />
+                        {errors.role && (
+                          <Text textStyle="sm" color="red">
+                            {errors.role.message}
+                          </Text>
+                        )}
+                      </Field>
+                    )}
+                  />
+                </HStack>
+
+                <Controller
+                  name="image"
+                  control={control}
+                  rules={!id ? { required: "Image URL is required" } : {}}
+                  render={({ field }) => (
+                    <Field label="Image URL">
+                      <FileUploadRoot
+                        alignItems="stretch"
+                        maxFiles={1}
+                        accept={["image/*"]}
+                        onFileAccept={(value) => {
+                          const file = value.files[0];
+                          field.onChange(file);
+                          handleImageUpload(file);
                         }}
-                        color="black"
-                        colorPalette="blue"
-                      />
-                    </HStack>
-                  </Field>
-                )}
-              />
-            </VStack>
-            <HStack justifyContent="flex-end" mt={4}>
-              <Button variant={"ghost"} onClick={() => navigate(-1)}>
-                {" "}
-                Cancel{" "}
-              </Button>
-              <Button type="submit" colorPalette={"blue"}>
-                {" "}
-                Submit
-              </Button>
-            </HStack>
-          </form>
-        </CardBody>
-      </CardRoot>
+                      >
+                        <FileUploadDropzone
+                          value={
+                            typeof field.value === "string" ? field.value : ""
+                          }
+                          label="Drag and drop here to upload"
+                          description=".png, .jpg up to 5MB"
+                        />
+                        {(selectedImage ||
+                          teamData.image ||
+                          teamData.image_url) && (
+                          <Image
+                            src={
+                              selectedImage ||
+                              (typeof teamData.image === "string"
+                                ? teamData.image
+                                : undefined) ||
+                              teamData.image_url
+                            }
+                            alt="Uploaded or Existing Image"
+                            objectFit="contain"
+                            aspectRatio={2 / 1}
+                            mt={4}
+                          />
+                        )}
+                      </FileUploadRoot>
+                      {errors.image && (
+                        <Text textStyle="sm" color="red">
+                          {errors.image.message}
+                        </Text>
+                      )}
+                    </Field>
+                  )}
+                />
+
+                <Controller
+                  name="status"
+                  control={control}
+                  render={({ field }) => (
+                    <Field>
+                      <HStack justify="space-between" align="center">
+                        <Text fontWeight="500" textStyle="md">
+                          Show Team
+                        </Text>
+                        <Switch
+                          checked={field.value === 1}
+                          onCheckedChange={(value) => {
+                            const statusValue = value.checked ? 1 : 0;
+                            field.onChange(statusValue);
+                            handleFieldChange("status", statusValue);
+                          }}
+                          color="black"
+                          colorPalette="blue"
+                        />
+                      </HStack>
+                    </Field>
+                  )}
+                />
+              </VStack>
+              <HStack justifyContent="flex-end" mt={4}>
+                <Button variant={"ghost"} onClick={() => navigate(-1)}>
+                  {" "}
+                  Cancel{" "}
+                </Button>
+                <Button type="submit" colorPalette={"blue"}>
+                  {" "}
+                  Submit
+                </Button>
+              </HStack>
+            </form>
+          </CardBody>
+        </CardRoot>
+      </Box>
     </AdminLayout>
   );
 };

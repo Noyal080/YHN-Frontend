@@ -36,6 +36,11 @@ const PartnerSlider = () => {
       visible: true,
     },
     {
+      key: "link",
+      label: "Link",
+      visible: true,
+    },
+    {
       key: "image",
       label: "Logo",
       visible: true,

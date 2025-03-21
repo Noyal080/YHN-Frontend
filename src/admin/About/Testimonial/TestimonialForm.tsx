@@ -12,12 +12,14 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { TestimonialInput } from "@/utils/types";
 import {
+  Box,
   CardBody,
   CardRoot,
   Heading,
   HStack,
   Image,
   Input,
+  Spinner,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -35,6 +37,7 @@ const TestimonialForm = () => {
   const { id } = useParams();
   const { showToast } = useCommonToast();
   const [selectedImage, setSelectedImage] = useState<string | null>();
+  const [isLoading, setIsLoading] = useState(false);
   const [designationOption, setDesignationOption] = useState<
     DesignationOptions[]
   >([]);
@@ -66,12 +69,15 @@ const TestimonialForm = () => {
 
   useEffect(() => {
     const fetchTestimonialData = async () => {
+      setIsLoading(true);
       try {
         const res = await axiosInstance.get(`/testimonials/${id}`);
         const result = res.data.data.data;
         setTestimonialData(result);
       } catch (e) {
         console.error(e);
+      } finally {
+        setIsLoading(false);
       }
     };
     if (id) {
@@ -116,6 +122,7 @@ const TestimonialForm = () => {
   };
 
   const onSubmit = async (data: TestimonialInput) => {
+    setIsLoading(true);
     try {
       const submissionData = { ...data };
       const formData = new FormData();
@@ -170,6 +177,8 @@ const TestimonialForm = () => {
           : "Failed to add Testimonial",
         type: "error",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -183,229 +192,251 @@ const TestimonialForm = () => {
       activeSidebarItem="Testimonial"
       title={`${id ? "Edit" : "Add"} Testimonial`}
     >
-      <CardRoot m="auto" maxWidth="800px" mt={8} boxShadow="lg">
-        <CardBody>
-          <Heading mb={6}>
-            {id ? "Edit Testimonial" : "Add Testimonial"}
-          </Heading>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <VStack gap={4} align="stretch">
-              <Controller
-                name="name"
-                control={control}
-                rules={{ required: "Testimonial Name is required" }}
-                render={({ field }) => (
-                  <Field label="Testimonial Name">
-                    <Input
-                      {...field}
-                      placeholder="Enter testimonial name"
-                      size="md"
-                      onChange={(e) =>
-                        handleFieldChange("name", e.target.value)
-                      }
-                    />
-                    {errors.name && (
-                      <Text textStyle="sm" color="red">
-                        {errors.name.message}
-                      </Text>
-                    )}
-                  </Field>
-                )}
-              />
-              <Controller
-                name="description"
-                control={control}
-                rules={{ required: "Description is required" }}
-                render={({ field }) => (
-                  <Field label="Description">
-                    <CommonEditor
-                      value={field.value}
-                      onChange={(value) => {
-                        field.onChange(value);
-                        handleFieldChange("description", value);
-                      }}
-                    />
-                    {errors.description && (
-                      <Text textStyle="sm" color="red">
-                        {errors.description.message}
-                      </Text>
-                    )}
-                  </Field>
-                )}
-              />
-              <HStack>
+      <Box position="relative">
+        {/* Overlay and Spinner */}
+        {isLoading && (
+          <Box
+            position="absolute"
+            top={0}
+            left={0}
+            right={0}
+            bottom={0}
+            bg="rgba(255, 255, 255, 0.8)" // Semi-transparent white background
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            zIndex={1} // Ensure it's above the form
+          >
+            <Spinner size="xl" color="blue.500" />
+          </Box>
+        )}
+        <CardRoot m="auto" maxWidth="800px" mt={8} boxShadow="lg">
+          <CardBody>
+            <Heading mb={6}>
+              {id ? "Edit Testimonial" : "Add Testimonial"}
+            </Heading>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <VStack gap={4} align="stretch">
                 <Controller
-                  name="designation_id"
+                  name="name"
                   control={control}
-                  rules={{ required: "User Designation is required" }}
+                  rules={{ required: "Testimonial Name is required" }}
                   render={({ field }) => (
-                    <Field label="User Designation">
-                      <CreatableSelect
-                        {...field}
-                        placeholder="Create or select user designation"
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        options={designationOption as any}
-                        value={
-                          // Find the matching option object if field.value is a number
-                          typeof field.value === "number"
-                            ? designationOption.find(
-                                (option) => option.value === field.value
-                              )
-                            : // If it's a custom value (string) or null, handle accordingly
-                            field.value
-                            ? { label: String(field.value), value: field.value }
-                            : null
-                        }
-                        onChange={(selectedOption) => {
-                          // Update both React Hook Form state and local state
-                          field.onChange(selectedOption?.value || null);
-                          handleFieldChange(
-                            "designation_id",
-                            selectedOption?.value || null
-                          );
-                        }}
-                        // onBlur={field.onBlur}
-                        styles={{
-                          container: (base) => ({
-                            ...base,
-                            width: "100%",
-                          }),
-                          control: (base) => ({
-                            ...base,
-                            width: "100%",
-                            borderColor: errors.designation_id
-                              ? "red"
-                              : base.borderColor,
-                          }),
-                          menu: (base) => ({
-                            ...base,
-                            width: "100%",
-                          }),
-                          valueContainer: (base) => ({
-                            ...base,
-                            width: "100%",
-                          }),
-                          input: (base) => ({
-                            ...base,
-                            width: "100%",
-                          }),
-                        }}
-                      />
-                      {errors.designation_id && (
-                        <Text textStyle="sm" color="red">
-                          {errors.designation_id.message}
-                        </Text>
-                      )}
-                    </Field>
-                  )}
-                />
-                <Controller
-                  name="category"
-                  control={control}
-                  rules={{ required: "User Category is required" }}
-                  render={({ field }) => (
-                    <Field label="User Category">
+                    <Field label="Testimonial Name">
                       <Input
                         {...field}
-                        placeholder="Enter user category"
+                        placeholder="Enter testimonial name"
                         size="md"
                         onChange={(e) =>
-                          handleFieldChange("category", e.target.value)
+                          handleFieldChange("name", e.target.value)
                         }
                       />
-                      {errors.category && (
+                      {errors.name && (
                         <Text textStyle="sm" color="red">
-                          {errors.category.message}
+                          {errors.name.message}
                         </Text>
                       )}
                     </Field>
                   )}
                 />
-              </HStack>
-              <Controller
-                name="image"
-                control={control}
-                rules={{ required: "Image URL is required" }}
-                render={({ field }) => (
-                  <Field label="Image URL">
-                    <FileUploadRoot
-                      alignItems="stretch"
-                      maxFiles={1}
-                      accept={["image/*"]}
-                      onFileAccept={(value) => {
-                        const file = value.files[0];
-                        field.onChange(file);
-                        handleImageUpload(file);
-                      }}
-                    >
-                      <FileUploadDropzone
-                        value={
-                          typeof field.value === "string" ? field.value : ""
-                        }
-                        label="Drag and drop here to upload"
-                        description=".png, .jpg up to 5MB"
-                      />
-                      {(selectedImage || testimonialData.image) && (
-                        <Image
-                          src={
-                            selectedImage ||
-                            (typeof testimonialData.image === "string"
-                              ? testimonialData.image
-                              : undefined)
-                          }
-                          alt="Uploaded or Existing Image"
-                          objectFit="contain"
-                          aspectRatio={2 / 1}
-                          mt={4}
-                        />
-                      )}
-                    </FileUploadRoot>
-                    {errors.image && (
-                      <Text textStyle="sm" color="red">
-                        {errors.image.message}
-                      </Text>
-                    )}
-                  </Field>
-                )}
-              />
-
-              <Controller
-                name="status"
-                control={control}
-                render={({ field }) => (
-                  <Field>
-                    <HStack justify="space-between" align="center">
-                      <Text fontWeight="500" textStyle="md">
-                        Show Testimonial
-                      </Text>
-                      <Switch
-                        checked={field.value === 1}
-                        onCheckedChange={(value) => {
-                          const statusValue = value.checked ? 1 : 0;
-                          field.onChange(statusValue);
-                          handleFieldChange("status", statusValue);
+                <Controller
+                  name="description"
+                  control={control}
+                  rules={{ required: "Description is required" }}
+                  render={({ field }) => (
+                    <Field label="Description">
+                      <CommonEditor
+                        value={field.value}
+                        onChange={(value) => {
+                          field.onChange(value);
+                          handleFieldChange("description", value);
                         }}
-                        color="black"
-                        colorPalette="blue"
                       />
-                    </HStack>
-                  </Field>
-                )}
-              />
-            </VStack>
-            <HStack justifyContent="flex-end" mt={4}>
-              <Button variant={"ghost"} onClick={() => navigate(-1)}>
-                {" "}
-                Cancel{" "}
-              </Button>
-              <Button type="submit" colorPalette={"blue"}>
-                {" "}
-                Submit
-              </Button>
-            </HStack>
-          </form>
-        </CardBody>
-      </CardRoot>
+                      {errors.description && (
+                        <Text textStyle="sm" color="red">
+                          {errors.description.message}
+                        </Text>
+                      )}
+                    </Field>
+                  )}
+                />
+                <HStack>
+                  <Controller
+                    name="designation_id"
+                    control={control}
+                    rules={{ required: "User Designation is required" }}
+                    render={({ field }) => (
+                      <Field label="User Designation">
+                        <CreatableSelect
+                          {...field}
+                          placeholder="Create or select user designation"
+                          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                          options={designationOption as any}
+                          value={
+                            // Find the matching option object if field.value is a number
+                            typeof field.value === "number"
+                              ? designationOption.find(
+                                  (option) => option.value === field.value
+                                )
+                              : // If it's a custom value (string) or null, handle accordingly
+                              field.value
+                              ? {
+                                  label: String(field.value),
+                                  value: field.value,
+                                }
+                              : null
+                          }
+                          onChange={(selectedOption) => {
+                            // Update both React Hook Form state and local state
+                            field.onChange(selectedOption?.value || null);
+                            handleFieldChange(
+                              "designation_id",
+                              selectedOption?.value || null
+                            );
+                          }}
+                          // onBlur={field.onBlur}
+                          styles={{
+                            container: (base) => ({
+                              ...base,
+                              width: "100%",
+                            }),
+                            control: (base) => ({
+                              ...base,
+                              width: "100%",
+                              borderColor: errors.designation_id
+                                ? "red"
+                                : base.borderColor,
+                            }),
+                            menu: (base) => ({
+                              ...base,
+                              width: "100%",
+                            }),
+                            valueContainer: (base) => ({
+                              ...base,
+                              width: "100%",
+                            }),
+                            input: (base) => ({
+                              ...base,
+                              width: "100%",
+                            }),
+                          }}
+                        />
+                        {errors.designation_id && (
+                          <Text textStyle="sm" color="red">
+                            {errors.designation_id.message}
+                          </Text>
+                        )}
+                      </Field>
+                    )}
+                  />
+                  <Controller
+                    name="category"
+                    control={control}
+                    rules={{ required: "User Category is required" }}
+                    render={({ field }) => (
+                      <Field label="User Category">
+                        <Input
+                          {...field}
+                          placeholder="Enter user category"
+                          size="md"
+                          onChange={(e) =>
+                            handleFieldChange("category", e.target.value)
+                          }
+                        />
+                        {errors.category && (
+                          <Text textStyle="sm" color="red">
+                            {errors.category.message}
+                          </Text>
+                        )}
+                      </Field>
+                    )}
+                  />
+                </HStack>
+                <Controller
+                  name="image"
+                  control={control}
+                  rules={{ required: "Image URL is required" }}
+                  render={({ field }) => (
+                    <Field label="Image URL">
+                      <FileUploadRoot
+                        alignItems="stretch"
+                        maxFiles={1}
+                        accept={["image/*"]}
+                        onFileAccept={(value) => {
+                          const file = value.files[0];
+                          field.onChange(file);
+                          handleImageUpload(file);
+                        }}
+                      >
+                        <FileUploadDropzone
+                          value={
+                            typeof field.value === "string" ? field.value : ""
+                          }
+                          label="Drag and drop here to upload"
+                          description=".png, .jpg up to 5MB"
+                        />
+                        {(selectedImage || testimonialData.image) && (
+                          <Image
+                            src={
+                              selectedImage ||
+                              (typeof testimonialData.image === "string"
+                                ? testimonialData.image
+                                : undefined)
+                            }
+                            alt="Uploaded or Existing Image"
+                            objectFit="contain"
+                            aspectRatio={2 / 1}
+                            mt={4}
+                          />
+                        )}
+                      </FileUploadRoot>
+                      {errors.image && (
+                        <Text textStyle="sm" color="red">
+                          {errors.image.message}
+                        </Text>
+                      )}
+                    </Field>
+                  )}
+                />
+
+                <Controller
+                  name="status"
+                  control={control}
+                  render={({ field }) => (
+                    <Field>
+                      <HStack justify="space-between" align="center">
+                        <Text fontWeight="500" textStyle="md">
+                          Show Testimonial
+                        </Text>
+                        <Switch
+                          checked={field.value === 1}
+                          onCheckedChange={(value) => {
+                            const statusValue = value.checked ? 1 : 0;
+                            field.onChange(statusValue);
+                            handleFieldChange("status", statusValue);
+                          }}
+                          color="black"
+                          colorPalette="blue"
+                        />
+                      </HStack>
+                    </Field>
+                  )}
+                />
+              </VStack>
+              <HStack justifyContent="flex-end" mt={4}>
+                <Button variant={"ghost"} onClick={() => navigate(-1)}>
+                  {" "}
+                  Cancel{" "}
+                </Button>
+                <Button type="submit" colorPalette={"blue"}>
+                  {" "}
+                  Submit
+                </Button>
+              </HStack>
+            </form>
+          </CardBody>
+        </CardRoot>
+      </Box>
     </AdminLayout>
   );
 };

@@ -31,6 +31,7 @@ const PartnerSliderForm = () => {
   const [sliderData, setSliderData] = useState<PartnerSliderType>({
     image: "",
     title: "",
+    link: "",
     status: 1,
   });
   const navigate = useNavigate();
@@ -43,7 +44,8 @@ const PartnerSliderForm = () => {
       id: sliderData.id,
       title: sliderData.title,
       image: sliderData.image,
-      status: sliderData.status || 1,
+      link: sliderData.link,
+      status: sliderData.status,
     },
   });
   // const token = localStorage.getItem("accessToken");
@@ -153,6 +155,36 @@ const PartnerSliderForm = () => {
                     {errors.title && (
                       <Text textStyle="sm" color="red">
                         {errors.title.message}
+                      </Text>
+                    )}
+                  </Field>
+                )}
+              />
+              <Controller
+                name="link"
+                control={control}
+                rules={{
+                  required: "Link is required",
+                  pattern: {
+                    value: /^https:\/\/[\w.-]+\.[a-z]{2,6}([/\w.-]*)*\/?$/,
+                    message:
+                      "Please enter a valid URL (e.g., https://example.com)",
+                  },
+                }}
+                render={({ field }) => (
+                  <Field label="Link">
+                    <Input
+                      {...field}
+                      placeholder="Example: https://example.com"
+                      size="md"
+                      onChange={(e) => {
+                        field.onChange(e.target.value);
+                        handleFieldChange("link", e.target.value);
+                      }}
+                    />
+                    {errors.link && (
+                      <Text textStyle="sm" color="red">
+                        {errors.link.message}
                       </Text>
                     )}
                   </Field>
