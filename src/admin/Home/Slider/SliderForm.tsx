@@ -8,12 +8,14 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { SliderInput } from "@/utils/types";
 import {
+  Box,
   CardBody,
   CardRoot,
   Heading,
   HStack,
   Image,
   Input,
+  Spinner,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -27,6 +29,7 @@ import CommonEditor from "@/common/Editor";
 import { compressImage } from "@/helper/imageCompressor";
 const SliderForm = () => {
   const [showButtons, setShowButtons] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState<string | null>();
   const { showToast } = useCommonToast();
@@ -62,11 +65,14 @@ const SliderForm = () => {
 
   useEffect(() => {
     const fetchSliderData = async () => {
+      setIsLoading(true);
       try {
         const res = await axiosInstance.get(`/sliders/${id}`);
         setSliderData(res.data.data);
       } catch (e) {
         console.error(e);
+      } finally {
+        setIsLoading(false);
       }
     };
     if (id) {
@@ -82,6 +88,7 @@ const SliderForm = () => {
   };
 
   const onSubmit = async (sliderData: SliderInput) => {
+    setIsLoading(true);
     try {
       const data = new FormData();
       Object.entries(sliderData).forEach(([key, value]) => {
@@ -123,6 +130,8 @@ const SliderForm = () => {
           type: "error",
         });
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -160,233 +169,258 @@ const SliderForm = () => {
       title={`${id ? "Edit" : "Add"} Slider Section`}
       activeSidebarItem="Sliders"
     >
-      <CardRoot m="auto" maxWidth="800px" mt={8} boxShadow="lg">
-        <CardBody>
-          <Heading mb={6}>{id ? "Edit Slider" : "Add Slider"}</Heading>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <VStack gap={4} align="stretch">
-              <Controller
-                name="title"
-                control={control}
-                rules={{ required: "Title is required" }}
-                render={({ field }) => (
-                  <Field label="Title">
-                    <Input
-                      {...field}
-                      placeholder="Enter title"
-                      size="md"
-                      onChange={(e) =>
-                        handleFieldChange("title", e.target.value)
-                      }
-                    />
-                    {errors.title && (
-                      <Text textStyle="sm" color="red">
-                        {errors.title.message}
-                      </Text>
-                    )}
-                  </Field>
-                )}
-              />
-
-              <Controller
-                name="sub_title"
-                control={control}
-                rules={{ required: "Description is required" }}
-                render={({ field }) => (
-                  <Field label="Description">
-                    <CommonEditor
-                      value={field.value}
-                      onChange={(value) => {
-                        field.onChange(value);
-                        handleFieldChange("sub_title", value);
-                      }}
-                    />
-
-                    {errors.sub_title && (
-                      <Text textStyle="sm" color="red">
-                        {errors.sub_title.message}
-                      </Text>
-                    )}
-                  </Field>
-                )}
-              />
-
-              <Controller
-                name="image"
-                control={control}
-                rules={{ required: "Image URL is required" }}
-                render={({ field }) => (
-                  <Field label="Image URL">
-                    <FileUploadRoot
-                      alignItems="stretch"
-                      maxFiles={1}
-                      accept={["image/*"]}
-                      onFileAccept={async (value) => {
-                        const file = value.files[0];
-                        field.onChange(file);
-                        handleImageUpload(file);
-                      }}
-                    >
-                      <FileUploadDropzone
-                        value={
-                          typeof field.value === "string" ? field.value : ""
+      <Box position="relative">
+        {/* Overlay and Spinner */}
+        {isLoading && (
+          <Box
+            position="absolute"
+            top={0}
+            left={0}
+            right={0}
+            bottom={0}
+            bg="rgba(255, 255, 255, 0.8)" // Semi-transparent white background
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            zIndex={1} // Ensure it's above the form
+          >
+            <Spinner size="xl" color="blue.500" />
+          </Box>
+        )}
+        <CardRoot m="auto" maxWidth="800px" mt={8} boxShadow="lg">
+          <CardBody>
+            <Heading mb={6}>{id ? "Edit Slider" : "Add Slider"}</Heading>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <VStack gap={4} align="stretch">
+                <Controller
+                  name="title"
+                  control={control}
+                  rules={{ required: "Title is required" }}
+                  render={({ field }) => (
+                    <Field label="Title">
+                      <Input
+                        {...field}
+                        placeholder="Enter title"
+                        size="md"
+                        onChange={(e) =>
+                          handleFieldChange("title", e.target.value)
                         }
-                        label="Drag and drop here to upload"
-                        description=".png, .jpg up to 5MB"
                       />
-                      {(selectedImage || sliderData.image) && (
-                        <Image
-                          src={
-                            selectedImage ||
-                            (typeof sliderData.image === "string"
-                              ? sliderData.image
-                              : undefined)
-                          }
-                          alt="Uploaded or Existing Image"
-                          objectFit="contain"
-                          aspectRatio={2 / 1}
-                          mt={4}
-                        />
+                      {errors.title && (
+                        <Text textStyle="sm" color="red">
+                          {errors.title.message}
+                        </Text>
                       )}
-                    </FileUploadRoot>
-                    {errors.image && (
-                      <Text textStyle="sm" color="red">
-                        {errors.image.message}
-                      </Text>
-                    )}
-                  </Field>
-                )}
-              />
+                    </Field>
+                  )}
+                />
 
-              <Controller
-                name="priority_order"
-                control={control}
-                rules={{ required: "Priority order is required" }}
-                render={({ field }) => (
-                  <Field label="Priority Order">
-                    <Input
-                      {...field}
-                      type="number"
-                      min={1}
-                      placeholder="Enter priority order"
-                      size="md"
-                      onChange={(e) =>
-                        handleFieldChange(
-                          "priority_order",
-                          Number(e.target.value)
-                        )
-                      }
-                    />
-                    {errors.priority_order && (
-                      <Text textStyle="sm" color="red">
-                        {errors.priority_order.message}
-                      </Text>
-                    )}
-                  </Field>
-                )}
-              />
-
-              <Controller
-                name="status"
-                control={control}
-                render={({ field }) => (
-                  <Field>
-                    <HStack justify="space-between" align="center">
-                      <Text fontWeight="500" textStyle="md">
-                        Pinned Image
-                      </Text>
-                      <Switch
-                        checked={field.value === 1}
-                        onCheckedChange={(value) => {
-                          const statusValue = value.checked ? 1 : 0;
-                          field.onChange(statusValue);
-                          handleFieldChange("status", statusValue);
+                <Controller
+                  name="sub_title"
+                  control={control}
+                  rules={{ required: "Description is required" }}
+                  render={({ field }) => (
+                    <Field label="Description">
+                      <CommonEditor
+                        value={field.value}
+                        onChange={(value) => {
+                          field.onChange(value);
+                          handleFieldChange("sub_title", value);
                         }}
-                        color="black"
-                        colorPalette="blue"
+                      />
+
+                      {errors.sub_title && (
+                        <Text textStyle="sm" color="red">
+                          {errors.sub_title.message}
+                        </Text>
+                      )}
+                    </Field>
+                  )}
+                />
+
+                <Controller
+                  name="image"
+                  control={control}
+                  rules={{ required: "Image URL is required" }}
+                  render={({ field }) => (
+                    <Field label="Image URL">
+                      <FileUploadRoot
+                        alignItems="stretch"
+                        maxFiles={1}
+                        accept={["image/*"]}
+                        onFileAccept={async (value) => {
+                          const file = value.files[0];
+                          field.onChange(file);
+                          handleImageUpload(file);
+                        }}
+                      >
+                        <FileUploadDropzone
+                          value={
+                            typeof field.value === "string" ? field.value : ""
+                          }
+                          label="Drag and drop here to upload"
+                          description=".png, .jpg up to 5MB"
+                        />
+                        {(selectedImage || sliderData.image) && (
+                          <Image
+                            src={
+                              selectedImage ||
+                              (typeof sliderData.image === "string"
+                                ? sliderData.image
+                                : undefined)
+                            }
+                            alt="Uploaded or Existing Image"
+                            objectFit="contain"
+                            aspectRatio={2 / 1}
+                            mt={4}
+                          />
+                        )}
+                      </FileUploadRoot>
+                      {errors.image && (
+                        <Text textStyle="sm" color="red">
+                          {errors.image.message}
+                        </Text>
+                      )}
+                    </Field>
+                  )}
+                />
+
+                <Controller
+                  name="priority_order"
+                  control={control}
+                  rules={{ required: "Priority order is required" }}
+                  render={({ field }) => (
+                    <Field label="Priority Order">
+                      <Input
+                        {...field}
+                        type="number"
+                        min={1}
+                        placeholder="Enter priority order"
+                        size="md"
+                        onChange={(e) =>
+                          handleFieldChange(
+                            "priority_order",
+                            Number(e.target.value)
+                          )
+                        }
+                      />
+                      {errors.priority_order && (
+                        <Text textStyle="sm" color="red">
+                          {errors.priority_order.message}
+                        </Text>
+                      )}
+                    </Field>
+                  )}
+                />
+
+                <Controller
+                  name="status"
+                  control={control}
+                  render={({ field }) => (
+                    <Field>
+                      <HStack justify="space-between" align="center">
+                        <Text fontWeight="500" textStyle="md">
+                          Pinned Image
+                        </Text>
+                        <Switch
+                          checked={field.value === 1}
+                          onCheckedChange={(value) => {
+                            const statusValue = value.checked ? 1 : 0;
+                            field.onChange(statusValue);
+                            handleFieldChange("status", statusValue);
+                          }}
+                          color="black"
+                          colorPalette="blue"
+                        />
+                      </HStack>
+                    </Field>
+                  )}
+                />
+
+                <Button
+                  variant="outline"
+                  colorScheme="blue"
+                  onClick={() => setShowButtons(!showButtons)}
+                  mt={4}
+                >
+                  {showButtons ? "Hide Buttons" : "Add/Show Buttons"}
+                </Button>
+
+                {showButtons && (
+                  <motion.div
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    variants={buttonVariants}
+                  >
+                    <HStack gap={4} align="flex-start">
+                      <Controller
+                        name="button_title"
+                        control={control}
+                        render={({ field }) => (
+                          <Field label="Button Title">
+                            <Input
+                              {...field}
+                              placeholder="Enter button title"
+                              size="md"
+                              onChange={(e) =>
+                                handleFieldChange(
+                                  "button_title",
+                                  e.target.value
+                                )
+                              }
+                            />
+                            {errors.button_title && (
+                              <Text textStyle="sm" color="red">
+                                {errors.button_title.message}
+                              </Text>
+                            )}
+                          </Field>
+                        )}
+                      />
+
+                      <Controller
+                        name="button_route"
+                        control={control}
+                        render={({ field }) => (
+                          <Field label="Button Route">
+                            <Input
+                              {...field}
+                              placeholder="Enter button route"
+                              size="md"
+                              onChange={(e) =>
+                                handleFieldChange(
+                                  "button_route",
+                                  e.target.value
+                                )
+                              }
+                            />
+                            {errors.button_route && (
+                              <Text textStyle="sm" color="red">
+                                {errors.button_route.message}
+                              </Text>
+                            )}
+                          </Field>
+                        )}
                       />
                     </HStack>
-                  </Field>
+                  </motion.div>
                 )}
-              />
-
-              <Button
-                variant="outline"
-                colorScheme="blue"
-                onClick={() => setShowButtons(!showButtons)}
-                mt={4}
-              >
-                {showButtons ? "Hide Buttons" : "Add/Show Buttons"}
-              </Button>
-
-              {showButtons && (
-                <motion.div
-                  initial="hidden"
-                  animate="visible"
-                  exit="exit"
-                  variants={buttonVariants}
-                >
-                  <HStack gap={4} align="flex-start">
-                    <Controller
-                      name="button_title"
-                      control={control}
-                      render={({ field }) => (
-                        <Field label="Button Title">
-                          <Input
-                            {...field}
-                            placeholder="Enter button title"
-                            size="md"
-                            onChange={(e) =>
-                              handleFieldChange("button_title", e.target.value)
-                            }
-                          />
-                          {errors.button_title && (
-                            <Text textStyle="sm" color="red">
-                              {errors.button_title.message}
-                            </Text>
-                          )}
-                        </Field>
-                      )}
-                    />
-
-                    <Controller
-                      name="button_route"
-                      control={control}
-                      render={({ field }) => (
-                        <Field label="Button Route">
-                          <Input
-                            {...field}
-                            placeholder="Enter button route"
-                            size="md"
-                            onChange={(e) =>
-                              handleFieldChange("button_route", e.target.value)
-                            }
-                          />
-                          {errors.button_route && (
-                            <Text textStyle="sm" color="red">
-                              {errors.button_route.message}
-                            </Text>
-                          )}
-                        </Field>
-                      )}
-                    />
-                  </HStack>
-                </motion.div>
-              )}
-            </VStack>
-            <HStack justifyContent="flex-end" mt={4}>
-              <Button variant={"ghost"} onClick={() => navigate(-1)}>
-                {" "}
-                Cancel{" "}
-              </Button>
-              <Button type="submit" colorPalette={"blue"}>
-                {" "}
-                Submit
-              </Button>
-            </HStack>
-          </form>
-        </CardBody>
-      </CardRoot>
+              </VStack>
+              <HStack justifyContent="flex-end" mt={4}>
+                <Button variant={"ghost"} onClick={() => navigate(-1)}>
+                  {" "}
+                  Cancel{" "}
+                </Button>
+                <Button type="submit" colorPalette={"blue"}>
+                  {" "}
+                  Submit
+                </Button>
+              </HStack>
+            </form>
+          </CardBody>
+        </CardRoot>
+      </Box>
     </AdminLayout>
   );
 };

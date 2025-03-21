@@ -1,7 +1,7 @@
 import CommonTable from "@/common/Table/CommonTable";
 import { Column } from "@/utils";
 import { PaginationProps, TestimonialData } from "@/utils/types";
-import { Box, Image, Text } from "@chakra-ui/react";
+import { Image, Text } from "@chakra-ui/react";
 import { Switch } from "@/components/ui/switch";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -10,6 +10,7 @@ import { axiosInstance } from "@/api/axios";
 import useDebounce from "@/helper/debounce";
 import CommonModal from "@/common/CommonModal";
 import useCommonToast from "@/common/CommonToast";
+import EditorTextView from "@/common/EditorTextView";
 
 const Testimonial = () => {
   const columns: Column<TestimonialData>[] = [
@@ -27,21 +28,7 @@ const Testimonial = () => {
       key: "description",
       label: "Description",
       visible: false,
-      render: (row) => {
-        return (
-          <Box
-            whiteSpace="normal" // Allow text wrapping
-            wordBreak="break-word" // Break long words
-            maxW={"400px"}
-          >
-            <Text
-              truncate
-              dangerouslySetInnerHTML={{ __html: row.description }}
-              lineClamp={2}
-            />
-          </Box>
-        );
-      },
+      render: (row) => <EditorTextView message={row.description} />,
     },
     {
       key: "image",

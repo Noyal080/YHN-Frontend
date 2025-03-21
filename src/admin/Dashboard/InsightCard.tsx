@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { FiBriefcase, FiCalendar, FiMail, FiUsers } from "react-icons/fi";
 import { LuQuote } from "react-icons/lu";
+import { Link } from "react-router-dom";
 
 interface InsightData {
   counts: {
@@ -30,6 +31,7 @@ interface InsightData {
 const cardVariants = {
   hidden: { scale: 0.9, opacity: 0 },
   visible: { scale: 1, opacity: 1 },
+  hover: { scale: 1.05, boxShadow: "0px 10px 20px rgba(0, 0, 0, 0.1)" },
 };
 
 const InsightCard = () => {
@@ -70,6 +72,14 @@ const InsightCard = () => {
     messages: <FiMail size={24} />,
   };
 
+  const routeMap: Record<string, string> = {
+    works: "/admin/our-works",
+    events: "/admin/events",
+    teams: "/admin/teams",
+    testimonials: "/admin/testimonials",
+    messages: "/admin/messages",
+  };
+
   return (
     <Box>
       <Heading mb={5}>Dashboard Insights</Heading>
@@ -94,21 +104,24 @@ const InsightCard = () => {
                 variants={cardVariants}
                 initial="hidden"
                 animate="visible"
-                transition={{ duration: 0.5 }}
+                whileHover="hover" // Add hover animation
+                transition={{ duration: 0.6, ease: "easeInOut" }}
               >
-                <CardRoot textAlign="center" p={4}>
-                  <CardHeader>
-                    <HStack justify="center" gap={2}>
-                      {iconMap[key]} {/* Icon beside heading */}
-                      <Heading size="md">{capitalizeFirstWord(key)}</Heading>
-                    </HStack>
-                  </CardHeader>
-                  <CardBody>
-                    <Text fontSize="xl" fontWeight="bold">
-                      {value}
-                    </Text>
-                  </CardBody>
-                </CardRoot>
+                <Link to={routeMap[key]} style={{ textDecoration: "none" }}>
+                  <CardRoot textAlign="center" p={4} variant={"elevated"}>
+                    <CardHeader>
+                      <HStack justify="center" gap={2}>
+                        {iconMap[key]} {/* Icon beside heading */}
+                        <Heading size="md">{capitalizeFirstWord(key)}</Heading>
+                      </HStack>
+                    </CardHeader>
+                    <CardBody>
+                      <Text fontSize="xl" fontWeight="bold">
+                        {value}
+                      </Text>
+                    </CardBody>
+                  </CardRoot>
+                </Link>
               </motion.div>
             ))}
       </SimpleGrid>

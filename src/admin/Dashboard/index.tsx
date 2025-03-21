@@ -185,7 +185,7 @@ const AdminDashboard = () => {
             data={eventByProvince}
             dataKey="events"
             title="Event by Province"
-            yLabel="No. of Work"
+            yLabel="No. of Events"
           />
         </div>
       </div>

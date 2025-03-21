@@ -8,8 +8,9 @@ import useDebounce from "@/helper/debounce";
 import { axiosInstance } from "@/api/axios";
 import useCommonToast from "@/common/CommonToast";
 import CommonModal from "@/common/CommonModal";
-import { Box, Image, Text } from "@chakra-ui/react";
+import { Image, Text } from "@chakra-ui/react";
 import ImageSlider from "../Gallery/Image/ImageSllider";
+import EditorTextView from "@/common/EditorTextView";
 
 const ProjectSection = () => {
   const navigate = useNavigate();
@@ -20,21 +21,7 @@ const ProjectSection = () => {
       key: "description",
       label: "Description",
       visible: false,
-      render: (row) => {
-        return (
-          <Box
-            whiteSpace="normal" // Allow text wrapping
-            wordBreak="break-word" // Break long words
-            maxW={"400px"}
-          >
-            <Text
-              truncate
-              dangerouslySetInnerHTML={{ __html: row.description }}
-              lineClamp={2}
-            />
-          </Box>
-        );
-      },
+      render: (row) => <EditorTextView message={row.description} />,
     },
     {
       key: "sector",
@@ -74,8 +61,18 @@ const ProjectSection = () => {
       visible: false,
       render: (row) => <ImageSlider images={row.gallery.gallery_images} />,
     },
-    { key: "objectives", label: "Objective", visible: false },
-    { key: "activities", label: "Activities", visible: false },
+    {
+      key: "objectives",
+      label: "Objective",
+      visible: false,
+      render: (row) => <EditorTextView message={row.objectives} />,
+    },
+    {
+      key: "activities",
+      label: "Activities",
+      visible: false,
+      render: (row) => <EditorTextView message={row.activities} />,
+    },
   ];
   const [loading, setLoading] = useState<boolean>(false);
   const [rows, setRows] = useState<OurWorks[]>([]);

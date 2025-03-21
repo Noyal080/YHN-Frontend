@@ -7,10 +7,11 @@ import CommonTable from "@/common/Table/CommonTable";
 import useDebounce from "@/helper/debounce";
 import { axiosInstance } from "@/api/axios";
 import CommonModal from "@/common/CommonModal";
-import { Box, Image, Text } from "@chakra-ui/react";
+import { Image, Text } from "@chakra-ui/react";
 import useCommonToast from "@/common/CommonToast";
 import { Switch } from "@/components/ui/switch";
 import ImageSlider from "../Gallery/Image/ImageSllider";
+import EditorTextView from "@/common/EditorTextView";
 
 const EventSection = () => {
   const [selectedRow, setSelectedRow] = useState<EventType | null>(null);
@@ -33,21 +34,7 @@ const EventSection = () => {
       key: "description",
       label: "Description",
       visible: false,
-      render: (row) => {
-        return (
-          <Box
-            whiteSpace="normal" // Allow text wrapping
-            wordBreak="break-word" // Break long words
-            maxW={"400px"}
-          >
-            <Text
-              truncate
-              dangerouslySetInnerHTML={{ __html: row.description }}
-              lineClamp={2}
-            />
-          </Box>
-        );
-      },
+      render: (row) => <EditorTextView message={row.description} />,
     },
     {
       key: "banner_image",
