@@ -17,6 +17,7 @@ import {
   Input,
   Spinner,
   Text,
+  Textarea,
   VStack,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
@@ -25,7 +26,6 @@ import { Controller, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { axiosInstance } from "@/api/axios";
 import useCommonToast from "@/common/CommonToast";
-import CommonEditor from "@/common/Editor";
 import { compressImage } from "@/helper/imageCompressor";
 const SliderForm = () => {
   const [showButtons, setShowButtons] = useState<boolean>(false);
@@ -221,11 +221,13 @@ const SliderForm = () => {
                   rules={{ required: "Description is required" }}
                   render={({ field }) => (
                     <Field label="Description">
-                      <CommonEditor
+                      <Textarea
+                        resize={"vertical"}
+                        autoresize
                         value={field.value}
-                        onChange={(value) => {
-                          field.onChange(value);
-                          handleFieldChange("sub_title", value);
+                        onChange={(e) => {
+                          field.onChange(e.target.value);
+                          handleFieldChange("sub_title", e.target.value);
                         }}
                       />
 

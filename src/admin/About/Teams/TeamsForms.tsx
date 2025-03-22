@@ -112,8 +112,8 @@ const TeamsForms = () => {
   }, []);
 
   useEffect(() => {
-    setIsLoading(true);
     const fetchTeamData = async () => {
+      setIsLoading(true);
       try {
         const res = await axiosInstance.get(`/teams/${id}`);
         setTeamData(res.data.data);

@@ -38,6 +38,9 @@ import ImageViewSection from "./admin/Gallery/Image/ImageViewSection";
 import { ProtectedRoute, ReverseProtectedRoute } from "./common/ProtectedRoute";
 import VideoForm from "./admin/Gallery/Video/VideoForm";
 import ProfilePage from "./admin/profile";
+import NotFound from "./common/NotFound";
+import Services from "./admin/Services";
+import ServiceForms from "./admin/Services/ServiceForm";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -331,7 +334,7 @@ function App() {
           }
         />
 
-        {/* <Route
+        <Route
           path="/admin/services"
           element={
             <ProtectedRoute>
@@ -355,7 +358,7 @@ function App() {
               <ServiceForms />
             </ProtectedRoute>
           }
-        /> */}
+        />
 
         {/* Image Section  */}
         <Route
@@ -417,6 +420,8 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );

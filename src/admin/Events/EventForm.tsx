@@ -128,8 +128,8 @@ const EventForm = () => {
   };
 
   useEffect(() => {
-    setIsLoading(true);
     const fetchData = async () => {
+      setIsLoading(true);
       try {
         const res = await axiosInstance.get(`/newsandevents/${id}`);
         setPageData(res.data.data);

@@ -97,3 +97,9 @@ export interface GalleryOptions {
   label: string;
   value: number;
 }
+
+export interface IconOption {
+  value: string; // e.g., "fa-solid fa-user"
+  label: string; // e.g., "faUser"
+  icon: any; // FontAwesome icon
+}

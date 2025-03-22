@@ -1,68 +1,40 @@
-import { useNavigate } from "react-router-dom";
-import AdminLayout from "../Layout";
 import { Column } from "@/utils";
-import { EventType, PaginationProps } from "@/utils/types";
-import { useEffect, useState } from "react";
-import CommonTable from "@/common/Table/CommonTable";
-import useDebounce from "@/helper/debounce";
-import { axiosInstance } from "@/api/axios";
-import CommonModal from "@/common/CommonModal";
-import { Image, Text } from "@chakra-ui/react";
-import useCommonToast from "@/common/CommonToast";
-import { Switch } from "@/components/ui/switch";
-import ImageSlider from "../Gallery/Image/ImageSllider";
+import AdminLayout from "../Layout";
+import { PaginationProps, ServicesType } from "@/utils/types";
 import EditorTextView from "@/common/EditorTextView";
+import { useEffect, useState } from "react";
+import useCommonToast from "@/common/CommonToast";
+import useDebounce from "@/helper/debounce";
+import { useNavigate } from "react-router-dom";
+import { axiosInstance } from "@/api/axios";
+import CommonTable from "@/common/Table/CommonTable";
+import CommonModal from "@/common/CommonModal";
+import { Text } from "@chakra-ui/react";
+import { Switch } from "@/components/ui/switch";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const EventSection = () => {
-  const [selectedRow, setSelectedRow] = useState<EventType | null>(null);
+const Services = () => {
+  const [selectedRow, setSelectedRow] = useState<ServicesType | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [rows, setRows] = useState<EventType[]>([]);
+  const [rows, setRows] = useState<ServicesType[]>([]);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [triggerFetch, setTriggerFetch] = useState(false);
   const { showToast } = useCommonToast();
 
-  const [paginationData, setPaginationData] = useState<PaginationProps>();
-  const [page, setPage] = useState<number>(1);
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const debouncedSearch = useDebounce(searchQuery, 500);
-  const navigate = useNavigate();
-
-  const columns: Column<EventType>[] = [
+  const columns: Column<ServicesType>[] = [
     { key: "id", label: "#", visible: true },
     { key: "title", label: "Title", visible: true },
     {
       key: "description",
       label: "Description",
-      visible: false,
+      visible: true,
       render: (row) => <EditorTextView message={row.description} />,
     },
     {
-      key: "banner_image",
-      label: "Banner",
+      key: "icon",
+      label: "Icon",
       visible: true,
-      render: (row) => (
-        <Image
-          rounded="md"
-          h="200px"
-          w="300px"
-          fit="contain"
-          src={row["banner_image"]}
-        />
-      ),
-    },
-    { key: "banner_date", label: "Date", visible: false },
-    { key: "banner_location_country", label: "Country", visible: false },
-    {
-      key: "banner_location_stateorprovince",
-      label: "Province",
-      visible: false,
-    },
-    { key: "banner_location_cityordistrict", label: "City", visible: false },
-    {
-      key: "gallery",
-      label: "Gallery",
-      visible: false,
-      render: (row) => <ImageSlider images={row.gallery.gallery_images} />,
+      render: (row) => <FontAwesomeIcon icon={row.icon} size="2x" />,
     },
     {
       key: "status",
@@ -74,13 +46,19 @@ const EventSection = () => {
     },
   ];
 
-  const handleEdit = (row: EventType) => {
-    navigate(`/admin/events/edit/${row.id}`);
+  const [paginationData, setPaginationData] = useState<PaginationProps>();
+  const [page, setPage] = useState<number>(1);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const debouncedSearch = useDebounce(searchQuery, 500);
+  const navigate = useNavigate();
+
+  const handleEdit = (row: ServicesType) => {
+    navigate(`/admin/services/edit/${row.id}`);
   };
 
-  const handleDelete = async (row: EventType) => {
+  const handleDelete = async (row: ServicesType) => {
     try {
-      await axiosInstance.delete(`/newsandevents/${row.id}`);
+      await axiosInstance.delete(`/services/${row.id}`);
       showToast({
         description: `${row.title} deleted succesfully`,
         type: "success",
@@ -102,7 +80,7 @@ const EventSection = () => {
     setLoading(true);
     const fetchVolunteerData = async () => {
       try {
-        const res = await axiosInstance.get("/newsandevents", {
+        const res = await axiosInstance.get("/services", {
           params: { page, search: debouncedSearch },
         });
         const data = res.data.data;
@@ -124,13 +102,13 @@ const EventSection = () => {
     <AdminLayout
       breadcrumbItems={[
         { label: "Dashboard", link: "/admin" },
-        { label: "News & Events" },
+        { label: "Services" },
       ]}
-      title={`News & Events Section`}
-      activeSidebarItem="News & Events"
+      title={`Our Services`}
+      activeSidebarItem="Services"
     >
       <CommonTable
-        title="Event List"
+        title="Service List"
         columns={columns}
         rows={rows}
         onEdit={handleEdit}
@@ -140,33 +118,31 @@ const EventSection = () => {
         }}
         loading={loading}
         onSearch={(query) => setSearchQuery(query)}
-        onAdd={() => navigate("/admin/events/add")}
+        onAdd={() => navigate("/admin/services/add")}
         // filterComponent={<SliderFilter />}
-        isDraggable
         count={paginationData?.total_pages}
         pageSize={paginationData?.per_page}
         currentPage={page}
         onPageChange={(page) => {
           setPage(page);
         }}
-        addName="Add Events"
+        addName="Add Services"
       />
-
       <CommonModal
         open={modalOpen}
         onOpenChange={() => setModalOpen(false)}
         title={"Remove Event Data"}
-        onButtonClick={() => handleDelete(selectedRow as EventType)}
+        onButtonClick={() => handleDelete(selectedRow as ServicesType)}
       >
         <Text>
           {" "}
           Are you sure you want to remove{" "}
           <strong> {selectedRow?.title} </strong> ? This will permanently remove
-          all the data regarding the news and events{" "}
+          all the data regarding the services{" "}
         </Text>
       </CommonModal>
     </AdminLayout>
   );
 };
 
-export default EventSection;
+export default Services;

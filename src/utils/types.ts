@@ -67,12 +67,6 @@ export type Option = {
   label: string;
 };
 
-export type ServiceInput = {
-  id?: number;
-  title: string;
-  description: string;
-};
-
 export type ImageInputTypes = {
   id?: number;
   title: string;
@@ -217,5 +211,12 @@ export type VideoInputTypes = {
   id? : number;
   title : string;
   video_url : string;
+}
 
+export type ServicesType = {
+  id? :number;
+  title : string;
+  description : string;
+  icon : any;
+  status : number
 }
