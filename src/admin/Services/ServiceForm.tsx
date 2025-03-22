@@ -27,24 +27,24 @@ import useDebounce from "@/helper/debounce";
 import { FixedSizeList as List } from "react-window";
 
 const iconList: IconOption[] = Object.keys(Icons)
-  .filter((key) => key.startsWith("fa")) // Filter only icon keys
+  .filter((key) => key.startsWith("fa"))
   .map((key) => ({
-    value: `fa-solid ${key}`, // Format value as "fa-solid fa-icon-name"
-    label: key, // Display the icon name as the label
-    icon: Icons[key], // Store the icon for display
+    value: `fa-solid ${key}`,
+    label: key,
+    icon: Icons[key],
   }));
 
 const MenuList = (props: MenuListProps<IconOption>) => {
   const { options, children, maxHeight, getValue } = props;
   const [value] = getValue();
-  const initialOffset = options.indexOf(value) * 35; // Adjust based on your item height
+  const initialOffset = options.indexOf(value) * 35;
   const height = Math.min(maxHeight, options.length * 35);
 
   return (
     <List
       height={height}
       itemCount={Array.isArray(children) ? children.length : 0}
-      itemSize={35} // Adjust based on your item height
+      itemSize={35}
       width="100%"
       initialScrollOffset={initialOffset}
     >
@@ -78,6 +78,7 @@ const ServiceForms = () => {
       icon.label.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
     );
   }, [debouncedSearchQuery]);
+
   const [pageData, setPageData] = useState<ServicesType>({
     title: "",
     description: "",
@@ -114,7 +115,6 @@ const ServiceForms = () => {
       activeSidebarItem="Services"
     >
       <Box position="relative">
-        {/* Overlay and Spinner */}
         {isLoading && (
           <Box
             position="absolute"
@@ -166,11 +166,10 @@ const ServiceForms = () => {
                     <Field label="Description">
                       <Textarea
                         resize={"vertical"}
-                        autoresize
+                        height={"200px"}
                         value={field.value}
                         onChange={(e) => {
                           field.onChange(e.target.value);
-                          //   handleFieldChange("sub_title", e.target.value);
                         }}
                       />
 

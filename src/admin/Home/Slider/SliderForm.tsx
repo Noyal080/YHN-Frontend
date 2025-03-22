@@ -222,8 +222,8 @@ const SliderForm = () => {
                   render={({ field }) => (
                     <Field label="Description">
                       <Textarea
+                        height={"200px"}
                         resize={"vertical"}
-                        autoresize
                         value={field.value}
                         onChange={(e) => {
                           field.onChange(e.target.value);

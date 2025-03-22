@@ -15,7 +15,7 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ images }) => {
   }, []);
 
   return (
-    <Box position="relative" width={"auto"} height="300px" overflow="hidden">
+    <Box position="relative" height="300px" overflow="hidden">
       <AnimatePresence mode="wait">
         <motion.div
           key={currentImage}
@@ -25,7 +25,7 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ images }) => {
           transition={{ duration: 0.8, ease: "easeInOut" }}
           style={{
             position: "absolute",
-            width: "100%",
+            width: "auto",
             height: "100%",
             perspective: "1000px", // Adds a 3D perspective
           }}
@@ -33,7 +33,7 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ images }) => {
           <Image
             src={images[currentImage].path}
             alt={`Slide ${currentImage}`}
-            width="100%"
+            width="auto"
             height="100%"
             objectFit="cover"
             borderRadius="md" // Optional: Adds rounded corners for a card-like feel
