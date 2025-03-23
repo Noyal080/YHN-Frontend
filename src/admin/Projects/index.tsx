@@ -11,6 +11,7 @@ import CommonModal from "@/common/CommonModal";
 import { Image, Text } from "@chakra-ui/react";
 import ImageSlider from "../Gallery/Image/ImageSllider";
 import EditorTextView from "@/common/EditorTextView";
+import { Switch } from "@/components/ui/switch";
 
 const ProjectSection = () => {
   const navigate = useNavigate();
@@ -73,6 +74,21 @@ const ProjectSection = () => {
       visible: false,
       render: (row) => <EditorTextView message={row.activities} />,
     },
+    {
+      key: "status",
+      label: "Status",
+      visible: true,
+      render: (row) => {
+        return (
+          <Switch
+            checked={row.status === 1}
+            onCheckedChange={() => {
+              handleStatusChange(String(row.id), row.status);
+            }}
+          />
+        );
+      },
+    },
   ];
   const [loading, setLoading] = useState<boolean>(false);
   const [rows, setRows] = useState<OurWorks[]>([]);
@@ -131,6 +147,19 @@ const ProjectSection = () => {
 
     fetchWorkData();
   }, [triggerFetch, page, debouncedSearch]);
+
+  const handleStatusChange = async (id: string, status: number) => {
+    const newStatus = status === 1 ? 0 : 1;
+    try {
+      await axiosInstance.post(`/ourwork/${id}`, {
+        status: newStatus,
+      });
+      setTriggerFetch(true);
+    } catch (error) {
+      console.error("Error changing status:", error);
+      // Handle error (e.g., show an error message to the user)
+    }
+  };
 
   return (
     <AdminLayout

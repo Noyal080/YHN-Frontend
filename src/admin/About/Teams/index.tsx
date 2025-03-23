@@ -57,7 +57,9 @@ const TeamSection = () => {
       render: (row) => (
         <Switch
           checked={row.status === 1}
-          onCheckedChange={() => console.log(`${row.id} checked`)}
+          onCheckedChange={() => {
+            handleStatusChange(String(row.id), row.status);
+          }}
         />
       ),
     },
@@ -107,6 +109,19 @@ const TeamSection = () => {
     };
     fetchTeams();
   }, [triggerFetch, page, debouncedSearch]);
+
+  const handleStatusChange = async (id: string, status: number) => {
+    const newStatus = status === 1 ? 0 : 1;
+    try {
+      await axiosInstance.post(`/teams/${id}`, {
+        status: newStatus,
+      });
+      setTriggerFetch(true);
+    } catch (error) {
+      console.error("Error changing status:", error);
+      // Handle error (e.g., show an error message to the user)
+    }
+  };
 
   return (
     <AdminLayout

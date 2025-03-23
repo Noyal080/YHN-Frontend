@@ -107,6 +107,7 @@ const SliderSection = () => {
         setLoading(false);
       } catch (err) {
         console.log(err);
+        setLoading(false);
       }
     };
 
@@ -139,8 +140,6 @@ const SliderSection = () => {
 
   const handleStatusChange = async (id: string, status: number) => {
     const newStatus = status === 1 ? 0 : 1;
-    console.log("clicked");
-
     try {
       await axiosInstance.post(`/sliders/${id}`, {
         status: newStatus,

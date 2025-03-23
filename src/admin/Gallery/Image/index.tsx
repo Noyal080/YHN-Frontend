@@ -49,7 +49,9 @@ const ImageSection = () => {
       render: (row) => (
         <Switch
           checked={row.status === 1}
-          onCheckedChange={() => console.log(row.id)}
+          onCheckedChange={() => {
+            handleStatusChange(String(row.id), row.status);
+          }}
         />
       ),
     },
@@ -99,6 +101,19 @@ const ImageSection = () => {
         description: "Error while removing gallery data",
         type: "error",
       });
+    }
+  };
+
+  const handleStatusChange = async (id: string, status: number) => {
+    const newStatus = status === 1 ? 0 : 1;
+    try {
+      await axiosInstance.post(`/gallery/${id}`, {
+        status: newStatus,
+      });
+      setTriggerFetch(true);
+    } catch (error) {
+      console.error("Error changing status:", error);
+      // Handle error (e.g., show an error message to the user)
     }
   };
 

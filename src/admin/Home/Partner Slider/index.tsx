@@ -67,7 +67,6 @@ const PartnerSlider = () => {
           <Switch
             checked={row.status === 1}
             onCheckedChange={() => {
-              console.log("clicked");
               handleStatusChange(String(row.id), row.status);
             }}
           />
@@ -82,7 +81,6 @@ const PartnerSlider = () => {
   // axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   useEffect(() => {
     const fetchPartners = async () => {
-      setLoading(true);
       try {
         const res = await axiosInstance.get("/partner", {
           params: { page, search: debouncedSearch },
@@ -131,8 +129,6 @@ const PartnerSlider = () => {
 
   const handleStatusChange = async (id: string, status: number) => {
     const newStatus = status === 1 ? 0 : 1;
-    console.log("clicked");
-
     try {
       await axiosInstance.post(`/partner/${id}`, {
         status: newStatus,
