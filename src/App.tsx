@@ -41,6 +41,7 @@ import ProfilePage from "./admin/profile";
 import NotFound from "./common/NotFound";
 import Services from "./admin/Services";
 import ServiceForms from "./admin/Services/ServiceForm";
+import ContactUsPage from "./admin/About/ContactUs";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -417,6 +418,15 @@ function App() {
           element={
             <ProtectedRoute>
               <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/contact-us"
+          element={
+            <ProtectedRoute>
+              <ContactUsPage />
             </ProtectedRoute>
           }
         />

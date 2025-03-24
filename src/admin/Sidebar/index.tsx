@@ -32,6 +32,7 @@ import {
 } from "react-icons/fi";
 import {
   LuBell,
+  LuContactRound,
   LuImagePlay,
   LuLayoutDashboard,
   LuQuote,
@@ -110,6 +111,12 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
         //   link: "/admin/founder",
         // },
         { id: 33, label: "Our Team", icon: FiUsers, link: "/admin/teams" },
+        {
+          id: 34,
+          label: "Contact Us",
+          icon: LuContactRound,
+          link: "/admin/contact-us",
+        },
       ],
     },
 
