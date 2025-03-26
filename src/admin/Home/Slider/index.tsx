@@ -29,7 +29,7 @@ const SliderSection = () => {
     { key: "title", label: "Title", visible: true },
     {
       key: "sub_title",
-      label: "Description",
+      label: "Sub Title",
       visible: false,
       render: (row) => {
         return (

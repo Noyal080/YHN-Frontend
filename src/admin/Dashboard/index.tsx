@@ -106,9 +106,8 @@ const AdminDashboard = () => {
       title="Admin HomePage"
       activeSidebarItem="Dashboard"
     >
-      <Container maxW="container.xl">
-        <InsightCard />
-      </Container>
+      <InsightCard />
+
       <div
         style={{
           display: "flex",

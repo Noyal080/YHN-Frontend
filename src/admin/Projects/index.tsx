@@ -48,7 +48,8 @@ const ProjectSection = () => {
         />
       ),
     },
-    { key: "banner_date", label: "Date", visible: false },
+    { key: "banner_start_date", label: "Start Date", visible: false },
+    { key: "banner_end_date", label: "End Date", visible: false },
     { key: "banner_location_country", label: "Country", visible: false },
     {
       key: "banner_location_stateorprovince",

@@ -4,6 +4,7 @@ import CommonModal from "@/common/CommonModal";
 import useCommonToast from "@/common/CommonToast";
 import EditorTextView from "@/common/EditorTextView";
 import CommonTable from "@/common/Table/CommonTable";
+import { Switch } from "@/components/ui/switch";
 import useDebounce from "@/helper/debounce";
 import { Column } from "@/utils";
 import { InternshipType, PaginationProps } from "@/utils/types";
@@ -36,6 +37,17 @@ const VolunteerSection = () => {
       render: (row) => <EditorTextView message={row.description} />,
     },
     { key: "apply_link", label: "Apply Link", visible: true },
+    {
+      key: "status",
+      label: "Status",
+      visible: true,
+      render: (row) => (
+        <Switch
+          checked={row.status === 1}
+          onCheckedChange={() => handleStatusChange(String(row.id), row.status)}
+        />
+      ),
+    },
   ];
 
   const handleEdit = (row: InternshipType) => {
@@ -83,6 +95,20 @@ const VolunteerSection = () => {
 
     fetchVolunteerData();
   }, [triggerFetch, page, debouncedSearch]);
+
+  const handleStatusChange = async (id: string, status: number) => {
+    //Change this
+    const newStatus = status === 1 ? 0 : 1;
+    try {
+      await axiosInstance.post(`/volunteers/${id}`, {
+        status: newStatus,
+      });
+      setTriggerFetch(true);
+    } catch (error) {
+      console.error("Error changing status:", error);
+      // Handle error (e.g., show an error message to the user)
+    }
+  };
 
   return (
     <AdminLayout

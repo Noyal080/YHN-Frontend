@@ -4,6 +4,7 @@ import useCommonToast from "@/common/CommonToast";
 import CommonEditor from "@/common/Editor";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
+import { Switch } from "@/components/ui/switch";
 import { InternshipType } from "@/utils/types";
 import {
   Box,
@@ -25,6 +26,7 @@ const VolunteerForm = () => {
     title: "",
     description: "",
     apply_link: "",
+    status: 1,
   });
   const navigate = useNavigate();
   const { id } = useParams();
@@ -43,6 +45,7 @@ const VolunteerForm = () => {
       title: volunteerData?.title || "",
       description: volunteerData?.description || "",
       apply_link: volunteerData?.apply_link || "",
+      status: volunteerData.status || 1,
     },
   });
 
@@ -189,6 +192,29 @@ const VolunteerForm = () => {
                           {errors.apply_link.message}
                         </Text>
                       )}
+                    </Field>
+                  )}
+                />
+
+                <Controller
+                  name="status"
+                  control={control}
+                  render={({ field }) => (
+                    <Field>
+                      <HStack justify="space-between" align="center">
+                        <Text fontWeight="500" textStyle="md">
+                          Show Volunteership
+                        </Text>
+                        <Switch
+                          checked={field.value === 1}
+                          onCheckedChange={(value) => {
+                            const statusValue = value.checked ? 1 : 0;
+                            field.onChange(statusValue);
+                          }}
+                          color="black"
+                          colorPalette="blue"
+                        />
+                      </HStack>
                     </Field>
                   )}
                 />

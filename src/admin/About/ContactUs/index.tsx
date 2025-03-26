@@ -1,6 +1,8 @@
 import AdminLayout from "@/admin/Layout";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
+import Select from "react-select";
+
 import {
   Box,
   HStack,
@@ -10,10 +12,12 @@ import {
   CardRoot,
   CardBody,
   Heading,
-  Text,
+  Flex,
 } from "@chakra-ui/react";
+
 import { FiPlus, FiTrash } from "react-icons/fi";
 import { useForm, Controller } from "react-hook-form";
+import { Tooltip } from "@/components/ui/tooltip";
 
 interface ContactField {
   id?: string;
@@ -23,20 +27,24 @@ interface ContactField {
 
 interface SocialMediaField {
   id?: string;
+  platform: string;
   value: string;
 }
 
 interface FormValues {
   email: ContactField[];
   phone: ContactField[];
-  social_media: {
-    Facebook: SocialMediaField[];
-    Instagram: SocialMediaField[];
-    Twitter: SocialMediaField[];
-  };
+  social_media: SocialMediaField[];
 }
 
 const ContactUsPage = () => {
+  const platformOptions = [
+    { value: "facebook", label: "Facebook" },
+    { value: "instagram", label: "Instagram" },
+    { value: "twitter", label: "Twitter" },
+    { value: "youtube", label: "YouTube" },
+  ];
+
   const defaultValues: FormValues = {
     email: [
       { id: "1", name: "Personal Email", value: "abcd@gmail.com" },
@@ -46,11 +54,23 @@ const ContactUsPage = () => {
       { id: "1", name: "Work Phone", value: "123456789" },
       { id: "2", name: "Phone", value: "123456789" },
     ],
-    social_media: {
-      Facebook: [{ id: "1", value: "YHN" }],
-      Instagram: [],
-      Twitter: [],
-    },
+    social_media: [
+      {
+        id: "1",
+        platform: "facebook",
+        value: "https://www.facebook.com/",
+      },
+      {
+        id: "2",
+        platform: "instagram",
+        value: "https://www.instagram.com/",
+      },
+      {
+        id: "3",
+        platform: "twitter",
+        value: "https://www.twitter.com/",
+      },
+    ],
   };
 
   const {
@@ -77,39 +97,29 @@ const ContactUsPage = () => {
     setValue(fieldName, [...currentFields, { name: "", value: "" }]);
   };
 
-  const handleAddSocialMedia = (platform: keyof FormValues["social_media"]) => {
+  const handleAddSocialMedia = () => {
     const currentValues = getValues("social_media");
-
     setValue(
       "social_media",
-      {
-        ...currentValues,
-        [platform]: [...currentValues[platform], { value: "" }],
-      },
+      [...currentValues, { platform: "facebook", value: "" }],
       {
         shouldDirty: true,
-        shouldTouch: true,
-        shouldValidate: true,
       }
     );
   };
 
   // Generic handler for deleting fields
-  const handleDeleteField = (
-    fieldName: string,
-    index: number,
-    platform?: keyof FormValues["social_media"]
-  ) => {
-    if (platform) {
-      const currentFields = getValues(`social_media.${platform}`);
-      const updatedFields = currentFields.filter((_, i) => i !== index);
-      setValue(`social_media.${platform}`, updatedFields, {
+  const handleDeleteField = (fieldName: string, index: number) => {
+    const currentFields = getValues(
+      fieldName as "email" | "phone" | "social_media"
+    );
+    const updatedFields = currentFields.filter((_, i) => i !== index);
+    if (fieldName === "email" || fieldName === "phone") {
+      setValue(fieldName, updatedFields as ContactField[], {
         shouldDirty: true,
       });
-    } else {
-      const currentFields = getValues(fieldName as "email" | "phone");
-      const updatedFields = currentFields.filter((_, i) => i !== index);
-      setValue(fieldName as "email" | "phone", updatedFields, {
+    } else if (fieldName === "social_media") {
+      setValue(fieldName, updatedFields as SocialMediaField[], {
         shouldDirty: true,
       });
     }
@@ -170,16 +180,18 @@ const ContactUsPage = () => {
                     </>
                   )}
                 />
-
-                <Button
-                  w={"full"}
-                  variant={"subtle"}
-                  colorPalette={"blue"}
-                  onClick={() => handleAddField("email")}
-                  type="button"
-                >
-                  <FiPlus /> Add Email
-                </Button>
+                <Tooltip content="Add Email">
+                  <IconButton
+                    borderRadius={"2xl"}
+                    size={"xs"}
+                    variant={"subtle"}
+                    colorPalette={"blue"}
+                    onClick={() => handleAddField("email")}
+                    type="button"
+                  >
+                    <FiPlus />
+                  </IconButton>
+                </Tooltip>
               </Box>
 
               {/* Phone Section */}
@@ -223,82 +235,96 @@ const ContactUsPage = () => {
                     </>
                   )}
                 />
-                <Button
-                  w={"full"}
-                  variant={"subtle"}
-                  colorPalette={"blue"}
-                  onClick={() => handleAddField("phone")}
-                  type="button"
-                >
-                  <FiPlus /> Add Phone
-                </Button>
+                <Tooltip content=" Add Phone">
+                  <IconButton
+                    borderRadius={"2xl"}
+                    size={"xs"}
+                    variant={"subtle"}
+                    colorPalette={"blue"}
+                    onClick={() => handleAddField("phone")}
+                    type="button"
+                  >
+                    <FiPlus />
+                  </IconButton>
+                </Tooltip>
               </Box>
 
               {/* Social Media Section */}
               <Box>
-                <Field fontWeight={"semibold"}>Social Media</Field>
+                <Flex justifyContent="space-between" alignItems="center" mb={2}>
+                  <Field fontWeight={"semibold"}>Social Media</Field>
+                </Flex>
+
                 <Controller
                   name="social_media"
                   control={control}
                   render={({ field }) => (
                     <>
-                      {(["Facebook", "Instagram", "Twitter"] as const).map(
-                        (platform) => (
-                          <Box key={platform} mb={4} p="4" borderWidth="1px">
-                            <HStack mb={2}>
-                              <Text>
-                                {platform.charAt(0).toUpperCase() +
-                                  platform.slice(1)}
-                              </Text>
-                            </HStack>
-                            {field.value[platform].map((item, index) => (
-                              <HStack key={getTempKey(item, index)} mb={2}>
-                                <Input
-                                  value={item.value}
-                                  onChange={(e) => {
-                                    const updatedPlatform = [
-                                      ...field.value[platform],
-                                    ];
-                                    updatedPlatform[index].value =
-                                      e.target.value;
-                                    field.onChange({
-                                      ...field.value,
-                                      [platform]: updatedPlatform,
-                                    });
-                                  }}
-                                  placeholder={`${platform} URL`}
-                                />
-                                <IconButton
-                                  aria-label={`Delete ${platform}`}
-                                  variant={"outline"}
-                                  colorPalette={"red"}
-                                  onClick={() =>
-                                    handleDeleteField(
-                                      "social_media",
-                                      index,
-                                      platform
-                                    )
-                                  }
-                                >
-                                  <FiTrash />
-                                </IconButton>
-                              </HStack>
-                            ))}
-                            <Button
-                              w={"full"}
-                              variant={"subtle"}
-                              colorPalette={"blue"}
-                              onClick={() => handleAddSocialMedia(platform)}
-                              mt={2}
-                              type="button"
-                            >
-                              <FiPlus /> Add{" "}
-                              {platform.charAt(0).toUpperCase() +
-                                platform.slice(1)}
-                            </Button>
+                      {field.value.map((item, index) => (
+                        <HStack
+                          key={getTempKey(item, index)}
+                          mb={2}
+                          alignItems="center"
+                        >
+                          <Box width="100%">
+                            <Select
+                              value={platformOptions.find(
+                                (opt) => opt.value === item.platform
+                              )}
+                              onChange={(selectedOption) => {
+                                const updatedSocialMedia = [...field.value];
+                                updatedSocialMedia[index].platform =
+                                  selectedOption?.value || "facebook";
+                                field.onChange(updatedSocialMedia);
+                              }}
+                              options={platformOptions}
+                              styles={{
+                                control: (base) => ({
+                                  ...base,
+                                  minHeight: "40px",
+                                  height: "40px",
+                                }),
+                                singleValue: (base) => ({
+                                  ...base,
+                                  color: "inherit",
+                                }),
+                              }}
+                              placeholder="Select platform..."
+                            />
                           </Box>
-                        )
-                      )}
+                          <Input
+                            value={item.value}
+                            onChange={(e) => {
+                              const updatedSocialMedia = [...field.value];
+                              updatedSocialMedia[index].value = e.target.value;
+                              field.onChange(updatedSocialMedia);
+                            }}
+                            placeholder="URL"
+                          />
+                          <IconButton
+                            variant={"outline"}
+                            colorPalette={"red"}
+                            aria-label="Delete social media"
+                            onClick={() =>
+                              handleDeleteField("social_media", index)
+                            }
+                          >
+                            <FiTrash />
+                          </IconButton>
+                        </HStack>
+                      ))}
+                      <Tooltip content="Add Social Media">
+                        <IconButton
+                          borderRadius={"2xl"}
+                          size={"xs"}
+                          variant={"subtle"}
+                          colorPalette={"blue"}
+                          onClick={handleAddSocialMedia}
+                          type="button"
+                        >
+                          <FiPlus />
+                        </IconButton>
+                      </Tooltip>
                     </>
                   )}
                 />

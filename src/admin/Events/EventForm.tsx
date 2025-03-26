@@ -42,7 +42,8 @@ const EventForm = () => {
     title: "",
     description: "",
     banner_image: "",
-    banner_date: "",
+    banner_start_date: "",
+    banner_end_date: "",
     banner_location_country: "",
     banner_location_stateorprovince: "",
     banner_location_cityordistrict: "",
@@ -63,7 +64,8 @@ const EventForm = () => {
       title: pageData.title || "",
       description: pageData.description || "",
       banner_image: pageData.banner_image || "",
-      banner_date: pageData.banner_date || "",
+      banner_start_date: pageData.banner_start_date || "",
+      banner_end_date: pageData.banner_end_date || "",
       banner_location_country: pageData.banner_location_country || "",
       banner_location_stateorprovince:
         pageData.banner_location_stateorprovince || "",
@@ -289,7 +291,7 @@ const EventForm = () => {
                   )}
                 />
 
-                <HStack>
+                <HStack w={"1/2"}>
                   <Controller
                     name="gallery_id"
                     control={control}
@@ -342,30 +344,6 @@ const EventForm = () => {
                         {errors.gallery_id && (
                           <Text textStyle="sm" color="red">
                             {errors.gallery_id.message}
-                          </Text>
-                        )}
-                      </Field>
-                    )}
-                  />
-
-                  <Controller
-                    name="banner_date"
-                    control={control}
-                    rules={{ required: "Date is requried" }}
-                    render={({ field }) => (
-                      <Field label="Date">
-                        <Input
-                          {...field}
-                          type="date"
-                          placeholder="Enter a date"
-                          size={"md"}
-                          onChange={(e) =>
-                            handleFieldChange("banner_date", e.target.value)
-                          }
-                        />
-                        {errors.banner_date && (
-                          <Text textStyle="sm" color="red">
-                            {errors.banner_date.message}
                           </Text>
                         )}
                       </Field>
@@ -485,6 +463,55 @@ const EventForm = () => {
                       {errors.banner_location_cityordistrict.message}
                     </Text>
                   )}
+                </HStack>
+                <HStack>
+                  <Controller
+                    name="banner_start_date"
+                    control={control}
+                    rules={{ required: "Start Date is requried" }}
+                    render={({ field }) => (
+                      <Field label="Start Date">
+                        <Input
+                          {...field}
+                          type="date"
+                          size={"md"}
+                          onChange={(e) =>
+                            handleFieldChange(
+                              "banner_start_date",
+                              e.target.value
+                            )
+                          }
+                        />
+                        {errors.banner_start_date && (
+                          <Text textStyle="sm" color="red">
+                            {errors.banner_start_date.message}
+                          </Text>
+                        )}
+                      </Field>
+                    )}
+                  />
+                  <Controller
+                    name="banner_end_date"
+                    control={control}
+                    rules={{ required: "End Date is requried" }}
+                    render={({ field }) => (
+                      <Field label="End Date">
+                        <Input
+                          {...field}
+                          type="date"
+                          size={"md"}
+                          onChange={(e) =>
+                            handleFieldChange("banner_end_date", e.target.value)
+                          }
+                        />
+                        {errors.banner_end_date && (
+                          <Text textStyle="sm" color="red">
+                            {errors.banner_end_date.message}
+                          </Text>
+                        )}
+                      </Field>
+                    )}
+                  />
                 </HStack>
 
                 <Controller

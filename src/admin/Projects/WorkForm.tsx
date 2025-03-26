@@ -52,7 +52,8 @@ const WorkForms = () => {
     sector_id: null,
     description: "",
     banner_image: "",
-    banner_date: "",
+    banner_start_date: "",
+    banner_end_date: "",
     banner_location_country: "",
     banner_location_stateorprovince: "",
     banner_location_cityordistrict: "",
@@ -74,7 +75,8 @@ const WorkForms = () => {
       sector_id: pageData.sector_id,
       description: pageData.description || "",
       banner_image: pageData.banner_image || "",
-      banner_date: pageData.banner_date || "",
+      banner_start_date: pageData.banner_start_date || "",
+      banner_end_date: pageData.banner_end_date || "",
       banner_location_country: pageData.banner_location_country || "",
       banner_location_stateorprovince:
         pageData.banner_location_stateorprovince || "",
@@ -424,21 +426,40 @@ const WorkForms = () => {
 
                 <HStack>
                   <Controller
-                    name="banner_date"
+                    name="banner_start_date"
                     control={control}
-                    rules={{ required: "Date is requried" }}
+                    rules={{ required: "Start Date is requried" }}
                     render={({ field }) => (
-                      <Field label="Date" className="w-1/2">
+                      <Field label="Start Date">
                         <Input
                           {...field}
                           type="date"
-                          placeholder="Enter a date"
                           size={"md"}
                           onChange={(value) => field.onChange(value)}
                         />
-                        {errors.banner_date && (
+                        {errors.banner_start_date && (
                           <Text textStyle="sm" color="red">
-                            {errors.banner_date.message}
+                            {errors.banner_start_date.message}
+                          </Text>
+                        )}
+                      </Field>
+                    )}
+                  />
+                  <Controller
+                    name="banner_end_date"
+                    control={control}
+                    rules={{ required: "End Date is requried" }}
+                    render={({ field }) => (
+                      <Field label="End Date">
+                        <Input
+                          {...field}
+                          type="date"
+                          size={"md"}
+                          onChange={(value) => field.onChange(value)}
+                        />
+                        {errors.banner_end_date && (
+                          <Text textStyle="sm" color="red">
+                            {errors.banner_end_date.message}
                           </Text>
                         )}
                       </Field>

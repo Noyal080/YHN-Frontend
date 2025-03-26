@@ -6,13 +6,14 @@ import {
   FileUploadRoot,
 } from "@/components/ui/file-upload";
 import { Switch } from "@/components/ui/switch";
-import { SliderInput } from "@/utils/types";
+import { SliderButton, SliderInput } from "@/utils/types";
 import {
   Box,
   CardBody,
   CardRoot,
   Heading,
   HStack,
+  IconButton,
   Image,
   Input,
   Spinner,
@@ -27,8 +28,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { axiosInstance } from "@/api/axios";
 import useCommonToast from "@/common/CommonToast";
 import { compressImage } from "@/helper/imageCompressor";
+import { FiTrash } from "react-icons/fi";
 const SliderForm = () => {
-  const [showButtons, setShowButtons] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState<string | null>();
@@ -41,6 +42,7 @@ const SliderForm = () => {
     status: 1,
     button_title: "",
     button_route: "",
+    buttons: [],
   });
   const {
     control,
@@ -56,6 +58,7 @@ const SliderForm = () => {
       status: sliderData.status || 1,
       button_title: sliderData.button_title || "",
       button_route: sliderData.button_route || "",
+      buttons: sliderData.buttons || [],
     },
   });
   const { id } = useParams();
@@ -85,6 +88,34 @@ const SliderForm = () => {
     value: string | number | boolean | File
   ) => {
     setSliderData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleButtonChange = (
+    index: number,
+    field: keyof SliderButton,
+    value: string
+  ) => {
+    setSliderData((prev) => {
+      const newButtons = [...(prev.buttons || [])];
+      newButtons[index] = { ...newButtons[index], [field]: value };
+      return { ...prev, buttons: newButtons };
+    });
+  };
+
+  const addNewButton = () => {
+    if ((sliderData?.buttons ?? []).length < 2) {
+      setSliderData((prev) => ({
+        ...prev,
+        buttons: [...(prev.buttons || []), { title: "", route: "" }],
+      }));
+    }
+  };
+
+  const removeButton = (index: number) => {
+    setSliderData((prev) => ({
+      ...prev,
+      buttons: (prev.buttons ?? []).filter((_, i) => i !== index),
+    }));
   };
 
   const onSubmit = async (sliderData: SliderInput) => {
@@ -136,16 +167,18 @@ const SliderForm = () => {
   };
 
   const buttonVariants = {
-    hidden: { opacity: 0, y: -20 },
+    hidden: { opacity: 0, y: -20, height: 0 },
     visible: {
       opacity: 1,
       y: 0,
+      height: "auto",
       transition: { duration: 0.3, ease: "easeInOut" },
     },
     exit: {
       opacity: 0,
       y: -20,
-      transition: { duration: 0.3, ease: "easeInOut" },
+      height: 0,
+      transition: { duration: 0.3, ease: "easeOut" },
     },
   };
 
@@ -218,11 +251,11 @@ const SliderForm = () => {
                 <Controller
                   name="sub_title"
                   control={control}
-                  rules={{ required: "Description is required" }}
+                  rules={{ required: "Sub Title is required" }}
                   render={({ field }) => (
-                    <Field label="Description">
+                    <Field label="Sub Title">
                       <Textarea
-                        height={"200px"}
+                        height={"100px"}
                         resize={"vertical"}
                         value={field.value}
                         onChange={(e) => {
@@ -339,7 +372,7 @@ const SliderForm = () => {
                   )}
                 />
 
-                <Button
+                {/* <Button
                   variant="outline"
                   colorScheme="blue"
                   onClick={() => setShowButtons(!showButtons)}
@@ -407,7 +440,68 @@ const SliderForm = () => {
                       />
                     </HStack>
                   </motion.div>
-                )}
+                )} */}
+
+                <HStack justify="space-between" align="center" mt={4}>
+                  <Text fontWeight="bold">Buttons </Text>
+                  <Button
+                    variant="outline"
+                    colorScheme="blue"
+                    onClick={addNewButton}
+                    disabled={
+                      sliderData.buttons && sliderData.buttons.length >= 2
+                    }
+                  >
+                    Add Button
+                  </Button>
+                </HStack>
+
+                {sliderData.buttons?.map((button, index) => (
+                  <motion.div
+                    key={index}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    variants={buttonVariants}
+                  >
+                    <HStack gap={4} align="flex-end">
+                      <Field label={`Button ${index + 1} Title`}>
+                        <Input
+                          value={button.title}
+                          placeholder="Enter button title"
+                          size="md"
+                          onChange={(e) =>
+                            handleButtonChange(index, "title", e.target.value)
+                          }
+                        />
+                      </Field>
+
+                      <Field label={`Button ${index + 1} Route`}>
+                        <Input
+                          value={button.route}
+                          placeholder="Enter button route"
+                          size="md"
+                          onChange={(e) =>
+                            handleButtonChange(index, "route", e.target.value)
+                          }
+                        />
+                      </Field>
+                      <motion.div
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                      >
+                        <IconButton
+                          aria-label={`Remove button ${index + 1}`}
+                          colorScheme="red"
+                          variant="ghost"
+                          onClick={() => removeButton(index)}
+                        >
+                          <FiTrash />
+                        </IconButton>
+                      </motion.div>
+                    </HStack>
+                  </motion.div>
+                ))}
               </VStack>
               <HStack justifyContent="flex-end" mt={4}>
                 <Button variant={"ghost"} onClick={() => navigate(-1)}>

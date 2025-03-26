@@ -14,6 +14,11 @@ export type SliderType = {
   status: boolean;
 };
 
+export interface SliderButton {
+  title: string;
+  route: string;
+}
+
 export type SliderInput = {
   id?: number;
   title: string;
@@ -23,6 +28,7 @@ export type SliderInput = {
   status: number;
   button_title?: string;
   button_route?: string;
+  buttons? : SliderButton[]
 };
 
 export type LoginFormData = {
@@ -33,7 +39,7 @@ export type LoginFormData = {
 export type PartnerSliderType = {
   id?: number;
   title: string;
-  link : string;
+  link: string;
   image: string | File; // Allow both string and File
   status: number;
 };
@@ -44,7 +50,7 @@ export type TestimonialInput = {
   status: number;
   image: string | File;
   description: string;
-  designation_id : number  | null;
+  designation_id: number | null;
   // designation: string;
   category: string;
 };
@@ -55,12 +61,12 @@ export type TestimonialData = {
   status: number;
   image: string;
   description: string;
-  designation_id : number  | null;
+  designation_id: number | null;
   designation: {
-    Name : string
+    Name: string;
   };
   category: string;
-}
+};
 
 export type Option = {
   value: string;
@@ -106,9 +112,9 @@ export type TeamsData = {
   id?: number;
   name: string;
   image_url: string;
-  position : {
-    Name : string
-  }
+  position: {
+    Name: string;
+  };
   role: string;
   status: number;
 };
@@ -127,42 +133,45 @@ export type InternshipType = {
   title: string;
   description: string;
   apply_link: string;
+  status : number
 };
 
 export type OurWorks = {
   id?: number;
   title: string;
   description: string;
-  sector_id: number | null,
-  sector : {
-    name : string
-  }
+  sector_id: number | null;
+  sector: {
+    name: string;
+  };
   banner_image: File | string;
-  banner_date: string;
-  banner_location_country: string,
-  banner_location_stateorprovince: string,
-  banner_location_cityordistrict: string,
-  gallery_id : number | null;
-  gallery : GallerEventType
+  banner_start_date: string;
+  banner_end_date: string;
+  banner_location_country: string;
+  banner_location_stateorprovince: string;
+  banner_location_cityordistrict: string;
+  gallery_id: number | null;
+  gallery: GallerEventType;
   objectives: string;
   activities: string;
-  status : number
-}
+  status: number;
+};
 
 export type OurWorkType = {
   id?: number;
   title: string;
   description: string;
-  sector_id: number | null,
+  sector_id: number | null;
   banner_image: File | string;
-  banner_date: string;
-  banner_location_country: string,
-  banner_location_stateorprovince: string,
-  banner_location_cityordistrict: string,
-  gallery_id : number | null;
+  banner_start_date: string;
+  banner_end_date: string;
+  banner_location_country: string;
+  banner_location_stateorprovince: string;
+  banner_location_cityordistrict: string;
+  gallery_id: number | null;
   objectives: string;
   activities: string;
-  status : number
+  status: number;
 };
 
 export type EventType = {
@@ -170,12 +179,13 @@ export type EventType = {
   title: string;
   description: string;
   banner_image: string;
-  banner_date: string;
-  banner_location_country: string,
-  banner_location_stateorprovince: string,
-  banner_location_cityordistrict: string,
+  banner_start_date: string;
+  banner_end_date: string;
+  banner_location_country: string;
+  banner_location_stateorprovince: string;
+  banner_location_cityordistrict: string;
   gallery: GallerEventType;
-  status : number
+  status: number;
 };
 
 export type GallerEventType = {
@@ -183,40 +193,40 @@ export type GallerEventType = {
   title: string;
   gallery_images: Gallery[];
   status: number;
-}
-
+};
 
 export type EventInputs = {
   id?: number;
   title: string;
   description: string;
   banner_image: File | string;
-  banner_date: string;
-  banner_location_country: string,
-  banner_location_stateorprovince: string,
-  banner_location_cityordistrict: string,
-  gallery_id : number | null;
-  status : number
+  banner_start_date: string;
+  banner_end_date: string;
+  banner_location_country: string;
+  banner_location_stateorprovince: string;
+  banner_location_cityordistrict: string;
+  gallery_id: number | null;
+  status: number;
 };
 
 export type PaginationProps = {
-  total_records: number ;
-  current_page: number ;
-  total_pages: number ;
-  per_page: number ;
+  total_records: number;
+  current_page: number;
+  total_pages: number;
+  per_page: number;
   has_more_pages: boolean | false;
 };
 
 export type VideoInputTypes = {
-  id? : number;
-  title : string;
-  video_url : string;
-}
+  id?: number;
+  title: string;
+  video_url: string;
+};
 
 export type ServicesType = {
-  id? :number;
-  title : string;
-  description : string;
-  icon : any;
-  status : number
-}
+  id?: number;
+  title: string;
+  description: string;
+  icon: any;
+  status: number;
+};
