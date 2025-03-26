@@ -11,7 +11,6 @@ import CommonTable from "@/common/Table/CommonTable";
 import CommonModal from "@/common/CommonModal";
 import { Text } from "@chakra-ui/react";
 import { Switch } from "@/components/ui/switch";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Services = () => {
   const [selectedRow, setSelectedRow] = useState<ServicesType | null>(null);
@@ -34,7 +33,6 @@ const Services = () => {
       key: "icon",
       label: "Icon",
       visible: true,
-      render: (row) => <FontAwesomeIcon icon={row.icon} size="2x" />,
     },
     {
       key: "status",
@@ -58,7 +56,7 @@ const Services = () => {
 
   const handleDelete = async (row: ServicesType) => {
     try {
-      await axiosInstance.delete(`/services/${row.id}`);
+      await axiosInstance.delete(`/service/${row.id}`);
       showToast({
         description: `${row.title} deleted succesfully`,
         type: "success",
@@ -80,12 +78,13 @@ const Services = () => {
     setLoading(true);
     const fetchVolunteerData = async () => {
       try {
-        const res = await axiosInstance.get("/services", {
+        const res = await axiosInstance.get("/service", {
           params: { page, search: debouncedSearch },
         });
         const data = res.data.data;
         setRows(data.data);
         setPaginationData(data.pagination);
+
         setLoading(false);
         setTriggerFetch(false);
       } catch (e) {

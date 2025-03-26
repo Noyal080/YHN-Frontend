@@ -76,16 +76,6 @@ const SliderSection = () => {
         />
       ),
     },
-    {
-      key: "button_title",
-      label: "Button Title",
-      visible: false,
-    },
-    {
-      key: "button_route",
-      label: "Button Route",
-      visible: false,
-    },
     { key: "priority_order", label: "Priority Order", visible: false },
   ];
   const navigate = useNavigate();

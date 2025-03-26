@@ -1,3 +1,5 @@
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
+
 // Change the data type here
 export type SliderType = {
   id: number;
@@ -15,8 +17,8 @@ export type SliderType = {
 };
 
 export interface SliderButton {
-  title: string;
-  route: string;
+  button_name: string;
+  button_link: string;
 }
 
 export type SliderInput = {
@@ -28,7 +30,7 @@ export type SliderInput = {
   status: number;
   button_title?: string;
   button_route?: string;
-  buttons? : SliderButton[]
+  buttons?: SliderButton[];
 };
 
 export type LoginFormData = {
@@ -133,7 +135,7 @@ export type InternshipType = {
   title: string;
   description: string;
   apply_link: string;
-  status : number
+  status: number;
 };
 
 export type OurWorks = {
@@ -227,6 +229,25 @@ export type ServicesType = {
   id?: number;
   title: string;
   description: string;
-  icon: any;
+  icon: IconProp;
   status: number;
+};
+
+export type ServiceInput = {
+  id?: number;
+  title: string;
+  description: string;
+  icon: string;
+  status: number;
+};
+
+export type DonationsType = {
+  id?: string;
+  donorName: string;
+  contactNumber: string;
+  email: string;
+  description: string;
+  country: string;
+  contributionType: string;
+  contributionAmount: number;
 };

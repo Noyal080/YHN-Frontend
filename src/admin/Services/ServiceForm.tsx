@@ -1,8 +1,8 @@
 import { useNavigate, useParams } from "react-router-dom";
 import AdminLayout from "../Layout";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import useCommonToast from "@/common/CommonToast";
-import { ServicesType } from "@/utils/types";
+import { ServiceInput } from "@/utils/types";
 import { Controller, useForm } from "react-hook-form";
 import {
   Box,
@@ -25,13 +25,15 @@ import * as Icons from "@fortawesome/free-solid-svg-icons";
 import { Switch } from "@/components/ui/switch";
 import useDebounce from "@/helper/debounce";
 import { FixedSizeList as List } from "react-window";
+import { axiosInstance } from "@/api/axios";
+import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 
 const iconList: IconOption[] = Object.keys(Icons)
   .filter((key) => key.startsWith("fa"))
   .map((key) => ({
     value: `fa-solid ${key}`,
     label: key,
-    icon: Icons[key],
+    icon: (Icons as unknown as Record<string, IconDefinition>)[key],
   }));
 
 const MenuList = (props: MenuListProps<IconOption>) => {
@@ -79,7 +81,7 @@ const ServiceForms = () => {
     );
   }, [debouncedSearchQuery]);
 
-  const [pageData, setPageData] = useState<ServicesType>({
+  const [pageData, setPageData] = useState<ServiceInput>({
     title: "",
     description: "",
     icon: "",
@@ -90,7 +92,7 @@ const ServiceForms = () => {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<ServicesType>({
+  } = useForm<ServiceInput>({
     values: {
       id: pageData.id,
       title: pageData.title,
@@ -100,8 +102,57 @@ const ServiceForms = () => {
     },
   });
 
-  const onSubmit = (data: ServicesType) => {
-    console.log(data);
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const res = await axiosInstance.get(`/service/${id}`);
+        setPageData(res.data.data.service);
+      } catch (e) {
+        console.log(e);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchData();
+    }
+  }, [id]);
+
+  const onSubmit = async (data: ServiceInput) => {
+    setIsLoading(true);
+    try {
+      if (id) {
+        await axiosInstance.post(`/service/${id}`, data);
+        showToast({
+          description: "Services updated successfully!",
+          type: "success",
+        });
+      } else {
+        await axiosInstance.post(`/service`, data);
+        showToast({
+          description: "Services added successfully",
+          type: "success",
+        });
+      }
+      navigate("/admin/services");
+    } catch (e) {
+      console.error(e);
+      if (id) {
+        showToast({
+          description: "Failed to update the Services",
+          type: "error",
+        });
+      } else {
+        showToast({
+          description: "Failed to add the Services",
+          type: "error",
+        });
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

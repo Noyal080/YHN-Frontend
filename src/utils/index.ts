@@ -1,3 +1,4 @@
+import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { Gallery } from "./types";
 
 export interface AdminLayoutProps {
@@ -101,5 +102,5 @@ export interface GalleryOptions {
 export interface IconOption {
   value: string; // e.g., "fa-solid fa-user"
   label: string; // e.g., "faUser"
-  icon: any; // FontAwesome icon
+  icon: IconDefinition; // FontAwesome icon
 }

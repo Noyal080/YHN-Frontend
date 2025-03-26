@@ -129,14 +129,14 @@ const ContactUsPage = () => {
     <AdminLayout
       breadcrumbItems={[
         { label: "Dashboard", link: "/admin" },
-        { label: "Contact Us" },
+        { label: "Company Profile" },
       ]}
-      title="Contact Us"
-      activeSidebarItem="Contact Us"
+      title="Company Profile"
+      activeSidebarItem="Company Profile"
     >
       <CardRoot m="auto" maxWidth="1000px" mt={8} boxShadow="lg">
         <CardBody>
-          <Heading mb={6}>Contact Us</Heading>
+          <Heading mb={6}>Company Profile</Heading>
           <form onSubmit={handleSubmit(onSubmit)}>
             <VStack gap={4} align="stretch">
               {/* Email Section */}

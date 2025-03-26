@@ -9,6 +9,7 @@ import useDebounce from "@/helper/debounce";
 import { Column } from "@/utils";
 import { InternshipType, PaginationProps } from "@/utils/types";
 import { Text } from "@chakra-ui/react";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -100,13 +101,29 @@ const VolunteerSection = () => {
     //Change this
     const newStatus = status === 1 ? 0 : 1;
     try {
-      await axiosInstance.post(`/volunteers/${id}`, {
+      await axiosInstance.patch(`/volunteers/${id}`, {
         status: newStatus,
       });
       setTriggerFetch(true);
     } catch (error) {
-      console.error("Error changing status:", error);
-      // Handle error (e.g., show an error message to the user)
+      let errorMessage = "Failed to update volunteer status";
+      if (axios.isAxiosError(error)) {
+        // Try to get the error message from response data first
+        errorMessage =
+          error.response?.data?.message ||
+          // Additional debugging info
+          console.log("Error details:", {
+            status: error.response?.status,
+            data: error.response?.data,
+          });
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+        console.log(errorMessage);
+      }
+      showToast({
+        description: errorMessage,
+        type: "error",
+      });
     }
   };
 

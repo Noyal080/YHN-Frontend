@@ -3,7 +3,6 @@ import {
   Box,
   VStack,
   Text,
-  Link,
   IconButton,
   Flex,
   CollapsibleRoot,
@@ -37,7 +36,6 @@ import {
   LuLayoutDashboard,
   LuQuote,
 } from "react-icons/lu";
-import { Tooltip } from "@/components/ui/tooltip";
 import { SidebarProps } from "@/utils";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -45,6 +43,15 @@ import { toggleDropdown, toggleSidebar } from "@/redux/sidebarSlice";
 import { RootState } from "@/redux/store";
 import Logo from "../../assets/YHN_Logo.jpg";
 import SmallLogo from "../../assets/LogoSmall.png";
+
+interface MenuItem {
+  id: number;
+  label: string;
+  icon: React.ElementType;
+  link?: string;
+  children?: MenuItem[];
+}
+
 const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
   const dispatch = useDispatch();
   const { isExpanded, openDropdowns } = useSelector(
@@ -113,9 +120,9 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
         { id: 33, label: "Our Team", icon: FiUsers, link: "/admin/teams" },
         {
           id: 34,
-          label: "Contact Us",
+          label: "Company Profile",
           icon: LuContactRound,
-          link: "/admin/contact-us",
+          link: "/admin/company-profile",
         },
       ],
     },
@@ -175,17 +182,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
     },
   ];
 
-  interface MenuItem {
-    id: number;
-    label: string;
-    icon: React.ElementType;
-    link?: string;
-    children?: MenuItem[];
-  }
-
   const renderMenuItem = (item: MenuItem) => {
-    const isOpen = openDropdowns.includes(item.id);
-
     const menuItemContent = (
       <Flex align="center">
         <item.icon
@@ -197,97 +194,76 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
     );
 
     return (
-      <Box key={item.label} w="100%">
-        <CollapsibleRoot defaultOpen={isOpen}>
-          <Tooltip
-            content={item.label}
-            disabled={isExpanded}
-            positioning={{ placement: "right" }}
-          >
-            <CollapsibleTrigger
-              as={Flex}
-              alignContent={"center"}
-              justifyContent="space-between"
-              onClick={() =>
-                item.children
-                  ? handleSidebarDropdown(item.id)
-                  : item?.link
-                  ? handleLinkClick(item?.link)
-                  : null
-              }
-              _hover={{ color: "teal.600" }}
-              p={2}
-              borderRadius="md"
-              transition="background 0.2s"
-              cursor="pointer"
-              color={
-                item.label === activeSidebarItem ? "teal.500" : "black.300"
-              }
-              // fontWeight={item.label === activeSidebarItem ? "bold" : "normal"}
-            >
-              {menuItemContent}
-              {item.children && isExpanded && (
-                <Flex
-                  transform={isOpen ? "rotate(-90deg)" : "rotate(0)"}
-                  transition="transform 0.2s"
-                >
-                  <FiChevronLeft size={16} />
-                </Flex>
-              )}
-            </CollapsibleTrigger>
-          </Tooltip>
+      <Box key={item.id} w="100%">
+        <Flex
+          alignContent="center"
+          justifyContent="space-between"
+          onClick={() => item?.link && handleLinkClick(item.link)}
+          _hover={{ color: "teal.600" }}
+          p={2}
+          borderRadius="md"
+          transition="background 0.2s"
+          cursor="pointer"
+          color={item.label === activeSidebarItem ? "teal.500" : "black.300"}
+        >
+          {menuItemContent}
+        </Flex>
+      </Box>
+    );
+  };
 
-          {/* Collapsible Content */}
-          {item.children && (
-            <CollapsibleContent>
-              <VStack align="start" pl={isExpanded ? 6 : 0} mt={2}>
-                {item.children.map(
-                  (child: {
-                    label: string;
-                    icon: React.ElementType;
-                    link?: string;
-                  }) => (
-                    <Tooltip
-                      key={child.label}
-                      content={child.label}
-                      disabled={isExpanded}
-                      positioning={{ placement: "right" }}
-                    >
-                      <Link
-                        color={
-                          child.label === activeSidebarItem
-                            ? "teal.400"
-                            : "black.300"
-                        }
-                        // fontWeight={
-                        //   child.label === activeSidebarItem ? "bold" : "normal"
-                        // }
-                        onClick={() =>
-                          child?.link ? handleLinkClick(child?.link) : null
-                        }
-                        _hover={{ color: "teal.600" }}
-                        p={2}
-                        borderRadius="md"
-                        transition="background 0.2s"
-                        w="100%"
-                      >
-                        <Flex align="center">
-                          <child.icon
-                            size={20}
-                            style={{ marginRight: isExpanded ? "12px" : "0" }}
-                          />
-                          {isExpanded && child.label}
-                        </Flex>
-                      </Link>
-                    </Tooltip>
-                  )
-                )}
-              </VStack>
-            </CollapsibleContent>
-          )}
+  const renderParentMenuItem = (item: MenuItem) => {
+    const isOpen = openDropdowns.includes(item.id);
+
+    return (
+      <Box key={item.id} w="100%">
+        <CollapsibleRoot defaultOpen={isOpen}>
+          <CollapsibleTrigger
+            as={Flex}
+            alignContent="center"
+            justifyContent="space-between"
+            onClick={() => handleSidebarDropdown(item.id)}
+            _hover={{ color: "teal.600" }}
+            p={2}
+            borderRadius="md"
+            transition="background 0.2s"
+            cursor="pointer"
+            color={item.label === activeSidebarItem ? "teal.500" : "black.300"}
+          >
+            <Flex align="center">
+              <item.icon size={20} style={{ marginRight: "12px" }} />
+              {item.label}
+            </Flex>
+            <Flex
+              transform={isOpen ? "rotate(-90deg)" : "rotate(0)"}
+              transition="transform 0.2s"
+            >
+              <FiChevronLeft size={16} />
+            </Flex>
+          </CollapsibleTrigger>
+
+          <CollapsibleContent>
+            <VStack align="start" pl={6} mt={2}>
+              {item.children?.map((child) => renderMenuItem(child))}
+            </VStack>
+          </CollapsibleContent>
         </CollapsibleRoot>
       </Box>
     );
+  };
+
+  const renderMenuContent = () => {
+    if (isExpanded) {
+      return menuItems.map((item) =>
+        item.children ? renderParentMenuItem(item) : renderMenuItem(item)
+      );
+    } else {
+      return menuItems.flatMap((item) =>
+        item.children
+          ? item.children.map((child) => renderMenuItem(child))
+          : [renderMenuItem(item)]
+      );
+    }
   };
 
   return (
@@ -352,7 +328,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
           </Text>
 
           {/* Menu Items */}
-          {menuItems.map((item) => renderMenuItem(item))}
+          {renderMenuContent()}
+          {/* {menuItems.map((item) => renderMenuItem(item))} */}
         </VStack>
       </Container>
       {/* Top Section */}

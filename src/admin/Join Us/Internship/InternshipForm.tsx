@@ -17,6 +17,7 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
@@ -45,7 +46,7 @@ const InternshipForm = () => {
       title: internshipData?.title || "",
       description: internshipData?.description || "",
       apply_link: internshipData?.apply_link || "",
-      status: internshipData.status || 1,
+      status: internshipData.status,
     },
   });
 
@@ -71,7 +72,7 @@ const InternshipForm = () => {
     setIsLoading(true);
     try {
       if (id) {
-        const res = await axiosInstance.put(`/internships/${id}`, data);
+        const res = await axiosInstance.patch(`/internships/${id}`, data);
         showToast({
           type: "success",
           description: res.data.message,
@@ -84,8 +85,25 @@ const InternshipForm = () => {
         });
       }
       navigate("/admin/internship");
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
+      let errorMessage = "Failed to update internship";
+      if (axios.isAxiosError(error)) {
+        // Try to get the error message from response data first
+        errorMessage =
+          error.response?.data?.message ||
+          // Additional debugging info
+          console.log("Error details:", {
+            status: error.response?.status,
+            data: error.response?.data,
+          });
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+        console.log(errorMessage);
+      }
+      showToast({
+        description: errorMessage,
+        type: "error",
+      });
     } finally {
       setIsLoading(false);
     }

@@ -129,7 +129,7 @@ const CommonTable = <T,>({
                       </Flex>
                     </TableColumnHeader>
                   ))}
-                {(onEdit || onDelete) && (
+                {(onEdit || onDelete || onView) && (
                   <TableColumnHeader textAlign="center">
                     Actions
                   </TableColumnHeader>

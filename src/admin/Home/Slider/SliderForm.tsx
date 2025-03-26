@@ -40,8 +40,6 @@ const SliderForm = () => {
     priority_order: 1,
     image: "",
     status: 1,
-    button_title: "",
-    button_route: "",
     buttons: [],
   });
   const {
@@ -56,8 +54,6 @@ const SliderForm = () => {
       priority_order: sliderData.priority_order || 1,
       image: sliderData.image || "",
       status: sliderData.status || 1,
-      button_title: sliderData.button_title || "",
-      button_route: sliderData.button_route || "",
       buttons: sliderData.buttons || [],
     },
   });
@@ -106,7 +102,10 @@ const SliderForm = () => {
     if ((sliderData?.buttons ?? []).length < 2) {
       setSliderData((prev) => ({
         ...prev,
-        buttons: [...(prev.buttons || []), { title: "", route: "" }],
+        buttons: [
+          ...(prev.buttons || []),
+          { button_name: "", button_link: "" },
+        ],
       }));
     }
   };
@@ -118,20 +117,31 @@ const SliderForm = () => {
     }));
   };
 
-  const onSubmit = async (sliderData: SliderInput) => {
+  const onSubmit = async (data: SliderInput) => {
     setIsLoading(true);
     try {
-      const data = new FormData();
-      Object.entries(sliderData).forEach(([key, value]) => {
-        if (key === "image" && typeof value === "string") {
-          data.append(key, "");
-        } else {
-          data.append(key, value as Blob);
-        }
-      });
+      const formData = new FormData();
+
+      // Append all fields to formData
+      formData.append("title", data.title);
+      formData.append("sub_title", data.sub_title);
+      formData.append("priority_order", String(data.priority_order));
+      formData.append("status", String(data.status));
+
+      // Handle image (either file or existing URL)
+      if (data.image instanceof File) {
+        formData.append("image", data.image);
+      } else if (typeof data.image === "string" && data.image) {
+        formData.append("image", "");
+      }
+
+      // Append buttons as JSON string
+      if (data.buttons && data.buttons.length > 0) {
+        formData.append("buttons", JSON.stringify(data.buttons));
+      }
 
       if (id) {
-        await axiosInstance.post(`/sliders/${id}`, data, {
+        await axiosInstance.post(`/sliders/${id}`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         showToast({
@@ -139,7 +149,7 @@ const SliderForm = () => {
           type: "success",
         });
       } else {
-        await axiosInstance.post(`/sliders`, sliderData, {
+        await axiosInstance.post(`/sliders`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         showToast({
@@ -467,22 +477,30 @@ const SliderForm = () => {
                     <HStack gap={4} align="flex-end">
                       <Field label={`Button ${index + 1} Title`}>
                         <Input
-                          value={button.title}
+                          value={button.button_name}
                           placeholder="Enter button title"
                           size="md"
                           onChange={(e) =>
-                            handleButtonChange(index, "title", e.target.value)
+                            handleButtonChange(
+                              index,
+                              "button_name",
+                              e.target.value
+                            )
                           }
                         />
                       </Field>
 
                       <Field label={`Button ${index + 1} Route`}>
                         <Input
-                          value={button.route}
+                          value={button.button_link}
                           placeholder="Enter button route"
                           size="md"
                           onChange={(e) =>
-                            handleButtonChange(index, "route", e.target.value)
+                            handleButtonChange(
+                              index,
+                              "button_link",
+                              e.target.value
+                            )
                           }
                         />
                       </Field>

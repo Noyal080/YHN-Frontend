@@ -17,6 +17,7 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
@@ -45,7 +46,7 @@ const VolunteerForm = () => {
       title: volunteerData?.title || "",
       description: volunteerData?.description || "",
       apply_link: volunteerData?.apply_link || "",
-      status: volunteerData.status || 1,
+      status: volunteerData.status,
     },
   });
 
@@ -71,7 +72,7 @@ const VolunteerForm = () => {
     setIsLoading(true);
     try {
       if (id) {
-        const res = await axiosInstance.put(`/volunteers/${id}`, data);
+        const res = await axiosInstance.patch(`/volunteers/${id}`, data);
         showToast({
           type: "success",
           description: res.data.message,
@@ -84,8 +85,25 @@ const VolunteerForm = () => {
         });
       }
       navigate("/admin/volunteer");
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
+      let errorMessage = "Failed to update volunteer status";
+      if (axios.isAxiosError(error)) {
+        // Try to get the error message from response data first
+        errorMessage =
+          error.response?.data?.message ||
+          // Additional debugging info
+          console.log("Error details:", {
+            status: error.response?.status,
+            data: error.response?.data,
+          });
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+        console.log(errorMessage);
+      }
+      showToast({
+        description: errorMessage,
+        type: "error",
+      });
     } finally {
       setIsLoading(false);
     }

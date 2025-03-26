@@ -18,7 +18,7 @@ import UsSection from "./admin/About/UsSection";
 import TeamSection from "./admin/About/Teams";
 import Testimonial from "./admin/About/Testimonial";
 import TestimonialForm from "./admin/About/Testimonial/TestimonialForm";
-import Donations from "./admin/About/Donation";
+
 // import Services from "./admin/Services";
 // import ServiceForms from "./admin/Services/ServiceForm";
 import EventSection from "./admin/Events";
@@ -42,6 +42,8 @@ import NotFound from "./common/NotFound";
 import Services from "./admin/Services";
 import ServiceForms from "./admin/Services/ServiceForm";
 import ContactUsPage from "./admin/About/ContactUs";
+import Donations from "./admin/About/Donation";
+import DonationView from "./admin/About/Donation/DonationView";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -216,6 +218,15 @@ function App() {
           element={
             <ProtectedRoute>
               <Donations />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/donation/:id"
+          element={
+            <ProtectedRoute>
+              <DonationView />
             </ProtectedRoute>
           }
         />
@@ -423,7 +434,7 @@ function App() {
         />
 
         <Route
-          path="/admin/contact-us"
+          path="/admin/company-profile"
           element={
             <ProtectedRoute>
               <ContactUsPage />

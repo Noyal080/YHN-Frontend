@@ -1,6 +1,4 @@
 import AdminLayout from "../Layout";
-
-import { Container } from "@chakra-ui/react";
 import InsightCard from "./InsightCard";
 import DashboardMessageRequest from "./MessageRequestTable";
 import GraphContainer from "./GraphContainer";
