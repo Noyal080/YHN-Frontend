@@ -1,13 +1,13 @@
 import { RootState, store } from "@/redux/store";
 import axios from "axios";
 
-const API_URL = import.meta.env.VITE_API_URL ;
+const API_URL = import.meta.env.VITE_API_URL;
 
 export const axiosInstance = axios.create({
   baseURL: API_URL, // Use the API URL from the .env file
-  timeout: 10000, // Request timeout in ms
+  timeout: 30000, // Request timeout in ms
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
     "Cache-Control": "no-cache",
     Pragma: "no-cache",
     Expires: "0",
@@ -32,7 +32,3 @@ axiosInstance.interceptors.request.use(
     return Promise.reject(error);
   }
 );
-
-  
-
-  

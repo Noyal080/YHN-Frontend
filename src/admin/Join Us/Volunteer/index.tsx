@@ -109,16 +109,9 @@ const VolunteerSection = () => {
       let errorMessage = "Failed to update volunteer status";
       if (axios.isAxiosError(error)) {
         // Try to get the error message from response data first
-        errorMessage =
-          error.response?.data?.message ||
-          // Additional debugging info
-          console.log("Error details:", {
-            status: error.response?.status,
-            data: error.response?.data,
-          });
+        errorMessage = error.response?.data?.message;
       } else if (error instanceof Error) {
         errorMessage = error.message;
-        console.log(errorMessage);
       }
       showToast({
         description: errorMessage,
@@ -149,7 +142,6 @@ const VolunteerSection = () => {
         onSearch={(query) => setSearchQuery(query)}
         onAdd={() => navigate("/admin/volunteer/add")}
         // filterComponent={<SliderFilter />}
-        isDraggable
         count={paginationData?.total_pages}
         pageSize={paginationData?.per_page}
         currentPage={page}

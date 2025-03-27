@@ -163,7 +163,6 @@ const EventSection = () => {
         onSearch={(query) => setSearchQuery(query)}
         onAdd={() => navigate("/admin/events/add")}
         // filterComponent={<SliderFilter />}
-        isDraggable
         count={paginationData?.total_pages}
         pageSize={paginationData?.per_page}
         currentPage={page}

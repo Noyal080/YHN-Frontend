@@ -163,7 +163,6 @@ const PartnerSlider = () => {
         }}
         onSearch={(query) => setSearchQuery(query)}
         onAdd={() => navigate("/admin/partners/add")}
-        isDraggable={false}
         count={paginationData?.total_pages}
         pageSize={paginationData?.per_page}
         currentPage={page}

@@ -188,7 +188,6 @@ const WorkForms = () => {
 
         // Extract the new position ID from the response
         const newPositionId = positionResponse.data.data.data.id;
-        console.log(newPositionId);
 
         // Update the submission data with the new position ID
         submissionData.sector_id = newPositionId;

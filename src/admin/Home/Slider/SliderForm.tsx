@@ -127,14 +127,10 @@ const SliderForm = () => {
       formData.append("sub_title", data.sub_title);
       formData.append("priority_order", String(data.priority_order));
       formData.append("status", String(data.status));
-
       // Handle image (either file or existing URL)
-      if (data.image instanceof File) {
+      if (data.image instanceof Blob) {
         formData.append("image", data.image);
-      } else if (typeof data.image === "string" && data.image) {
-        formData.append("image", "");
       }
-
       // Append buttons as JSON string
       if (data.buttons && data.buttons.length > 0) {
         formData.append("buttons", JSON.stringify(data.buttons));

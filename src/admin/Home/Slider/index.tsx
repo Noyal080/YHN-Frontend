@@ -165,7 +165,6 @@ const SliderSection = () => {
         onSearch={(query) => setSearchQuery(query)}
         onAdd={() => navigate("/admin/sliders/add")}
         // filterComponent={<SliderFilter />}
-        isDraggable
         count={paginationData?.total_pages}
         pageSize={paginationData?.per_page}
         currentPage={page}

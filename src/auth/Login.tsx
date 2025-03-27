@@ -48,7 +48,6 @@ const Login = () => {
   const onSubmit = async (data: LoginFormData) => {
     try {
       const res = await axiosInstance.post("/login", data);
-      console.log("Thisis where it is ");
 
       const userData = res.data.data;
       localStorage.setItem("accessToken", userData.token);

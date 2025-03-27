@@ -40,8 +40,6 @@ const ProfilePage = () => {
     fetchData();
   }, [refetchData]);
 
-  console.log(profileData);
-
   return (
     <AdminLayout
       title="Profile Section"

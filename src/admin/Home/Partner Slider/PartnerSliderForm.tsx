@@ -96,7 +96,7 @@ const PartnerSliderForm = () => {
         formData.append("title", sliderData.title);
         formData.append("status", sliderData.status.toString());
 
-        if (sliderData.image instanceof File) {
+        if (sliderData.image instanceof Blob) {
           formData.append("image", sliderData.image);
         }
         await axiosInstance.post(`/partner/${id}`, formData, {

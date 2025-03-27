@@ -89,16 +89,9 @@ const InternshipForm = () => {
       let errorMessage = "Failed to update internship";
       if (axios.isAxiosError(error)) {
         // Try to get the error message from response data first
-        errorMessage =
-          error.response?.data?.message ||
-          // Additional debugging info
-          console.log("Error details:", {
-            status: error.response?.status,
-            data: error.response?.data,
-          });
+        errorMessage = error.response?.data?.message;
       } else if (error instanceof Error) {
         errorMessage = error.message;
-        console.log(errorMessage);
       }
       showToast({
         description: errorMessage,

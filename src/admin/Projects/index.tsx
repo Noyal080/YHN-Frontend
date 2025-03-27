@@ -190,7 +190,6 @@ const ProjectSection = () => {
         onPageChange={(page) => {
           setPage(page);
         }}
-        isDraggable={false}
         addName="Add Works"
       />
 

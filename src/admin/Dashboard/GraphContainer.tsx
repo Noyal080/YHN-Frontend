@@ -40,7 +40,6 @@ const GraphContainer = ({
   const [chartType, setChartType] = useState<"Bar" | "Line" | "Pie" | "Table">(
     "Bar"
   );
-  console.log(data);
 
   const renderChart = () => {
     if (loading) {

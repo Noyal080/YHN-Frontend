@@ -144,8 +144,6 @@ const TeamSection = () => {
         }}
         onSearch={(query) => setSearchQuery(query)}
         onAdd={() => navigate("/admin/teams/add")}
-        // filterComponent={<SliderFilter />}
-        isDraggable
         addName="Add Teams"
         count={paginationData?.total_pages}
         pageSize={paginationData?.per_page}

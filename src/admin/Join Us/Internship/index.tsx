@@ -101,7 +101,6 @@ const InternshipSection = () => {
   const handleStatusChange = async (id: string, status: number) => {
     //Change this
     const newStatus = status === 1 ? 0 : 1;
-    console.log(newStatus);
     try {
       await axiosInstance.patch(`/internships/${id}`, {
         status: newStatus,
@@ -111,16 +110,9 @@ const InternshipSection = () => {
       let errorMessage = "Failed to update volunteer status";
       if (axios.isAxiosError(error)) {
         // Try to get the error message from response data first
-        errorMessage =
-          error.response?.data?.message ||
-          // Additional debugging info
-          console.log("Error details:", {
-            status: error.response?.status,
-            data: error.response?.data,
-          });
+        errorMessage = error.response?.data?.message;
       } else if (error instanceof Error) {
         errorMessage = error.message;
-        console.log(errorMessage);
       }
       showToast({
         description: errorMessage,
@@ -151,7 +143,6 @@ const InternshipSection = () => {
         onSearch={(query) => setSearchQuery(query)}
         onAdd={() => navigate("/admin/internship/add")}
         // filterComponent={<SliderFilter />}
-        isDraggable
         count={paginationData?.total_pages}
         pageSize={paginationData?.per_page}
         currentPage={page}

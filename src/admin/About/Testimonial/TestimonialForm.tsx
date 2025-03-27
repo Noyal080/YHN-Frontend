@@ -136,8 +136,6 @@ const TestimonialForm = () => {
 
         // Extract the new position ID from the response
         const newPositionId = positionResponse.data.data.id;
-        console.log(newPositionId);
-
         // Update the submission data with the new position ID
         submissionData.designation_id = newPositionId;
       }

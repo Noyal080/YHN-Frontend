@@ -35,45 +35,45 @@ export interface CommonModalProps {
   onOpenChange: () => void;
   children: React.ReactNode;
   title: string;
-  onButtonClick : () => void;
-  buttonName?: string
-  type? : "primary" | "danger" ;
-} 
+  onButtonClick: () => void;
+  buttonName?: string;
+  type?: "primary" | "danger";
+}
 
 export interface Column<T> {
   key: keyof T;
   label: string;
-  visible : boolean
+  visible: boolean;
   render?: (row: T) => React.ReactNode;
 }
 
 export interface CommonTableProps<T> {
   title: string;
-  loading ?: boolean
+  loading?: boolean;
   columns: Column<T>[];
   rows: T[];
   onEdit?: (row: T) => void;
-  onView?: (row :T) => void;
+  onView?: (row: T) => void;
   onDelete?: (row: T) => void;
   onSearch?: (query: string) => void;
   onAdd?: () => void;
   addName?: string;
   filterComponent?: React.ReactNode;
-  isDraggable?: boolean;
+
   count?: number;
   onPageChange?: (page: number) => void;
   currentPage?: number;
   pageSize?: number;
 }
 
-export interface TableHeadProps <T> {
+export interface TableHeadProps<T> {
   title: string;
   onSearch?: (query: string) => void;
   filterComponent?: React.ReactNode;
   onAdd?: () => void;
   addName?: string;
-  columns : Column<T>[]
-  handleColumnVisibilityChange: (columnKey: keyof T , visible : boolean) => void;
+  columns: Column<T>[];
+  handleColumnVisibilityChange: (columnKey: keyof T, visible: boolean) => void;
 }
 
 export interface TableSkeletonProps<T> {
@@ -85,12 +85,11 @@ export interface ImageSliderProps {
   images: Gallery[];
 }
 
-
 export interface User {
   name: string;
   email: string;
-  phone: string ;
-  address: string ;
+  phone: string;
+  address: string;
   image: string;
 }
 

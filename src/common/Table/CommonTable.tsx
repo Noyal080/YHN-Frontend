@@ -40,7 +40,6 @@ const CommonTable = <T,>({
   onSearch,
   onAdd,
   filterComponent,
-  isDraggable,
   count = 0,
   addName,
   onView,
@@ -62,7 +61,6 @@ const CommonTable = <T,>({
       )
     );
   };
-  console.log(isDraggable);
 
   const handleSort = (key: keyof T) => {
     if (sortKey === key) {

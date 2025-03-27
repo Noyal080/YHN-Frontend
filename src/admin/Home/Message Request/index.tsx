@@ -121,7 +121,6 @@ const MessageRequest = () => {
         // onView={(row) => navigate(`/admin/messages/view/${row.id}`)}
         loading={loading}
         onSearch={(query) => setSearchQuery(query)}
-        isDraggable={false}
         count={paginationData?.total_pages}
         pageSize={paginationData?.per_page}
         currentPage={page}

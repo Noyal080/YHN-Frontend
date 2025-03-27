@@ -17,7 +17,7 @@ const DonationView = () => {
       try {
         const res = await axiosInstance.get(`/donationform/${id}`);
         const data = res.data.data;
-        setDonationData(data.data);
+        setDonationData(data.donationForm);
         setIsLoading(false);
       } catch (e) {
         console.log(e);
