@@ -19,7 +19,6 @@ import {
 import { Field } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import Select, { MenuListProps, SingleValue } from "react-select";
-import { IconOption } from "@/utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as Icons from "@fortawesome/free-solid-svg-icons";
 import { Switch } from "@/components/ui/switch";
@@ -28,12 +27,23 @@ import { FixedSizeList as List } from "react-window";
 import { axiosInstance } from "@/api/axios";
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 
+interface IconOption {
+  value: string; // Will store "fas fa-heart"
+  label: string; // Display name
+  icon: IconDefinition; // For React display
+  iconClass: string; // For CDN compatibility
+}
+
 const iconList: IconOption[] = Object.keys(Icons)
   .filter((key) => key.startsWith("fa"))
   .map((key) => ({
-    value: `fa-solid ${key}`,
-    label: key,
-    icon: (Icons as unknown as Record<string, IconDefinition>)[key],
+    value: `fas fa-${key.replace("fa", "").toLowerCase()}`, // For database/CDN
+    label: key
+      .replace("fa", "")
+      .replace(/([A-Z])/g, " $1")
+      .trim(), // Display name
+    icon: (Icons as unknown as Record<string, IconDefinition>)[key], // For React display
+    iconClass: `fas fa-${key.replace("fa", "").toLowerCase()}`, // Alternative display
   }));
 
 const MenuList = (props: MenuListProps<IconOption>) => {
@@ -277,14 +287,17 @@ const ServiceForms = () => {
                             width: "100%",
                           }),
                         }}
+                        // In your Select component, update the formatOptionLabel
                         formatOptionLabel={({ label, icon }) => (
                           <div
                             style={{ display: "flex", alignItems: "center" }}
                           >
+                            {/* Show both versions for clarity during development */}
                             <FontAwesomeIcon
                               icon={icon}
                               style={{ marginRight: "10px" }}
                             />
+
                             {label}
                           </div>
                         )}
