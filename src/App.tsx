@@ -4,46 +4,55 @@ import {
   Routes,
   useLocation,
 } from "react-router-dom";
-import "./App.css";
-import AdminDashboard from "./admin/Dashboard";
-import SliderSection from "./admin/Home/Slider";
-import { useEffect } from "react";
-import LoginPage from "./auth/Login";
-import SliderForm from "./admin/Home/Slider/SliderForm";
-import ProjectSection from "./admin/Projects";
-import PartnerSlider from "./admin/Home/Partner Slider";
-import PartnerSliderForm from "./admin/Home/Partner Slider/PartnerSliderForm";
-import UsSection from "./admin/About/UsSection";
-// import BodSection from "./admin/About/BodSection";
-import TeamSection from "./admin/About/Teams";
-import Testimonial from "./admin/About/Testimonial";
-import TestimonialForm from "./admin/About/Testimonial/TestimonialForm";
-
-// import Services from "./admin/Services";
-// import ServiceForms from "./admin/Services/ServiceForm";
-import EventSection from "./admin/Events";
-import ImageSection from "./admin/Gallery/Image";
-import VideoSection from "./admin/Gallery/Video";
-import TeamsForms from "./admin/About/Teams/TeamsForms";
-import MessageRequest from "./admin/Home/Message Request";
-// import MessageView from "./admin/Home/Message Request/MessageView";
-import ImageForm from "./admin/Gallery/Image/ImageForm";
-import InternshipSection from "./admin/Join Us/Internship";
-import VolunteerSection from "./admin/Join Us/Volunteer";
-import InternshipForm from "./admin/Join Us/Internship/InternshipForm";
-import VolunteerForm from "./admin/Join Us/Volunteer/VolunteerForm";
-import WorkForms from "./admin/Projects/WorkForm";
-import EventForm from "./admin/Events/EventForm";
-import ImageViewSection from "./admin/Gallery/Image/ImageViewSection";
+import { Suspense, useEffect, lazy } from "react";
 import { ProtectedRoute, ReverseProtectedRoute } from "./common/ProtectedRoute";
-import VideoForm from "./admin/Gallery/Video/VideoForm";
-import ProfilePage from "./admin/profile";
-import NotFound from "./common/NotFound";
-import Services from "./admin/Services";
-import ServiceForms from "./admin/Services/ServiceForm";
-import ContactUsPage from "./admin/About/ContactUs";
-import Donations from "./admin/About/Donation";
-import DonationView from "./admin/About/Donation/DonationView";
+import SkeletonLoading from "./LazyLoader";
+
+// Lazy-loaded components for better code splitting
+const LoginPage = lazy(() => import("./auth/Login"));
+const AdminDashboard = lazy(() => import("./admin/Dashboard"));
+const NotFound = lazy(() => import("./common/NotFound"));
+
+// Dynamic imports for admin routes
+const SliderSection = lazy(() => import("./admin/Home/Slider"));
+const SliderForm = lazy(() => import("./admin/Home/Slider/SliderForm"));
+const PartnerSlider = lazy(() => import("./admin/Home/Partner Slider"));
+const PartnerSliderForm = lazy(
+  () => import("./admin/Home/Partner Slider/PartnerSliderForm")
+);
+const MessageRequest = lazy(() => import("./admin/Home/Message Request"));
+const UsSection = lazy(() => import("./admin/About/UsSection"));
+const TeamSection = lazy(() => import("./admin/About/Teams"));
+const TeamsForms = lazy(() => import("./admin/About/Teams/TeamsForms"));
+const Testimonial = lazy(() => import("./admin/About/Testimonial"));
+const TestimonialForm = lazy(
+  () => import("./admin/About/Testimonial/TestimonialForm")
+);
+const Donations = lazy(() => import("./admin/About/Donation"));
+const DonationView = lazy(() => import("./admin/About/Donation/DonationView"));
+const ProjectSection = lazy(() => import("./admin/Projects"));
+const WorkForms = lazy(() => import("./admin/Projects/WorkForm"));
+const EventSection = lazy(() => import("./admin/Events"));
+const EventForm = lazy(() => import("./admin/Events/EventForm"));
+const VolunteerSection = lazy(() => import("./admin/Join Us/Volunteer"));
+const VolunteerForm = lazy(
+  () => import("./admin/Join Us/Volunteer/VolunteerForm")
+);
+const InternshipSection = lazy(() => import("./admin/Join Us/Internship"));
+const InternshipForm = lazy(
+  () => import("./admin/Join Us/Internship/InternshipForm")
+);
+const Services = lazy(() => import("./admin/Services"));
+const ServiceForms = lazy(() => import("./admin/Services/ServiceForm"));
+const ImageSection = lazy(() => import("./admin/Gallery/Image"));
+const ImageForm = lazy(() => import("./admin/Gallery/Image/ImageForm"));
+const ImageViewSection = lazy(
+  () => import("./admin/Gallery/Image/ImageViewSection")
+);
+const VideoSection = lazy(() => import("./admin/Gallery/Video"));
+const VideoForm = lazy(() => import("./admin/Gallery/Video/VideoForm"));
+const ProfilePage = lazy(() => import("./admin/profile"));
+const ContactUsPage = lazy(() => import("./admin/About/ContactUs"));
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -53,397 +62,94 @@ const ScrollToTop = () => {
   return null;
 };
 
+// Route configuration objects for better organization
+const adminRoutes = [
+  { path: "/", element: <AdminDashboard /> },
+  { path: "/admin", element: <AdminDashboard /> },
+
+  // Home Section
+  { path: "/admin/sliders", element: <SliderSection /> },
+  { path: "/admin/sliders/add", element: <SliderForm /> },
+  { path: "/admin/sliders/edit/:id", element: <SliderForm /> },
+  { path: "/admin/partners", element: <PartnerSlider /> },
+  { path: "/admin/partners/add", element: <PartnerSliderForm /> },
+  { path: "/admin/partners/edit/:id", element: <PartnerSliderForm /> },
+  { path: "/admin/messages", element: <MessageRequest /> },
+
+  // About Us Section
+  { path: "/admin/about", element: <UsSection /> },
+  { path: "/admin/teams", element: <TeamSection /> },
+  { path: "/admin/teams/add", element: <TeamsForms /> },
+  { path: "/admin/teams/edit/:id", element: <TeamsForms /> },
+  { path: "/admin/testimonials", element: <Testimonial /> },
+  { path: "/admin/testimonials/add", element: <TestimonialForm /> },
+  { path: "/admin/testimonials/edit/:id", element: <TestimonialForm /> },
+  { path: "/admin/donation", element: <Donations /> },
+  { path: "/admin/donation/:id", element: <DonationView /> },
+
+  // Projects Section
+  { path: "/admin/our-works", element: <ProjectSection /> },
+  { path: "/admin/our-works/add", element: <WorkForms /> },
+  { path: "/admin/our-works/edit/:id", element: <WorkForms /> },
+
+  // Events Section
+  { path: "/admin/events", element: <EventSection /> },
+  { path: "/admin/events/add", element: <EventForm /> },
+  { path: "/admin/events/edit/:id", element: <EventForm /> },
+
+  // Join Us Section
+  { path: "/admin/volunteer", element: <VolunteerSection /> },
+  { path: "/admin/volunteer/add", element: <VolunteerForm /> },
+  { path: "/admin/volunteer/edit/:id", element: <VolunteerForm /> },
+  { path: "/admin/internship", element: <InternshipSection /> },
+  { path: "/admin/internship/add", element: <InternshipForm /> },
+  { path: "/admin/internship/edit/:id", element: <InternshipForm /> },
+
+  // Services Section
+  { path: "/admin/services", element: <Services /> },
+  { path: "/admin/services/add", element: <ServiceForms /> },
+  { path: "/admin/services/edit/:id", element: <ServiceForms /> },
+
+  // Gallery Section
+  { path: "/admin/gallery/images", element: <ImageSection /> },
+  { path: "/admin/gallery/images/add", element: <ImageForm /> },
+  { path: "/admin/gallery/images/view/:id", element: <ImageViewSection /> },
+  { path: "/admin/gallery/videos", element: <VideoSection /> },
+  { path: "/admin/gallery/videos/edit/:id", element: <VideoForm /> },
+  { path: "/admin/gallery/videos/add", element: <VideoForm /> },
+
+  // Profile Section
+  { path: "/admin/profile", element: <ProfilePage /> },
+  { path: "/admin/company-profile", element: <ContactUsPage /> },
+];
+
 function App() {
   return (
     <Router>
       <ScrollToTop />
+      <Suspense fallback={<SkeletonLoading />}>
+        <Routes>
+          <Route
+            path="/login"
+            element={
+              <ReverseProtectedRoute>
+                <LoginPage />
+              </ReverseProtectedRoute>
+            }
+          />
 
-      <Routes>
-        <Route
-          path="/login"
-          element={
-            <ReverseProtectedRoute>
-              <LoginPage />
-            </ReverseProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute>
-              <AdminDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <AdminDashboard />
-            </ProtectedRoute>
-          }
-        />
-        {/* Home Section */}
-        <Route
-          path="/admin/sliders"
-          element={
-            <ProtectedRoute>
-              <SliderSection />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/sliders/add"
-          element={
-            <ProtectedRoute>
-              <SliderForm />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/sliders/edit/:id"
-          element={
-            <ProtectedRoute>
-              <SliderForm />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/partners"
-          element={
-            <ProtectedRoute>
-              <PartnerSlider />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/partners/add"
-          element={
-            <ProtectedRoute>
-              <PartnerSliderForm />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/partners/edit/:id"
-          element={<PartnerSliderForm />}
-        />
-        <Route
-          path="/admin/messages"
-          element={
-            <ProtectedRoute>
-              <MessageRequest />
-            </ProtectedRoute>
-          }
-        />
-        {/* <Route
-          path="/admin/messages/view/:id"
-          element={
-            <ProtectedRoute>
-              <MessageView />
-            </ProtectedRoute>
-          }
-        /> */}
-        {/* About us Section */}
-        <Route
-          path="/admin/about"
-          element={
-            <ProtectedRoute>
-              <UsSection />
-            </ProtectedRoute>
-          }
-        />
-        {/* <Route
-          path="/admin/founder"
-          element={
-            <ProtectedRoute>
-              <BodSection />
-            </ProtectedRoute>
-          }
-        /> */}
-        <Route
-          path="/admin/teams"
-          element={
-            <ProtectedRoute>
-              <TeamSection />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/teams/add"
-          element={
-            <ProtectedRoute>
-              <TeamsForms />
-            </ProtectedRoute>
-          }
-        />
+          {/* Map through all admin routes */}
+          {adminRoutes.map((route) => (
+            <Route
+              key={route.path}
+              path={route.path}
+              element={<ProtectedRoute>{route.element}</ProtectedRoute>}
+            />
+          ))}
 
-        <Route
-          path="/admin/teams/edit/:id"
-          element={
-            <ProtectedRoute>
-              <TeamsForms />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/admin/testimonials"
-          element={
-            <ProtectedRoute>
-              <Testimonial />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/testimonials/add"
-          element={
-            <ProtectedRoute>
-              <TestimonialForm />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/admin/testimonials/edit/:id"
-          element={
-            <ProtectedRoute>
-              <TestimonialForm />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/admin/donation"
-          element={
-            <ProtectedRoute>
-              <Donations />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/admin/donation/:id"
-          element={
-            <ProtectedRoute>
-              <DonationView />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* <Route
-          path="/admin/careers"
-          element={
-            <ProtectedRoute>
-              <CareerSection />
-            </ProtectedRoute>
-          }
-        /> */}
-
-        <Route
-          path="/admin/our-works"
-          element={
-            <ProtectedRoute>
-              <ProjectSection />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/admin/our-works/add"
-          element={
-            <ProtectedRoute>
-              <WorkForms />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/our-works/edit/:id"
-          element={
-            <ProtectedRoute>
-              <WorkForms />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/admin/events"
-          element={
-            <ProtectedRoute>
-              <EventSection />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/admin/events/add"
-          element={
-            <ProtectedRoute>
-              <EventForm />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/events/edit/:id"
-          element={
-            <ProtectedRoute>
-              <EventForm />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/admin/volunteer"
-          element={
-            <ProtectedRoute>
-              <VolunteerSection />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/admin/volunteer/add"
-          element={
-            <ProtectedRoute>
-              <VolunteerForm />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/admin/volunteer/edit/:id"
-          element={
-            <ProtectedRoute>
-              <VolunteerForm />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/admin/internship"
-          element={
-            <ProtectedRoute>
-              <InternshipSection />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/admin/internship/add"
-          element={
-            <ProtectedRoute>
-              <InternshipForm />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/admin/internship/edit/:id"
-          element={
-            <ProtectedRoute>
-              <InternshipForm />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/admin/services"
-          element={
-            <ProtectedRoute>
-              <Services />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/admin/services/add"
-          element={
-            <ProtectedRoute>
-              <ServiceForms />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/services/edit/:id"
-          element={
-            <ProtectedRoute>
-              <ServiceForms />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Image Section  */}
-        <Route
-          path="/admin/gallery/images"
-          element={
-            <ProtectedRoute>
-              <ImageSection />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/gallery/images/add"
-          element={
-            <ProtectedRoute>
-              <ImageForm />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/gallery/images/view/:id"
-          element={
-            <ProtectedRoute>
-              <ImageViewSection />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Video Section */}
-        <Route
-          path="/admin/gallery/videos"
-          element={
-            <ProtectedRoute>
-              <VideoSection />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/gallery/videos/edit/:id"
-          element={
-            <ProtectedRoute>
-              <VideoForm />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/gallery/videos/add"
-          element={
-            <ProtectedRoute>
-              <VideoForm />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/admin/profile"
-          element={
-            <ProtectedRoute>
-              <ProfilePage />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/admin/company-profile"
-          element={
-            <ProtectedRoute>
-              <ContactUsPage />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
     </Router>
   );
 }
