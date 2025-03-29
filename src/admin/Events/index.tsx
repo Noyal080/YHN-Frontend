@@ -154,6 +154,7 @@ const EventSection = () => {
         title="Event List"
         columns={columns}
         rows={rows}
+        onView={(row) => navigate(`/admin/events/view/${row.id}`)}
         onEdit={handleEdit}
         onDelete={(row) => {
           setModalOpen(true);

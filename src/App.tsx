@@ -32,8 +32,10 @@ const Donations = lazy(() => import("./admin/About/Donation"));
 const DonationView = lazy(() => import("./admin/About/Donation/DonationView"));
 const ProjectSection = lazy(() => import("./admin/Projects"));
 const WorkForms = lazy(() => import("./admin/Projects/WorkForm"));
+const ViewWork = lazy(() => import("./admin/Projects/ViewWork"));
 const EventSection = lazy(() => import("./admin/Events"));
 const EventForm = lazy(() => import("./admin/Events/EventForm"));
+const ViewEvent = lazy(() => import("./admin/Events/ViewEvents"));
 const VolunteerSection = lazy(() => import("./admin/Join Us/Volunteer"));
 const VolunteerForm = lazy(
   () => import("./admin/Join Us/Volunteer/VolunteerForm")
@@ -91,11 +93,13 @@ const adminRoutes = [
   { path: "/admin/our-works", element: <ProjectSection /> },
   { path: "/admin/our-works/add", element: <WorkForms /> },
   { path: "/admin/our-works/edit/:id", element: <WorkForms /> },
+  { path: "/admin/our-works/view/:id", element: <ViewWork /> },
 
   // Events Section
   { path: "/admin/events", element: <EventSection /> },
   { path: "/admin/events/add", element: <EventForm /> },
   { path: "/admin/events/edit/:id", element: <EventForm /> },
+  { path: "/admin/events/view/:id", element: <ViewEvent /> },
 
   // Join Us Section
   { path: "/admin/volunteer", element: <VolunteerSection /> },

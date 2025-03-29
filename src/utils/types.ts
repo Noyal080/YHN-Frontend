@@ -251,3 +251,18 @@ export type DonationsType = {
   contributionType: string;
   contributionAmount: number;
 };
+
+export type ViewWorkandEventType = {
+  id?: number;
+  title: string;
+  description: string;
+  banner_image: string;
+  banner_start_date: string;
+  banner_end_date: string;
+  banner_location_country: string;
+  banner_location_stateorprovince: string;
+  banner_location_cityordistrict: string;
+  gallery_id: number | null;
+  objectives?: string;
+  activities?: string;
+};

@@ -114,6 +114,7 @@ const ContactUsPage = () => {
         setIsLoading(true);
         const response = await axiosInstance.get("/contactus/1"); // Adjust endpoint as needed
         const resData = response.data.data.contact;
+
         setInitialData(resData);
       } catch (error) {
         console.error("Failed to fetch contact data:", error);

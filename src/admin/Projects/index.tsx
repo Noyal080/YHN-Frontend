@@ -175,6 +175,9 @@ const ProjectSection = () => {
         title="Work List"
         columns={columns}
         rows={rows}
+        onView={(row) => {
+          navigate(`/admin/our-works/view/${row.id}`);
+        }}
         onEdit={handleEdit}
         onDelete={(row) => {
           setModalOpen(true);
