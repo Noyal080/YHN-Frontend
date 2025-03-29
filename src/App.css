@@ -5,7 +5,8 @@
 	}
 }
 .ck-editor__editable {
-    min-height: 500px !important;
+    height: 500px !important;
+    min-width: 750px !important;
 }
 
 .main-container {

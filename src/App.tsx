@@ -7,6 +7,7 @@ import {
 import { Suspense, useEffect, lazy } from "react";
 import { ProtectedRoute, ReverseProtectedRoute } from "./common/ProtectedRoute";
 import SkeletonLoading from "./LazyLoader";
+import "./App.css";
 
 // Lazy-loaded components for better code splitting
 const LoginPage = lazy(() => import("./auth/Login"));
