@@ -229,7 +229,7 @@ const ContactUsPage = () => {
                               variant={"outline"}
                               colorPalette={"red"}
                               aria-label="Delete email"
-                              onClick={() => handleDeleteField("email", index)}
+                              onClick={() => handleDeleteField("emails", index)}
                             >
                               <FiTrash />
                             </IconButton>
