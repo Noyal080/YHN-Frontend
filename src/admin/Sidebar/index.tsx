@@ -29,6 +29,7 @@ import {
   FiBookOpen,
   FiSettings,
 } from "react-icons/fi";
+import { GiPublicSpeaker } from "react-icons/gi";
 import {
   LuBell,
   LuContactRound,
@@ -102,6 +103,12 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
           label: "Partner Slider",
           icon: FiUsers,
           link: "/admin/partners",
+        },
+        {
+          id: 24,
+          label: "Chairperson Message",
+          icon: GiPublicSpeaker,
+          link: "/admin/chairperson-message",
         },
       ],
     },

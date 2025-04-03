@@ -21,6 +21,9 @@ const PartnerSlider = lazy(() => import("./admin/Home/Partner Slider"));
 const PartnerSliderForm = lazy(
   () => import("./admin/Home/Partner Slider/PartnerSliderForm")
 );
+const ChairpersonMessage = lazy(
+  () => import("./admin/Home/Chairperson Message")
+);
 const MessageRequest = lazy(() => import("./admin/Home/Message Request"));
 const UsSection = lazy(() => import("./admin/About/UsSection"));
 const TeamSection = lazy(() => import("./admin/About/Teams"));
@@ -78,6 +81,7 @@ const adminRoutes = [
   { path: "/admin/partners/add", element: <PartnerSliderForm /> },
   { path: "/admin/partners/edit/:id", element: <PartnerSliderForm /> },
   { path: "/admin/messages", element: <MessageRequest /> },
+  { path: "/admin/chairperson-message", element: <ChairpersonMessage /> },
 
   // About Us Section
   { path: "/admin/about", element: <UsSection /> },

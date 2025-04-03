@@ -22,6 +22,7 @@ import CommonEditor from "@/common/Editor";
 import { Button } from "@/components/ui/button";
 import {
   FileUploadDropzone,
+  FileUploadList,
   FileUploadRoot,
 } from "@/components/ui/file-upload";
 import { compressImage } from "@/helper/imageCompressor";
@@ -60,6 +61,7 @@ const WorkForms = () => {
     gallery_id: null,
     objectives: "",
     activities: "",
+    pdf_file: "",
     status: 1,
   });
   const navigate = useNavigate();
@@ -85,6 +87,7 @@ const WorkForms = () => {
       gallery_id: pageData.gallery_id || null,
       objectives: pageData.objectives || "",
       activities: pageData.activities || "",
+      pdf_file: pageData.pdf_file || null,
       status: pageData.status || 1,
     },
   });
@@ -676,6 +679,38 @@ const WorkForms = () => {
                       {errors.banner_image && (
                         <Text textStyle="sm" color="red">
                           {errors.banner_image.message}
+                        </Text>
+                      )}
+                    </Field>
+                  )}
+                />
+
+                <Controller
+                  name="pdf_file"
+                  control={control}
+                  render={({ field }) => (
+                    <Field label="PDF File">
+                      <FileUploadRoot
+                        alignItems="stretch"
+                        maxFiles={1}
+                        accept={["application/pdf"]} // Only accept PDF files
+                        onFileAccept={(value) => {
+                          const file = value.files[0];
+                          field.onChange(file); // Store the file object directly
+                        }}
+                      >
+                        <FileUploadDropzone
+                          value={
+                            typeof field.value === "string" ? field.value : ""
+                          }
+                          label="Drag and drop PDF here"
+                          description=".pdf files up to 10MB"
+                        />
+                        <FileUploadList />
+                      </FileUploadRoot>
+                      {errors.pdf_file && (
+                        <Text textStyle="sm" color="red">
+                          {errors.pdf_file.message}
                         </Text>
                       )}
                     </Field>
