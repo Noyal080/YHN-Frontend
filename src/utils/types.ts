@@ -173,7 +173,7 @@ export type OurWorkType = {
   gallery_id: number | null;
   objectives: string;
   activities: string;
-  pdf_file: File | string | null;
+  upload_pdf: File | string | null;
   status: number;
 };
 

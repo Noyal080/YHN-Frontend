@@ -61,7 +61,7 @@ const WorkForms = () => {
     gallery_id: null,
     objectives: "",
     activities: "",
-    pdf_file: "",
+    upload_pdf: "",
     status: 1,
   });
   const navigate = useNavigate();
@@ -87,7 +87,7 @@ const WorkForms = () => {
       gallery_id: pageData.gallery_id || null,
       objectives: pageData.objectives || "",
       activities: pageData.activities || "",
-      pdf_file: pageData.pdf_file || null,
+      upload_pdf: pageData.upload_pdf || null,
       status: pageData.status || 1,
     },
   });
@@ -686,7 +686,7 @@ const WorkForms = () => {
                 />
 
                 <Controller
-                  name="pdf_file"
+                  name="upload_pdf"
                   control={control}
                   render={({ field }) => (
                     <Field label="PDF File">
@@ -708,9 +708,9 @@ const WorkForms = () => {
                         />
                         <FileUploadList />
                       </FileUploadRoot>
-                      {errors.pdf_file && (
+                      {errors.upload_pdf && (
                         <Text textStyle="sm" color="red">
-                          {errors.pdf_file.message}
+                          {errors.upload_pdf.message}
                         </Text>
                       )}
                     </Field>
