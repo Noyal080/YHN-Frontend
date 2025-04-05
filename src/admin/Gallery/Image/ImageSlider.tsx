@@ -15,7 +15,7 @@ const ImageSlider: React.FC<ImageSliderProps> = ({ images }) => {
   }, []);
 
   return (
-    <Box position="relative" height="300px" overflow="hidden">
+    <Box position="relative" height="150px" overflow="hidden">
       <AnimatePresence mode="wait">
         <motion.div
           key={currentImage}

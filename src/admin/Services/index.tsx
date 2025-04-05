@@ -38,9 +38,12 @@ const Services = () => {
       key: "status",
       label: "Status",
       visible: true,
-      render: (row) => {
-        return <Switch checked={row.status === 1} />;
-      },
+      render: (row) => (
+        <Switch
+          checked={row.status === 1}
+          onCheckedChange={() => handleStatusChange(String(row.id), row.status)}
+        />
+      ),
     },
   ];
 
@@ -96,6 +99,18 @@ const Services = () => {
 
     fetchVolunteerData();
   }, [triggerFetch, page, debouncedSearch]);
+
+  const handleStatusChange = async (id: string, status: number) => {
+    const newStatus = status === 1 ? 0 : 1;
+    try {
+      await axiosInstance.post(`/service/${id}`, {
+        status: newStatus,
+      });
+      setTriggerFetch(true);
+    } catch (error) {
+      console.error("Error changing status:", error);
+    }
+  };
 
   return (
     <AdminLayout

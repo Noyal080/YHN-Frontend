@@ -4,7 +4,7 @@ import { Column } from "@/utils";
 import { ImageInputTypes, PaginationProps } from "@/utils/types";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import ImageSlider from "./ImageSllider";
+import ImageSlider from "./ImageSlider";
 import { axiosInstance } from "@/api/axios";
 import { Switch } from "@/components/ui/switch";
 import useCommonToast from "@/common/CommonToast";
@@ -50,7 +50,7 @@ const ImageSection = () => {
         <Switch
           checked={row.status === 1}
           onCheckedChange={() => {
-            handleStatusChange(String(row.id), row.status);
+            handleStatusChange(String(row.id), row.status, row.title);
           }}
         />
       ),
@@ -104,10 +104,15 @@ const ImageSection = () => {
     }
   };
 
-  const handleStatusChange = async (id: string, status: number) => {
+  const handleStatusChange = async (
+    id: string,
+    status: number,
+    title: string
+  ) => {
     const newStatus = status === 1 ? 0 : 1;
     try {
-      await axiosInstance.post(`/gallery/${id}`, {
+      await axiosInstance.patch(`/gallery/${id}/update-title-status/`, {
+        title,
         status: newStatus,
       });
       setTriggerFetch(true);

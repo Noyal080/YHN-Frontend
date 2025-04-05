@@ -1,3 +1,4 @@
+import { logout } from "@/redux/authSlice";
 import { RootState, store } from "@/redux/store";
 import axios from "axios";
 
@@ -29,6 +30,33 @@ axiosInstance.interceptors.request.use(
     return config;
   },
   (error) => {
+    return Promise.reject(error);
+  }
+);
+
+
+axiosInstance.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 401) {
+        // Clear localStorage
+        localStorage.clear();
+        
+        // Dispatch action to clear auth state in Redux
+        store.dispatch(logout());
+        
+        // Redirect to login page
+        // Option 1: If using React Router v6+
+        window.location.href = '/login';
+        
+        // Option 2: If not using React Router
+        // window.location.href = '/login';
+      }
+    }
+    
     return Promise.reject(error);
   }
 );

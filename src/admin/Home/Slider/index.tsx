@@ -76,7 +76,7 @@ const SliderSection = () => {
         />
       ),
     },
-    { key: "priority_order", label: "Priority Order", visible: false },
+    // { key: "priority_order", label: "Priority Order", visible: false },
   ];
   const navigate = useNavigate();
 
@@ -137,7 +137,6 @@ const SliderSection = () => {
       setTriggerFetch(true);
     } catch (error) {
       console.error("Error changing status:", error);
-      // Handle error (e.g., show an error message to the user)
     }
   };
 

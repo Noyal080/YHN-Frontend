@@ -267,3 +267,12 @@ export type ViewWorkandEventType = {
   objectives?: string;
   activities?: string;
 };
+
+export type ChairpersonMessageType = {
+  company_description: string,
+    message_from_chairperson: string,
+    additional_information: string,
+    chairperson_fullname: string,
+    chairperson_contact: string,
+    chairperson_image: string
+}

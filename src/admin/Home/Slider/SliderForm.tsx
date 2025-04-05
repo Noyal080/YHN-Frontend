@@ -125,7 +125,7 @@ const SliderForm = () => {
       // Append all fields to formData
       formData.append("title", data.title);
       formData.append("sub_title", data.sub_title);
-      formData.append("priority_order", String(data.priority_order));
+      formData.append("priority_order", "1");
       formData.append("status", String(data.status));
       // Handle image (either file or existing URL)
       if (data.image instanceof Blob) {
@@ -326,7 +326,7 @@ const SliderForm = () => {
                   )}
                 />
 
-                <Controller
+                {/* <Controller
                   name="priority_order"
                   control={control}
                   rules={{ required: "Priority order is required" }}
@@ -352,7 +352,7 @@ const SliderForm = () => {
                       )}
                     </Field>
                   )}
-                />
+                /> */}
 
                 <Controller
                   name="status"

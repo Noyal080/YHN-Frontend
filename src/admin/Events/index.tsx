@@ -10,7 +10,7 @@ import CommonModal from "@/common/CommonModal";
 import { Image, Text } from "@chakra-ui/react";
 import useCommonToast from "@/common/CommonToast";
 import { Switch } from "@/components/ui/switch";
-import ImageSlider from "../Gallery/Image/ImageSllider";
+import ImageSlider from "../Gallery/Image/ImageSlider";
 import EditorTextView from "@/common/EditorTextView";
 
 const EventSection = () => {

@@ -38,9 +38,11 @@
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.1.0",
     "react-select": "^5.10.0",
+    "react-viewer": "^3.2.2",
     "react-window": "^1.8.11",
     "recharts": "^2.15.1",
     "redux-persist": "^6.0.0",
+    "viewerjs": "^1.11.7",
     "yup": "^1.6.1"
   },
   "devDependencies": {

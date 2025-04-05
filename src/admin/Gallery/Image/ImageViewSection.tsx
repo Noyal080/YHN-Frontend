@@ -1,19 +1,12 @@
 import AdminLayout from "@/admin/Layout";
 import { axiosInstance } from "@/api/axios";
 import { Gallery, ImageInputTypes } from "@/utils/types";
-import {
-  Box,
-  Heading,
-  IconButton,
-  Image,
-  Spinner,
-  VStack,
-} from "@chakra-ui/react";
+import { Box, Heading, Spinner, VStack } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { FiPlus, FiTrash2 } from "react-icons/fi";
 import { useParams } from "react-router-dom";
 import AddImageModal from "./Modal/AddImageModal";
 import DeleteImageModal from "./Modal/DeleteImageModal";
+import ImageViewer from "./ImageViewer";
 
 const ImageViewSection = () => {
   const { id } = useParams();
@@ -46,9 +39,18 @@ const ImageViewSection = () => {
     setAddImageModal(false);
   };
 
+  const handleDeleteImage = (imageToDelete: Gallery) => {
+    setSelectedImage(imageToDelete);
+    setDeleteModal(true);
+  };
+
   const handleDeleteModalClose = () => {
     setDeleteModal(false);
     setSelectedImage(undefined);
+  };
+
+  const handleAddImage = () => {
+    setAddImageModal(true);
   };
 
   return (
@@ -65,58 +67,11 @@ const ImageViewSection = () => {
         galleryData && (
           <>
             <Heading size={"2xl"}>{galleryData.title}</Heading>
-            <Box display="flex" flexWrap="wrap" gap={4} mt={4}>
-              {galleryData.images.map((image) => (
-                <Box key={image.id} position="relative">
-                  <Image
-                    src={image.path}
-                    alt={`Gallery Image ${image.id}`}
-                    boxSize="200px"
-                    objectFit="cover"
-                    rounded="md"
-                  />
-                  {/* <IconButton
-                    size="xs"
-                    variant={"subtle"}
-                    colorPalette={"blue"}
-                    position="absolute"
-                    top="5%"
-                    right="5px"
-                  >
-                    <HiPencil />
-                  </IconButton> */}
-
-                  <IconButton
-                    size="xs"
-                    colorPalette={"red"}
-                    variant={"surface"}
-                    position="absolute"
-                    top="5%"
-                    right="5px"
-                    onClick={() => {
-                      setSelectedImage(image);
-                      setDeleteModal(true);
-                    }}
-                  >
-                    <FiTrash2 />
-                  </IconButton>
-                </Box>
-              ))}
-
-              <Box
-                width="200px"
-                height="200px"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                border="2px dashed gray"
-                rounded="md"
-                cursor="pointer"
-                onClick={() => setAddImageModal(true)}
-              >
-                <FiPlus size={40} color="gray" />
-              </Box>
-            </Box>
+            <ImageViewer
+              images={galleryData.images}
+              onDelete={handleDeleteImage}
+              onAddImage={handleAddImage}
+            />
           </>
         )
       ) : (
