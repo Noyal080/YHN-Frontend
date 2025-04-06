@@ -11,6 +11,7 @@ import {
   CardRoot,
   Heading,
   HStack,
+  Icon,
   Image,
   Input,
   Spinner,
@@ -32,6 +33,7 @@ import useDebounce from "@/helper/debounce";
 import { Switch } from "@/components/ui/switch";
 import useCommonToast from "@/common/CommonToast";
 import nepalData from "../../common/cities.json";
+import { CiFileOn } from "react-icons/ci";
 
 interface SectorOptions {
   label: string;
@@ -707,6 +709,28 @@ const WorkForms = () => {
                           description=".pdf files up to 10MB"
                         />
                         <FileUploadList />
+                        {typeof field.value === "string" && field.value && (
+                          <Box
+                            mt={2}
+                            p="4"
+                            borderWidth="1px"
+                            borderColor="border.disabled"
+                            color="fg.disabled"
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="space-between"
+                            borderRadius={"lg"}
+                          >
+                            <HStack>
+                              <Icon as={CiFileOn} boxSize={5} />
+                              <Text fontSize="sm" fontWeight="medium">
+                                {field.value.includes("/")
+                                  ? field.value.split("/").pop()
+                                  : field.value}
+                              </Text>
+                            </HStack>
+                          </Box>
+                        )}
                       </FileUploadRoot>
                       {errors.upload_pdf && (
                         <Text textStyle="sm" color="red">
