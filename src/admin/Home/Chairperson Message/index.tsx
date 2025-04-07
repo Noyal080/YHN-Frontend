@@ -1,5 +1,6 @@
 import AdminLayout from "@/admin/Layout";
 import { axiosInstance } from "@/api/axios";
+import useCommonToast from "@/common/CommonToast";
 import CommonEditor from "@/common/Editor";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
@@ -52,6 +53,8 @@ const ChairpersonMessage = () => {
     chairperson_image: "",
   });
 
+  const { showToast } = useCommonToast();
+
   const [contactFields, setContactFields] = useState<ContactFields>({
     Email: "",
     Phone: "",
@@ -83,22 +86,29 @@ const ChairpersonMessage = () => {
     const fetchData = async () => {
       try {
         const res = await axiosInstance.get("/chairpersonmessage");
-        setPageData(res.data.data);
-        if (res.data.data.chairperson_contact) {
-          const parsedContact = JSON.parse(res.data.data.chairperson_contact);
+        const data = res.data.data;
+        setPageData(data);
+        if (data.chairperson_contact) {
+          const contact =
+            typeof data.chairperson_contact === "string"
+              ? JSON.parse(data.chairperson_contact)
+              : data.chairperson_contact;
           setContactFields({
-            Email: parsedContact.Email || "",
-            Phone: parsedContact.Phone || "",
-            Mobile: parsedContact.Mobile || "",
+            Email: contact.Email || "",
+            Phone: contact.Phone || "",
+            Mobile: contact.Mobile || "",
           });
         }
-        if (res.data.data.additional_information) {
-          const parsedAdditionalInfo = JSON.parse(
-            res.data.data.additional_information
-          );
+
+        // Handle additional_information - parse if it's a string
+        if (data.additional_information) {
+          const additionalInfo =
+            typeof data.additional_information === "string"
+              ? JSON.parse(data.additional_information)
+              : data.additional_information;
           setAdditionalInfo({
-            "Our Mission": parsedAdditionalInfo["Our Mission"] || "",
-            "Our Vision": parsedAdditionalInfo["Our Vision"] || "",
+            "Our Mission": additionalInfo["Our Mission"] || "",
+            "Our Vision": additionalInfo["Our Vision"] || "",
           });
         }
       } catch (e) {
@@ -111,7 +121,62 @@ const ChairpersonMessage = () => {
   }, []);
 
   const onSubmit = async (data: ChairpersonMessageType) => {
-    console.log(data);
+    setIsLoading(true);
+    try {
+      const formData = new FormData();
+
+      // Add simple string fields
+      formData.append("company_description", data.company_description);
+      formData.append(
+        "message_from_chairperson",
+        data.message_from_chairperson
+      );
+      formData.append("chairperson_fullname", data.chairperson_fullname);
+
+      // Handle additional_information (convert object to JSON string)
+      formData.append("additional_information", JSON.stringify(additionalInfo));
+
+      // Handle chairperson_contact (convert object to JSON string)
+      formData.append("chairperson_contact", JSON.stringify(contactFields));
+
+      // Handle image upload
+      Object.entries(data).forEach(([key, value]) => {
+        if (key === "chairperson_image" && typeof value === "string") {
+          formData.append(key, "");
+        } else if (
+          key === "additional_information" &&
+          JSON.stringify(value) !== pageData.additional_information
+        ) {
+          formData.append(key, JSON.stringify(value));
+        } else if (
+          key === "chairperson_contact" &&
+          JSON.stringify(value) !== pageData.chairperson_contact
+        ) {
+          formData.append(key, JSON.stringify(value));
+        } else if (value && typeof value === "object" && "size" in value) {
+          formData.append(key, value as Blob);
+        } else {
+          formData.append(key, String(value));
+        }
+      });
+      await axiosInstance.post(`/chairpersonmessage`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      showToast({
+        description: "Updated Successfully",
+        type: "success",
+      });
+    } catch (e) {
+      console.log(e);
+      showToast({
+        description: "Failed",
+        type: "error",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

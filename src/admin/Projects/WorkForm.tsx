@@ -199,7 +199,10 @@ const WorkForms = () => {
       }
       const formData = new FormData();
       Object.entries(submissionData).forEach(([key, value]) => {
-        if (key === "banner_image" && typeof value === "string") {
+        if (
+          (key === "banner_image" || key === "upload_pdf") &&
+          typeof value === "string"
+        ) {
           formData.append(key, "");
         } else {
           formData.append(key, value as Blob);
@@ -690,23 +693,37 @@ const WorkForms = () => {
                 <Controller
                   name="upload_pdf"
                   control={control}
+                  rules={{
+                    validate: {
+                      fileSize: (value) => {
+                        if (
+                          value instanceof File &&
+                          value.size > 2 * 1024 * 1024
+                        ) {
+                          return "File size must be less than 2MB";
+                        }
+                        return true;
+                      },
+                    },
+                  }}
                   render={({ field }) => (
                     <Field label="PDF File">
                       <FileUploadRoot
                         alignItems="stretch"
                         maxFiles={1}
-                        accept={["application/pdf"]} // Only accept PDF files
+                        accept={["application/pdf"]}
                         onFileAccept={(value) => {
                           const file = value.files[0];
-                          field.onChange(file); // Store the file object directly
+                          field.onChange(file);
                         }}
+                        // maxFileSize={2 * 1024 * 1024}
                       >
                         <FileUploadDropzone
                           value={
                             typeof field.value === "string" ? field.value : ""
                           }
                           label="Drag and drop PDF here"
-                          description=".pdf files up to 10MB"
+                          description=".pdf files up to 2MB"
                         />
                         <FileUploadList />
                         {typeof field.value === "string" && field.value && (
