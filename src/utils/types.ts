@@ -136,6 +136,8 @@ export type InternshipType = {
   description: string;
   apply_link: string;
   status: number;
+  start_date: string;
+  end_date: string;
 };
 
 export type OurWorks = {
@@ -269,10 +271,10 @@ export type ViewWorkandEventType = {
 };
 
 export type ChairpersonMessageType = {
-  company_description: string,
-    message_from_chairperson: string,
-    additional_information: string,
-    chairperson_fullname: string,
-    chairperson_contact: string,
-    chairperson_image: string
-}
+  company_description: string;
+  message_from_chairperson: string;
+  additional_information: string;
+  chairperson_fullname: string;
+  chairperson_contact: string;
+  chairperson_image: string;
+};

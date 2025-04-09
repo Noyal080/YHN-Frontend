@@ -28,11 +28,12 @@ const VolunteerForm = () => {
     description: "",
     apply_link: "",
     status: 1,
+    start_date: new Date().toISOString().split("T")[0],
+    end_date: "",
   });
   const navigate = useNavigate();
   const { id } = useParams();
-  // const token = localStorage.getItem("accessToken");
-  // axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
   const { showToast } = useCommonToast();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -47,6 +48,9 @@ const VolunteerForm = () => {
       description: volunteerData?.description || "",
       apply_link: volunteerData?.apply_link || "",
       status: volunteerData.status,
+      start_date:
+        volunteerData.start_date || new Date().toISOString().split("T")[0],
+      end_date: volunteerData.end_date || "",
     },
   });
 
@@ -213,6 +217,48 @@ const VolunteerForm = () => {
                     </Field>
                   )}
                 />
+                <HStack>
+                  <Controller
+                    name="start_date"
+                    control={control}
+                    rules={{ required: "Start Date is requried" }}
+                    render={({ field }) => (
+                      <Field label="Start Date">
+                        <Input
+                          {...field}
+                          type="date"
+                          size={"md"}
+                          onChange={(value) => field.onChange(value)}
+                        />
+                        {errors.start_date && (
+                          <Text textStyle="sm" color="red">
+                            {errors.start_date.message}
+                          </Text>
+                        )}
+                      </Field>
+                    )}
+                  />
+                  <Controller
+                    name="end_date"
+                    control={control}
+                    rules={{ required: "End Date is requried" }}
+                    render={({ field }) => (
+                      <Field label="End Date">
+                        <Input
+                          {...field}
+                          type="date"
+                          size={"md"}
+                          onChange={(value) => field.onChange(value)}
+                        />
+                        {errors.end_date && (
+                          <Text textStyle="sm" color="red">
+                            {errors.end_date.message}
+                          </Text>
+                        )}
+                      </Field>
+                    )}
+                  />
+                </HStack>
 
                 <Controller
                   name="status"

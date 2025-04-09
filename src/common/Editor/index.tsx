@@ -1,7 +1,10 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { CKEditor, useCKEditorCloud } from "@ckeditor/ckeditor5-react";
 
-const LICENSE_KEY = import.meta.env.VITE_CK_EDITOR_KEY_DEVELOPMENT;
+const LICENSE_KEY =
+  import.meta.env.MODE === "development"
+    ? import.meta.env.VITE_CK_EDITOR_KEY_DEVELOPMENT
+    : import.meta.env.VITE_CK_EDITOR_KEY_PRODUCTION;
 
 const CommonEditor = ({
   value,

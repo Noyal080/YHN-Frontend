@@ -28,6 +28,8 @@ const InternshipForm = () => {
     description: "",
     apply_link: "",
     status: 1,
+    start_date: new Date().toISOString().split("T")[0],
+    end_date: "",
   });
   const navigate = useNavigate();
   const { id } = useParams();
@@ -47,6 +49,9 @@ const InternshipForm = () => {
       description: internshipData?.description || "",
       apply_link: internshipData?.apply_link || "",
       status: internshipData.status,
+      start_date:
+        internshipData.start_date || new Date().toISOString().split("T")[0],
+      end_date: internshipData.end_date || "",
     },
   });
 
@@ -208,6 +213,48 @@ const InternshipForm = () => {
                     </Field>
                   )}
                 />
+                <HStack>
+                  <Controller
+                    name="start_date"
+                    control={control}
+                    rules={{ required: "Start Date is requried" }}
+                    render={({ field }) => (
+                      <Field label="Start Date">
+                        <Input
+                          {...field}
+                          type="date"
+                          size={"md"}
+                          onChange={(value) => field.onChange(value)}
+                        />
+                        {errors.start_date && (
+                          <Text textStyle="sm" color="red">
+                            {errors.start_date.message}
+                          </Text>
+                        )}
+                      </Field>
+                    )}
+                  />
+                  <Controller
+                    name="end_date"
+                    control={control}
+                    rules={{ required: "End Date is requried" }}
+                    render={({ field }) => (
+                      <Field label="End Date">
+                        <Input
+                          {...field}
+                          type="date"
+                          size={"md"}
+                          onChange={(value) => field.onChange(value)}
+                        />
+                        {errors.end_date && (
+                          <Text textStyle="sm" color="red">
+                            {errors.end_date.message}
+                          </Text>
+                        )}
+                      </Field>
+                    )}
+                  />
+                </HStack>
 
                 <Controller
                   name="status"
