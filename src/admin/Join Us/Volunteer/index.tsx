@@ -142,7 +142,7 @@ const VolunteerSection = () => {
         onSearch={(query) => setSearchQuery(query)}
         onAdd={() => navigate("/admin/volunteer/add")}
         // filterComponent={<SliderFilter />}
-        count={paginationData?.total_pages}
+        count={paginationData?.total_records}
         pageSize={paginationData?.per_page}
         currentPage={page}
         onPageChange={(page) => {

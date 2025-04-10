@@ -51,6 +51,8 @@ const CommonTable = <T,>({
   const [sortDirection, setSortDirection] = useState<"asc" | "desc" | null>(
     "asc"
   );
+  console.log(count, pageSize, currentPage);
+
   const [visibleColumns, setVisibleColumns] = useState<Column<T>[]>(columns);
 
   const handleColumnVisibilityChange = (key: keyof T, visible: boolean) => {

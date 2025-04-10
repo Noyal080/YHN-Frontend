@@ -120,7 +120,7 @@ const VideoSection = () => {
         }}
         onSearch={(query) => setSearchQuery(query)}
         onAdd={() => navigate("/admin/gallery/videos/add")}
-        count={paginationData?.total_pages}
+        count={paginationData?.total_records}
         pageSize={paginationData?.per_page}
         currentPage={page}
         onPageChange={(page) => {

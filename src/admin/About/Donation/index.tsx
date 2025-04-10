@@ -78,7 +78,7 @@ const Donations = () => {
         onView={(row) => {
           navigate(`/admin/donation/${row.id}`);
         }}
-        count={paginationData?.total_pages}
+        count={paginationData?.total_records}
         pageSize={paginationData?.per_page}
         currentPage={page}
         onPageChange={(page) => {
