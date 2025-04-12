@@ -243,8 +243,31 @@ const EventForm = () => {
         )}
         <CardRoot m="auto" maxWidth="800px" mt={8} boxShadow="lg">
           <CardBody>
-            <Heading mb={6}>{id ? "Edit" : "Add"} News & Events</Heading>
             <form onSubmit={handleSubmit(onSubmit)}>
+              <HStack justifyContent="space-between" align="center">
+                <Heading mb={6}>{id ? "Edit" : "Add"} News & Events</Heading>
+                <Controller
+                  name="status"
+                  control={control}
+                  render={({ field }) => (
+                    <HStack justify="space-between" align="center">
+                      <Text fontWeight="500" textStyle="md">
+                        {field.value === 1 ? "Active" : "Inactive"}
+                      </Text>
+                      <Switch
+                        checked={field.value === 1}
+                        onCheckedChange={(value) => {
+                          const numericValue = value.checked ? 1 : 0; // Convert `true`/`false` to `1`/`0`
+                          field.onChange(numericValue);
+                          handleFieldChange("status", numericValue);
+                        }}
+                        color="black"
+                        colorPalette="green"
+                      />
+                    </HStack>
+                  )}
+                />
+              </HStack>
               <VStack gap={4} align={"stretch"}>
                 <Controller
                   name="title"
@@ -263,28 +286,6 @@ const EventForm = () => {
                       {errors.title && (
                         <Text textStyle="sm" color="red">
                           {errors.title.message}
-                        </Text>
-                      )}
-                    </Field>
-                  )}
-                />
-                <Controller
-                  name="description"
-                  control={control}
-                  rules={{ required: "Description is required" }}
-                  render={({ field }) => (
-                    <Field label="Description">
-                      <CommonEditor
-                        value={field.value}
-                        onChange={(value) => {
-                          field.onChange(value);
-                          handleFieldChange("description", value);
-                        }}
-                      />
-
-                      {errors.description && (
-                        <Text textStyle="sm" color="red">
-                          {errors.description.message}
                         </Text>
                       )}
                     </Field>
@@ -513,7 +514,28 @@ const EventForm = () => {
                     )}
                   />
                 </HStack>
+                <Controller
+                  name="description"
+                  control={control}
+                  rules={{ required: "Description is required" }}
+                  render={({ field }) => (
+                    <Field label="Description">
+                      <CommonEditor
+                        value={field.value}
+                        onChange={(value) => {
+                          field.onChange(value);
+                          handleFieldChange("description", value);
+                        }}
+                      />
 
+                      {errors.description && (
+                        <Text textStyle="sm" color="red">
+                          {errors.description.message}
+                        </Text>
+                      )}
+                    </Field>
+                  )}
+                />
                 <Controller
                   name="banner_image"
                   control={control}
@@ -557,30 +579,6 @@ const EventForm = () => {
                           {errors.banner_image.message}
                         </Text>
                       )}
-                    </Field>
-                  )}
-                />
-
-                <Controller
-                  name="status"
-                  control={control}
-                  render={({ field }) => (
-                    <Field>
-                      <HStack justify="space-between" align="center">
-                        <Text fontWeight="500" textStyle="md">
-                          Show Events
-                        </Text>
-                        <Switch
-                          checked={field.value === 1}
-                          onCheckedChange={(value) => {
-                            const numericValue = value.checked ? 1 : 0; // Convert `true`/`false` to `1`/`0`
-                            field.onChange(numericValue);
-                            handleFieldChange("status", numericValue);
-                          }}
-                          color="black"
-                          colorPalette="blue"
-                        />
-                      </HStack>
                     </Field>
                   )}
                 />

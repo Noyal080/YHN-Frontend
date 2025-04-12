@@ -29,6 +29,7 @@ import { axiosInstance } from "@/api/axios";
 import useCommonToast from "@/common/CommonToast";
 import { compressImage } from "@/helper/imageCompressor";
 import { FiTrash } from "react-icons/fi";
+import { InputGroup } from "@/components/ui/input-group";
 const SliderForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -228,8 +229,31 @@ const SliderForm = () => {
         )}
         <CardRoot m="auto" maxWidth="800px" mt={8} boxShadow="lg">
           <CardBody>
-            <Heading mb={6}>{id ? "Edit Slider" : "Add Slider"}</Heading>
             <form onSubmit={handleSubmit(onSubmit)}>
+              <HStack justify="space-between" align="center" mb={6}>
+                <Heading>{id ? "Edit Slider" : "Add Slider"}</Heading>
+                <Controller
+                  name="status"
+                  control={control}
+                  render={({ field }) => (
+                    <HStack>
+                      <Text fontWeight="500" textStyle="md">
+                        {field.value === 1 ? "Active" : "Inactive"}
+                      </Text>
+                      <Switch
+                        checked={field.value === 1}
+                        onCheckedChange={(value) => {
+                          const statusValue = value.checked ? 1 : 0;
+                          field.onChange(statusValue);
+                          handleFieldChange("status", statusValue);
+                        }}
+                        color="black"
+                        colorPalette="green"
+                      />
+                    </HStack>
+                  )}
+                />
+              </HStack>
               <VStack gap={4} align="stretch">
                 <Controller
                   name="title"
@@ -278,6 +302,82 @@ const SliderForm = () => {
                     </Field>
                   )}
                 />
+                <HStack justify="space-between" align="center" mt={4}>
+                  <Field label="Buttons" />
+                  <Button
+                    variant="outline"
+                    colorScheme="blue"
+                    onClick={addNewButton}
+                    disabled={
+                      sliderData.buttons && sliderData.buttons.length >= 2
+                    }
+                  >
+                    Add Button
+                  </Button>
+                </HStack>
+
+                {sliderData.buttons?.map((button, index) => (
+                  <motion.div
+                    key={index}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    variants={buttonVariants}
+                  >
+                    <HStack gap={4} align="flex-end">
+                      <Field label={`Button ${index + 1} Title`}>
+                        <Input
+                          value={button.button_name}
+                          placeholder="Enter button title"
+                          size="md"
+                          onChange={(e) =>
+                            handleButtonChange(
+                              index,
+                              "button_name",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </Field>
+
+                      <Field label={`Button ${index + 1} Route`}>
+                        <InputGroup
+                          startElement="https://"
+                          startElementProps={{ color: "fg.muted" }}
+                          width={"full"}
+                        >
+                          <Input
+                            value={button.button_link}
+                            placeholder="yoursite.com"
+                            size={"md"}
+                            onChange={(e) =>
+                              handleButtonChange(
+                                index,
+                                "button_link",
+                                e.target.value
+                              )
+                            }
+                            ps="7.8ch"
+                          />
+                          {/* <Input  placeholder="yoursite.com" /> */}
+                        </InputGroup>
+                      </Field>
+                      <motion.div
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                      >
+                        <IconButton
+                          aria-label={`Remove button ${index + 1}`}
+                          colorScheme="red"
+                          variant="ghost"
+                          onClick={() => removeButton(index)}
+                        >
+                          <FiTrash />
+                        </IconButton>
+                      </motion.div>
+                    </HStack>
+                  </motion.div>
+                ))}
 
                 <Controller
                   name="image"
@@ -353,169 +453,6 @@ const SliderForm = () => {
                     </Field>
                   )}
                 /> */}
-
-                <Controller
-                  name="status"
-                  control={control}
-                  render={({ field }) => (
-                    <Field>
-                      <HStack justify="space-between" align="center">
-                        <Text fontWeight="500" textStyle="md">
-                          Pinned Image
-                        </Text>
-                        <Switch
-                          checked={field.value === 1}
-                          onCheckedChange={(value) => {
-                            const statusValue = value.checked ? 1 : 0;
-                            field.onChange(statusValue);
-                            handleFieldChange("status", statusValue);
-                          }}
-                          color="black"
-                          colorPalette="blue"
-                        />
-                      </HStack>
-                    </Field>
-                  )}
-                />
-
-                {/* <Button
-                  variant="outline"
-                  colorScheme="blue"
-                  onClick={() => setShowButtons(!showButtons)}
-                  mt={4}
-                >
-                  {showButtons ? "Hide Buttons" : "Add/Show Buttons"}
-                </Button>
-
-                {showButtons && (
-                  <motion.div
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
-                    variants={buttonVariants}
-                  >
-                    <HStack gap={4} align="flex-start">
-                      <Controller
-                        name="button_title"
-                        control={control}
-                        render={({ field }) => (
-                          <Field label="Button Title">
-                            <Input
-                              {...field}
-                              placeholder="Enter button title"
-                              size="md"
-                              onChange={(e) =>
-                                handleFieldChange(
-                                  "button_title",
-                                  e.target.value
-                                )
-                              }
-                            />
-                            {errors.button_title && (
-                              <Text textStyle="sm" color="red">
-                                {errors.button_title.message}
-                              </Text>
-                            )}
-                          </Field>
-                        )}
-                      />
-
-                      <Controller
-                        name="button_route"
-                        control={control}
-                        render={({ field }) => (
-                          <Field label="Button Route">
-                            <Input
-                              {...field}
-                              placeholder="Enter button route"
-                              size="md"
-                              onChange={(e) =>
-                                handleFieldChange(
-                                  "button_route",
-                                  e.target.value
-                                )
-                              }
-                            />
-                            {errors.button_route && (
-                              <Text textStyle="sm" color="red">
-                                {errors.button_route.message}
-                              </Text>
-                            )}
-                          </Field>
-                        )}
-                      />
-                    </HStack>
-                  </motion.div>
-                )} */}
-
-                <HStack justify="space-between" align="center" mt={4}>
-                  <Text fontWeight="bold">Buttons </Text>
-                  <Button
-                    variant="outline"
-                    colorScheme="blue"
-                    onClick={addNewButton}
-                    disabled={
-                      sliderData.buttons && sliderData.buttons.length >= 2
-                    }
-                  >
-                    Add Button
-                  </Button>
-                </HStack>
-
-                {sliderData.buttons?.map((button, index) => (
-                  <motion.div
-                    key={index}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
-                    variants={buttonVariants}
-                  >
-                    <HStack gap={4} align="flex-end">
-                      <Field label={`Button ${index + 1} Title`}>
-                        <Input
-                          value={button.button_name}
-                          placeholder="Enter button title"
-                          size="md"
-                          onChange={(e) =>
-                            handleButtonChange(
-                              index,
-                              "button_name",
-                              e.target.value
-                            )
-                          }
-                        />
-                      </Field>
-
-                      <Field label={`Button ${index + 1} Route`}>
-                        <Input
-                          value={button.button_link}
-                          placeholder="Enter button route"
-                          size="md"
-                          onChange={(e) =>
-                            handleButtonChange(
-                              index,
-                              "button_link",
-                              e.target.value
-                            )
-                          }
-                        />
-                      </Field>
-                      <motion.div
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                      >
-                        <IconButton
-                          aria-label={`Remove button ${index + 1}`}
-                          colorScheme="red"
-                          variant="ghost"
-                          onClick={() => removeButton(index)}
-                        >
-                          <FiTrash />
-                        </IconButton>
-                      </motion.div>
-                    </HStack>
-                  </motion.div>
-                ))}
               </VStack>
               <HStack justifyContent="flex-end" mt={4}>
                 <Button variant={"ghost"} onClick={() => navigate(-1)}>

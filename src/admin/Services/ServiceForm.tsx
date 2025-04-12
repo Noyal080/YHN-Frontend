@@ -194,8 +194,31 @@ const ServiceForms = () => {
         )}
         <CardRoot m="auto" maxWidth="800px" mt={8} boxShadow="lg">
           <CardBody>
-            <Heading mb={6}>{id ? "Edit" : "Add"} Services</Heading>
             <form onSubmit={handleSubmit(onSubmit)}>
+              <HStack mb={4} justifyContent="space-between">
+                <Heading mb={6}>{id ? "Edit" : "Add"} Services</Heading>
+
+                <Controller
+                  name="status"
+                  control={control}
+                  render={({ field }) => (
+                    <HStack justify="space-between" align="center">
+                      <Text fontWeight="500" textStyle="md">
+                        {field.value === 1 ? "Active" : "Inactive"}
+                      </Text>
+                      <Switch
+                        checked={field.value === 1}
+                        onCheckedChange={(value) => {
+                          const statusValue = value.checked ? 1 : 0;
+                          field.onChange(statusValue);
+                        }}
+                        color="black"
+                        colorPalette="green"
+                      />
+                    </HStack>
+                  )}
+                />
+              </HStack>
               <VStack gap={4} align={"stretch"}>
                 <Controller
                   name="title"
@@ -214,29 +237,6 @@ const ServiceForms = () => {
                       {errors.title && (
                         <Text textStyle="sm" color="red">
                           {errors.title.message}
-                        </Text>
-                      )}
-                    </Field>
-                  )}
-                />
-                <Controller
-                  name="description"
-                  control={control}
-                  rules={{ required: "Description is required" }}
-                  render={({ field }) => (
-                    <Field label="Description">
-                      <Textarea
-                        resize={"vertical"}
-                        height={"200px"}
-                        value={field.value}
-                        onChange={(e) => {
-                          field.onChange(e.target.value);
-                        }}
-                      />
-
-                      {errors.description && (
-                        <Text textStyle="sm" color="red">
-                          {errors.description.message}
                         </Text>
                       )}
                     </Field>
@@ -312,24 +312,25 @@ const ServiceForms = () => {
                   )}
                 />
                 <Controller
-                  name="status"
+                  name="description"
                   control={control}
+                  rules={{ required: "Description is required" }}
                   render={({ field }) => (
-                    <Field>
-                      <HStack justify="space-between" align="center">
-                        <Text fontWeight="500" textStyle="md">
-                          Show Service
+                    <Field label="Description">
+                      <Textarea
+                        resize={"vertical"}
+                        height={"200px"}
+                        value={field.value}
+                        onChange={(e) => {
+                          field.onChange(e.target.value);
+                        }}
+                      />
+
+                      {errors.description && (
+                        <Text textStyle="sm" color="red">
+                          {errors.description.message}
                         </Text>
-                        <Switch
-                          checked={field.value === 1}
-                          onCheckedChange={(value) => {
-                            const statusValue = value.checked ? 1 : 0;
-                            field.onChange(statusValue);
-                          }}
-                          color="black"
-                          colorPalette="blue"
-                        />
-                      </HStack>
+                      )}
                     </Field>
                   )}
                 />

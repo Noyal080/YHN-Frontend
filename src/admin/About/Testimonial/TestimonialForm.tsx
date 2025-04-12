@@ -210,20 +210,43 @@ const TestimonialForm = () => {
         )}
         <CardRoot m="auto" maxWidth="800px" mt={8} boxShadow="lg">
           <CardBody>
-            <Heading mb={6}>
-              {id ? "Edit Testimonial" : "Add Testimonial"}
-            </Heading>
             <form onSubmit={handleSubmit(onSubmit)}>
+              <HStack justifyContent="space-between" mb={4}>
+                <Heading mb={6}>
+                  {id ? "Edit Testimonial" : "Add Testimonial"}
+                </Heading>
+                <Controller
+                  name="status"
+                  control={control}
+                  render={({ field }) => (
+                    <HStack justify="space-between" align="center">
+                      <Text fontWeight="500" textStyle="md">
+                        {field.value === 1 ? "Active" : "Inactive"}
+                      </Text>
+                      <Switch
+                        checked={field.value === 1}
+                        onCheckedChange={(value) => {
+                          const statusValue = value.checked ? 1 : 0;
+                          field.onChange(statusValue);
+                          handleFieldChange("status", statusValue);
+                        }}
+                        color="black"
+                        colorPalette="green"
+                      />
+                    </HStack>
+                  )}
+                />
+              </HStack>
               <VStack gap={4} align="stretch">
                 <Controller
                   name="name"
                   control={control}
-                  rules={{ required: "Testimonial Name is required" }}
+                  rules={{ required: "Testimonee Name is required" }}
                   render={({ field }) => (
-                    <Field label="Testimonial Name">
+                    <Field label="Testimonee Name">
                       <Input
                         {...field}
-                        placeholder="Enter testimonial name"
+                        placeholder="Enter testimonee name"
                         size="md"
                         onChange={(e) =>
                           handleFieldChange("name", e.target.value)
@@ -237,27 +260,7 @@ const TestimonialForm = () => {
                     </Field>
                   )}
                 />
-                <Controller
-                  name="description"
-                  control={control}
-                  rules={{ required: "Description is required" }}
-                  render={({ field }) => (
-                    <Field label="Description">
-                      <CommonEditor
-                        value={field.value}
-                        onChange={(value) => {
-                          field.onChange(value);
-                          handleFieldChange("description", value);
-                        }}
-                      />
-                      {errors.description && (
-                        <Text textStyle="sm" color="red">
-                          {errors.description.message}
-                        </Text>
-                      )}
-                    </Field>
-                  )}
-                />
+
                 <HStack>
                   <Controller
                     name="designation_id"
@@ -396,27 +399,24 @@ const TestimonialForm = () => {
                     </Field>
                   )}
                 />
-
                 <Controller
-                  name="status"
+                  name="description"
                   control={control}
+                  rules={{ required: "Description is required" }}
                   render={({ field }) => (
-                    <Field>
-                      <HStack justify="space-between" align="center">
-                        <Text fontWeight="500" textStyle="md">
-                          Show Testimonial
+                    <Field label="Description">
+                      <CommonEditor
+                        value={field.value}
+                        onChange={(value) => {
+                          field.onChange(value);
+                          handleFieldChange("description", value);
+                        }}
+                      />
+                      {errors.description && (
+                        <Text textStyle="sm" color="red">
+                          {errors.description.message}
                         </Text>
-                        <Switch
-                          checked={field.value === 1}
-                          onCheckedChange={(value) => {
-                            const statusValue = value.checked ? 1 : 0;
-                            field.onChange(statusValue);
-                            handleFieldChange("status", statusValue);
-                          }}
-                          color="black"
-                          colorPalette="blue"
-                        />
-                      </HStack>
+                      )}
                     </Field>
                   )}
                 />

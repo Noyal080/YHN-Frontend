@@ -73,6 +73,7 @@ const SliderSection = () => {
         <Switch
           checked={row.status === 1}
           onCheckedChange={() => handleStatusChange(String(row.id), row.status)}
+          colorPalette={"green"}
         />
       ),
     },

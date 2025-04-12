@@ -31,7 +31,6 @@ import {
 } from "react-icons/fi";
 import { GiPublicSpeaker } from "react-icons/gi";
 import {
-  LuBell,
   LuContactRound,
   LuImagePlay,
   LuLayoutDashboard,
@@ -80,17 +79,10 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
       link: "/admin",
     },
     {
-      id: 8,
-      label: "Notification",
-      icon: LuBell,
-      children: [
-        {
-          id: 22,
-          label: "Messages",
-          icon: FiMail,
-          link: "/admin/messages",
-        },
-      ],
+      id: 22,
+      label: "Messages",
+      icon: FiMail,
+      link: "/admin/messages",
     },
     {
       id: 2,

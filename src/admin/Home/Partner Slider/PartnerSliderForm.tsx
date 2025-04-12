@@ -160,10 +160,33 @@ const PartnerSliderForm = () => {
         )}
         <CardRoot m="auto" maxWidth="800px" mt={8} boxShadow="lg">
           <CardBody>
-            <Heading mb={6}>
-              {id ? "Edit Partner Slider" : "Add Partner Slider"}
-            </Heading>
             <form onSubmit={handleSubmit(onSubmit)}>
+              <HStack justify="space-between" align="center" mb={6}>
+                <Heading mb={6}>
+                  {id ? "Edit Partner Slider" : "Add Partner Slider"}
+                </Heading>
+                <Controller
+                  name="status"
+                  control={control}
+                  render={({ field }) => (
+                    <HStack>
+                      <Text fontWeight="500" textStyle="md">
+                        {field.value === 1 ? "Active" : "Inactive"}
+                      </Text>
+                      <Switch
+                        checked={field.value === 1}
+                        colorPalette="green"
+                        onCheckedChange={(value) => {
+                          const numericValue = value.checked ? 1 : 0; // Convert `true`/`false` to `1`/`0`
+                          field.onChange(numericValue);
+                          handleFieldChange("status", numericValue);
+                        }}
+                        color="black"
+                      />
+                    </HStack>
+                  )}
+                />
+              </HStack>
               <VStack gap={4} align="stretch">
                 <Controller
                   name="title"
@@ -200,15 +223,22 @@ const PartnerSliderForm = () => {
                   }}
                   render={({ field }) => (
                     <Field label="Link">
+                      {/* <InputGroup
+                        startElement="https://"
+                        startElementProps={{ color: "fg.muted" }}
+                        width={"full"}
+                      > */}
                       <Input
                         {...field}
-                        placeholder="Example: https://example.com"
+                        // ps="7.8ch"
+                        placeholder="example.com"
                         size="md"
                         onChange={(e) => {
                           field.onChange(e.target.value);
                           handleFieldChange("link", e.target.value);
                         }}
                       />
+                      {/* </InputGroup> */}
                       {errors.link && (
                         <Text textStyle="sm" color="red">
                           {errors.link.message}
@@ -217,6 +247,7 @@ const PartnerSliderForm = () => {
                     </Field>
                   )}
                 />
+
                 <Controller
                   name="image"
                   control={control}
@@ -260,30 +291,6 @@ const PartnerSliderForm = () => {
                           {errors.image.message}
                         </Text>
                       )}
-                    </Field>
-                  )}
-                />
-
-                <Controller
-                  name="status"
-                  control={control}
-                  render={({ field }) => (
-                    <Field>
-                      <HStack justify="space-between" align="center">
-                        <Text fontWeight="500" textStyle="md">
-                          Show Image
-                        </Text>
-                        <Switch
-                          checked={field.value === 1}
-                          onCheckedChange={(value) => {
-                            const numericValue = value.checked ? 1 : 0; // Convert `true`/`false` to `1`/`0`
-                            field.onChange(numericValue);
-                            handleFieldChange("status", numericValue);
-                          }}
-                          color="black"
-                          colorPalette="blue"
-                        />
-                      </HStack>
                     </Field>
                   )}
                 />

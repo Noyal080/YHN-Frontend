@@ -264,8 +264,32 @@ const WorkForms = () => {
         )}
         <CardRoot m="auto" maxWidth="800px" mt={8} boxShadow="lg">
           <CardBody>
-            <Heading mb={6}>{id ? "Edit Our Works" : "Add Our Works"}</Heading>
             <form onSubmit={handleSubmit(onSubmit)}>
+              <HStack justify="space-between" align="center">
+                <Heading mb={6}>
+                  {id ? "Edit Our Works" : "Add Our Works"}
+                </Heading>
+                <Controller
+                  name="status"
+                  control={control}
+                  render={({ field }) => (
+                    <HStack>
+                      <Text fontWeight="500" textStyle="md">
+                        Show Work
+                      </Text>
+                      <Switch
+                        checked={field.value === 1}
+                        onCheckedChange={(value) => {
+                          const statusValue = value.checked ? 1 : 0;
+                          field.onChange(statusValue);
+                        }}
+                        color="black"
+                        colorPalette="green"
+                      />
+                    </HStack>
+                  )}
+                />
+              </HStack>
               <VStack gap={4} align={"stretch"}>
                 <Controller
                   name="title"
@@ -287,28 +311,7 @@ const WorkForms = () => {
                     </Field>
                   )}
                 />
-                <Controller
-                  name="description"
-                  control={control}
-                  rules={{ required: "Description is required" }}
-                  render={({ field }) => (
-                    <Field label="Description">
-                      <CommonEditor
-                        value={field.value}
-                        onChange={(value) => {
-                          field.onChange(value);
-                          // handleFieldChange("sub_title", value);
-                        }}
-                      />
 
-                      {errors.description && (
-                        <Text textStyle="sm" color="red">
-                          {errors.description.message}
-                        </Text>
-                      )}
-                    </Field>
-                  )}
-                />
                 <HStack>
                   <Controller
                     name="sector_id"
@@ -587,6 +590,28 @@ const WorkForms = () => {
                 </HStack>
 
                 <Controller
+                  name="description"
+                  control={control}
+                  rules={{ required: "Description is required" }}
+                  render={({ field }) => (
+                    <Field label="Description">
+                      <CommonEditor
+                        value={field.value}
+                        onChange={(value) => {
+                          field.onChange(value);
+                          // handleFieldChange("sub_title", value);
+                        }}
+                      />
+
+                      {errors.description && (
+                        <Text textStyle="sm" color="red">
+                          {errors.description.message}
+                        </Text>
+                      )}
+                    </Field>
+                  )}
+                />
+                <Controller
                   name="objectives"
                   control={control}
                   rules={{ required: "Objective is required" }}
@@ -754,29 +779,6 @@ const WorkForms = () => {
                           {errors.upload_pdf.message}
                         </Text>
                       )}
-                    </Field>
-                  )}
-                />
-
-                <Controller
-                  name="status"
-                  control={control}
-                  render={({ field }) => (
-                    <Field>
-                      <HStack justify="space-between" align="center">
-                        <Text fontWeight="500" textStyle="md">
-                          Show Work
-                        </Text>
-                        <Switch
-                          checked={field.value === 1}
-                          onCheckedChange={(value) => {
-                            const statusValue = value.checked ? 1 : 0;
-                            field.onChange(statusValue);
-                          }}
-                          color="black"
-                          colorPalette="blue"
-                        />
-                      </HStack>
                     </Field>
                   )}
                 />

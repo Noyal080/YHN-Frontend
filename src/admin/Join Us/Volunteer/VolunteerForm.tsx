@@ -118,10 +118,10 @@ const VolunteerForm = () => {
       breadcrumbItems={[
         { label: "Dashboard", link: "/admin" },
         { label: "Volunteer", link: "/admin/volunteer" },
-        { label: `${id ? "Edit" : "Add"} Volunteer` },
+        { label: `${id ? "Edit" : "Add"} Volunteer Application` },
       ]}
       activeSidebarItem="Volunteer"
-      title={`${id ? "Edit" : "Add"} Volunteer`}
+      title={`${id ? "Edit" : "Add"} Volunteer Application`}
     >
       <Box position="relative">
         {/* Overlay and Spinner */}
@@ -143,8 +143,34 @@ const VolunteerForm = () => {
         )}
         <CardRoot m="auto" maxWidth="800px" mt={8} boxShadow="lg">
           <CardBody>
-            <Heading mb={6}>{id ? "Edit Volunteer" : "Add Volunteer"}</Heading>
             <form onSubmit={handleSubmit(onSubmit)}>
+              <HStack justifyContent="space-between" mb={4}>
+                <Heading mb={6}>
+                  {id
+                    ? "Edit Volunteer Application"
+                    : "Add Volunteer Application"}
+                </Heading>
+                <Controller
+                  name="status"
+                  control={control}
+                  render={({ field }) => (
+                    <HStack justify="space-between" align="center">
+                      <Text fontWeight="500" textStyle="md">
+                        {field.value === 1 ? "Active" : "Inactive"}
+                      </Text>
+                      <Switch
+                        checked={field.value === 1}
+                        onCheckedChange={(value) => {
+                          const statusValue = value.checked ? 1 : 0;
+                          field.onChange(statusValue);
+                        }}
+                        color="black"
+                        colorPalette="green"
+                      />
+                    </HStack>
+                  )}
+                />
+              </HStack>
               <VStack gap={4} align={"stretch"}>
                 <Controller
                   name="title"
@@ -161,29 +187,6 @@ const VolunteerForm = () => {
                       {errors.title && (
                         <Text textStyle="sm" color="red">
                           {errors.title.message}
-                        </Text>
-                      )}
-                    </Field>
-                  )}
-                />
-
-                <Controller
-                  name="description"
-                  control={control}
-                  rules={{ required: "Description is required" }}
-                  render={({ field }) => (
-                    <Field label="Description">
-                      <CommonEditor
-                        value={field.value}
-                        onChange={(value) => {
-                          field.onChange(value);
-                          // handleFieldChange("sub_title", value);
-                        }}
-                      />
-
-                      {errors.description && (
-                        <Text textStyle="sm" color="red">
-                          {errors.description.message}
                         </Text>
                       )}
                     </Field>
@@ -261,24 +264,24 @@ const VolunteerForm = () => {
                 </HStack>
 
                 <Controller
-                  name="status"
+                  name="description"
                   control={control}
+                  rules={{ required: "Description is required" }}
                   render={({ field }) => (
-                    <Field>
-                      <HStack justify="space-between" align="center">
-                        <Text fontWeight="500" textStyle="md">
-                          Show Volunteership
+                    <Field label="Description">
+                      <CommonEditor
+                        value={field.value}
+                        onChange={(value) => {
+                          field.onChange(value);
+                          // handleFieldChange("sub_title", value);
+                        }}
+                      />
+
+                      {errors.description && (
+                        <Text textStyle="sm" color="red">
+                          {errors.description.message}
                         </Text>
-                        <Switch
-                          checked={field.value === 1}
-                          onCheckedChange={(value) => {
-                            const statusValue = value.checked ? 1 : 0;
-                            field.onChange(statusValue);
-                          }}
-                          color="black"
-                          colorPalette="blue"
-                        />
-                      </HStack>
+                      )}
                     </Field>
                   )}
                 />

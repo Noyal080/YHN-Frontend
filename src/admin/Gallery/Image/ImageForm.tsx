@@ -145,8 +145,31 @@ const ImageForm = () => {
         )}
         <CardRoot m="auto" maxWidth="800px" mt={8} boxShadow="lg">
           <CardBody>
-            <Heading mb={6}>{id ? "Edit" : "Add"} Image</Heading>
             <form onSubmit={handleSubmit(onSubmit)}>
+              <HStack justifyContent="space-between" alignItems={"center"}>
+                <Heading mb={6}>{id ? "Edit" : "Add"} Image</Heading>
+                <Controller
+                  name="status"
+                  control={control}
+                  render={({ field }) => (
+                    <HStack justify="space-between" align="center">
+                      <Text fontWeight="500" textStyle="md">
+                        Status
+                      </Text>
+                      <Switch
+                        checked={field.value === 1}
+                        onCheckedChange={(value) => {
+                          const statusValue = value.checked ? 1 : 0;
+                          field.onChange(statusValue);
+                          handleFieldChange("status", statusValue);
+                        }}
+                        color="black"
+                        colorPalette="green"
+                      />
+                    </HStack>
+                  )}
+                />
+              </HStack>
               <VStack gap={4} align={"stretch"}>
                 <Controller
                   name="title"
@@ -246,29 +269,6 @@ const ImageForm = () => {
                           </SimpleGrid>
                         )
                       )}
-                    </Field>
-                  )}
-                />
-                <Controller
-                  name="status"
-                  control={control}
-                  render={({ field }) => (
-                    <Field>
-                      <HStack justify="space-between" align="center">
-                        <Text fontWeight="500" textStyle="md">
-                          Status
-                        </Text>
-                        <Switch
-                          checked={field.value === 1}
-                          onCheckedChange={(value) => {
-                            const statusValue = value.checked ? 1 : 0;
-                            field.onChange(statusValue);
-                            handleFieldChange("status", statusValue);
-                          }}
-                          color="black"
-                          colorPalette="blue"
-                        />
-                      </HStack>
                     </Field>
                   )}
                 />

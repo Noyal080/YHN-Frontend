@@ -56,6 +56,7 @@ const TeamSection = () => {
       visible: true,
       render: (row) => (
         <Switch
+          colorPalette={"green"}
           checked={row.status === 1}
           onCheckedChange={() => {
             handleStatusChange(String(row.id), row.status);

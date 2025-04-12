@@ -52,6 +52,7 @@ const ImageSection = () => {
           onCheckedChange={() => {
             handleStatusChange(String(row.id), row.status, row.title);
           }}
+          colorPalette={"green"}
         />
       ),
     },
