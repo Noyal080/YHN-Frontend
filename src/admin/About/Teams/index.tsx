@@ -27,7 +27,7 @@ const TeamSection = () => {
   const debouncedSearch = useDebounce(searchQuery, 500);
 
   const columns: Column<TeamsData>[] = [
-    { key: "id", label: "#", visible: true },
+    { key: "id", label: "Id", visible: true },
     { key: "name", label: "Name", visible: true },
     {
       key: "image_url",

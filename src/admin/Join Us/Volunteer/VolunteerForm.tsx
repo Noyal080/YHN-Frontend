@@ -194,7 +194,7 @@ const VolunteerForm = () => {
                   name="apply_link"
                   control={control}
                   rules={{
-                    required: "Apply link is required",
+                    required: "Volunteer Application Link is required",
                     pattern: {
                       value: /^https:\/\/[\w.-]+\.[a-z]{2,6}([/\w.-]*)*\/?$/,
                       message:
@@ -202,7 +202,7 @@ const VolunteerForm = () => {
                     },
                   }}
                   render={({ field }) => (
-                    <Field label="Apply Link">
+                    <Field label="Volunteer Application Link">
                       <Input
                         {...field}
                         placeholder="Enter the link url"

@@ -170,7 +170,7 @@ const PartnerSliderForm = () => {
                   control={control}
                   rules={{ required: "Partner Name is required" }}
                   render={({ field }) => (
-                    <Field label="Parnter Name">
+                    <Field label="Partner Name">
                       <Input
                         {...field}
                         placeholder="Enter partner name"

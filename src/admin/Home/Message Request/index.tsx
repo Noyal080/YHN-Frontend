@@ -28,7 +28,7 @@ const MessageRequest = () => {
   const columns: Column<MessageRequestType>[] = [
     {
       key: "id",
-      label: "#",
+      label: "Id",
       visible: true,
     },
     {

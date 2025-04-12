@@ -190,7 +190,7 @@ const InternshipForm = () => {
                   name="apply_link"
                   control={control}
                   rules={{
-                    required: "Apply link is required",
+                    required: "Internship Application Link is required",
                     pattern: {
                       value: /^https:\/\/[\w.-]+\.[a-z]{2,6}([/\w.-]*)*\/?$/,
                       message:
@@ -198,7 +198,7 @@ const InternshipForm = () => {
                     },
                   }}
                   render={({ field }) => (
-                    <Field label="Apply Link">
+                    <Field label="Internship Application Link">
                       <Input
                         {...field}
                         placeholder="Example: https://example.com"

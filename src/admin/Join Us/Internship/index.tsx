@@ -28,7 +28,7 @@ const InternshipSection = () => {
   const debouncedSearch = useDebounce(searchQuery, 500);
 
   const columns: Column<InternshipType>[] = [
-    { key: "id", label: "#", visible: true },
+    { key: "id", label: "Id", visible: true },
     { key: "title", label: "Title", visible: true },
     {
       key: "description",
@@ -36,7 +36,7 @@ const InternshipSection = () => {
       visible: true,
       render: (row) => <EditorTextView message={row.description} />,
     },
-    { key: "apply_link", label: "Apply Link", visible: true },
+    { key: "apply_link", label: "Internship Application Link", visible: true },
     {
       key: "status",
       label: "Status",

@@ -19,7 +19,7 @@ const Donations = () => {
   const navigate = useNavigate();
 
   const columns: Column<DonationsType>[] = [
-    { key: "id", label: "#", visible: true },
+    { key: "id", label: "Id", visible: true },
     { key: "donorName", label: "Donor Name", visible: true },
     {
       key: "email",

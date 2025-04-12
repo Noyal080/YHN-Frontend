@@ -16,7 +16,7 @@ const Testimonial = () => {
   const columns: Column<TestimonialData>[] = [
     {
       key: "id",
-      label: "#",
+      label: "Id",
       visible: true,
     },
     {

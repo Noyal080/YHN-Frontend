@@ -25,7 +25,7 @@ const SliderSection = () => {
   const debouncedSearch = useDebounce(searchQuery, 500);
 
   const columns: Column<SliderInput>[] = [
-    { key: "id", label: "#", visible: true },
+    { key: "id", label: "Id", visible: true },
     { key: "title", label: "Title", visible: true },
     {
       key: "sub_title",

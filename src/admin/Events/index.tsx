@@ -28,7 +28,7 @@ const EventSection = () => {
   const navigate = useNavigate();
 
   const columns: Column<EventType>[] = [
-    { key: "id", label: "#", visible: true },
+    { key: "id", label: "Id", visible: true },
     { key: "title", label: "Title", visible: true },
     {
       key: "description",

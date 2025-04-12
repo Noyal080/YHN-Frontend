@@ -222,7 +222,7 @@ const ChairpersonMessage = () => {
                   rules={{ required: "Fullname is required" }}
                   control={control}
                   render={({ field }) => (
-                    <Field label="Chairperson's Name">
+                    <Field label="Name">
                       <Input
                         {...field}
                         size="md"
