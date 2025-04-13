@@ -89,7 +89,7 @@ const WorkForms = () => {
       gallery_id: pageData.gallery_id || null,
       objectives: pageData.objectives || "",
       activities: pageData.activities || "",
-      upload_pdf: pageData.upload_pdf || null,
+      upload_pdf: pageData.upload_pdf || "",
       status: pageData.status || 1,
     },
   });
@@ -275,7 +275,7 @@ const WorkForms = () => {
                   render={({ field }) => (
                     <HStack>
                       <Text fontWeight="500" textStyle="md">
-                        Show Work
+                        {field.value === 1 ? "Active" : "Inactive"}
                       </Text>
                       <Switch
                         checked={field.value === 1}
@@ -659,9 +659,9 @@ const WorkForms = () => {
                 <Controller
                   name="banner_image"
                   control={control}
-                  rules={{ required: "Image URL is required" }}
+                  rules={{ required: "Banner Image is required" }}
                   render={({ field }) => (
-                    <Field label="Image URL">
+                    <Field label="Banner Image">
                       <FileUploadRoot
                         alignItems="stretch"
                         maxFiles={1}

@@ -14,15 +14,12 @@ import {
   Box,
   CardBody,
   CardRoot,
-  Grid,
-  GridItem,
   Heading,
   HStack,
   Image,
   Input,
   Spinner,
   Text,
-  Textarea,
   VStack,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
@@ -237,17 +234,17 @@ const ChairpersonMessage = () => {
                     </Field>
                   )}
                 />
-                <Controller
+                {/* <Controller
                   name="company_description"
-                  rules={{ required: "Company Description is required" }}
+                  rules={{ required: "Organisation Description is required" }}
                   control={control}
                   render={({ field }) => (
-                    <Field label="Company Description">
+                    <Field label="Organisation Description">
                       <Textarea
                         {...field}
                         size="md"
                         onChange={(e) => field.onChange(e.target.value)}
-                        placeholder="Enter the company description"
+                        placeholder="Enter the organ description"
                       />
 
                       {errors.company_description && (
@@ -257,7 +254,7 @@ const ChairpersonMessage = () => {
                       )}
                     </Field>
                   )}
-                />
+                /> */}
                 <Controller
                   name="message_from_chairperson"
                   rules={{ required: "Message is required" }}
@@ -278,7 +275,7 @@ const ChairpersonMessage = () => {
                     </Field>
                   )}
                 />
-                <Controller
+                {/* <Controller
                   name="additional_information"
                   control={control}
                   render={({ field }) => (
@@ -389,7 +386,7 @@ const ChairpersonMessage = () => {
                       </Box>
                     </Field>
                   )}
-                />
+                /> */}
                 <Controller
                   name="chairperson_image"
                   control={control}

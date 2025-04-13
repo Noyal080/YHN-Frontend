@@ -539,9 +539,9 @@ const EventForm = () => {
                 <Controller
                   name="banner_image"
                   control={control}
-                  rules={{ required: "Image URL is required" }}
+                  rules={{ required: "Banner Image is required" }}
                   render={({ field }) => (
-                    <Field label="Image URL">
+                    <Field label="Banner Image">
                       <FileUploadRoot
                         alignItems="stretch"
                         maxFiles={1}

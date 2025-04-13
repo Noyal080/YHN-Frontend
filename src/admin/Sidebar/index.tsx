@@ -30,6 +30,8 @@ import {
   FiSettings,
 } from "react-icons/fi";
 import { GiPublicSpeaker } from "react-icons/gi";
+import { PiChartLineUp } from "react-icons/pi";
+import { GoOrganization } from "react-icons/go";
 import {
   LuContactRound,
   LuImagePlay,
@@ -43,6 +45,7 @@ import { toggleDropdown, toggleSidebar } from "@/redux/sidebarSlice";
 import { RootState } from "@/redux/store";
 import Logo from "../../assets/YHN_Logo.jpg";
 import SmallLogo from "../../assets/LogoSmall.png";
+import { FaWrench } from "react-icons/fa";
 
 interface MenuItem {
   id: number;
@@ -102,6 +105,12 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
           icon: GiPublicSpeaker,
           link: "/admin/chairperson-message",
         },
+        {
+          id: 25,
+          label: "Our Impact",
+          icon: PiChartLineUp,
+          link: "/admin/impact",
+        },
       ],
     },
     {
@@ -118,48 +127,16 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
         // },
         { id: 33, label: "Our Team", icon: FiUsers, link: "/admin/teams" },
         {
-          id: 34,
-          label: "Company Profile",
-          icon: LuContactRound,
-          link: "/admin/company-profile",
-        },
-      ],
-    },
-
-    {
-      id: 9,
-      label: "Join Us",
-      icon: FiUserPlus,
-      children: [
-        {
-          id: 91,
-          label: "Volunteer",
-          icon: FiUserCheck,
-          link: "/admin/volunteer",
-        },
-        {
-          id: 92,
-          label: "Internship",
-          icon: FiBookOpen,
-          link: "/admin/internship",
-        },
-        {
           id: 94,
           label: "Testimonial",
           icon: LuQuote,
           link: "/admin/testimonials",
         },
-        {
-          id: 95,
-          label: "Donation",
-          icon: FiDollarSign,
-          link: "/admin/donation",
-        },
+       
       ],
     },
     { id: 4, label: "Our Works", icon: FiFolder, link: "/admin/our-works" },
     { id: 5, label: "News & Events", icon: FiCalendar, link: "/admin/events" },
-    { id: 6, label: "Services", icon: FiSettings, link: "/admin/services" },
     {
       id: 7,
       label: "Gallery",
@@ -179,6 +156,50 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
         },
       ],
     },
+    {
+      id: 9,
+      label: "Join Us",
+      icon: FiUserPlus,
+      children: [
+        {
+          id: 91,
+          label: "Volunteer",
+          icon: FiUserCheck,
+          link: "/admin/volunteer",
+        },
+        {
+          id: 92,
+          label: "Internship",
+          icon: FiBookOpen,
+          link: "/admin/internship",
+        },
+        {
+          id: 95,
+          label: "Donation",
+          icon: FiDollarSign,
+          link: "/admin/donation",
+        },
+      ],
+    },
+
+    { id: 6, label: "Services", icon: FaWrench, link: "/admin/services" },
+    { id: 10, label: "Settings", icon: FiSettings, children :[
+      {
+        id: 34,
+        label: "Contact Information",
+        icon: LuContactRound,
+        link: "/admin/contact-us",
+      },
+      {
+        id: 34,
+        label: "Organisation Information",
+        icon: GoOrganization,
+        link: "/admin/contact-us",
+      },
+    ]  
+  },
+
+    
   ];
 
   const renderMenuItem = (item: MenuItem) => {

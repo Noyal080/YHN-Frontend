@@ -96,13 +96,13 @@ const ContactUsPage = () => {
 
       await axiosInstance.patch("/contactus/1", payload);
       showToast({
-        description: "Company Profile updated successfully",
+        description: "Contact Information updated successfully",
         type: "success",
       });
     } catch (error) {
       console.error("Update failed:", error);
       showToast({
-        description: "Error while updating Company Profile",
+        description: "Error while updating Contact Information",
         type: "error",
       });
     }
@@ -169,10 +169,10 @@ const ContactUsPage = () => {
     <AdminLayout
       breadcrumbItems={[
         { label: "Dashboard", link: "/admin" },
-        { label: "Company Profile" },
+        { label: "Contact Information" },
       ]}
-      title="Company Profile"
-      activeSidebarItem="Company Profile"
+      title="Contact Information"
+      activeSidebarItem="Contact Information"
     >
       <Box position="relative">
         {/* Overlay and Spinner */}
@@ -194,7 +194,7 @@ const ContactUsPage = () => {
         )}
         <CardRoot m="auto" maxWidth="1000px" mt={8} boxShadow="lg">
           <CardBody>
-            <Heading mb={6}>Company Profile</Heading>
+            <Heading mb={6}>Contact Information</Heading>
             <form onSubmit={handleSubmit(onSubmit)}>
               <VStack gap={4} align="stretch">
                 {/* Email Section */}

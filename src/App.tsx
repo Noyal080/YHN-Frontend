@@ -129,7 +129,7 @@ const adminRoutes = [
 
   // Profile Section
   { path: "/admin/profile", element: <ProfilePage /> },
-  { path: "/admin/company-profile", element: <ContactUsPage /> },
+  { path: "/admin/contact-us", element: <ContactUsPage /> },
 ];
 
 function App() {

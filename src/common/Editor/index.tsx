@@ -6,6 +6,7 @@ const LICENSE_KEY =
     ? import.meta.env.VITE_CK_EDITOR_KEY_DEVELOPMENT
     : import.meta.env.VITE_CK_EDITOR_KEY_PRODUCTION;
 
+    
 const CommonEditor = ({
   value,
   onChange,
@@ -16,7 +17,8 @@ const CommonEditor = ({
   const editorContainerRef = useRef(null);
   const editorRef = useRef(null);
   const [isLayoutReady, setIsLayoutReady] = useState(false);
-  const cloud = useCKEditorCloud({ version: "44.1.0" });
+  const cloud = useCKEditorCloud({ version: "45.0.0" });
+
   useEffect(() => {
     setIsLayoutReady(true);
 
@@ -30,15 +32,25 @@ const CommonEditor = ({
 
     const {
       ClassicEditor,
+      Alignment,
+      Autoformat,
       AutoImage,
+      AutoLink,
       Autosave,
       BalloonToolbar,
       Base64UploadAdapter,
       BlockQuote,
       Bold,
-      CloudServices,
       Essentials,
+      FindAndReplace,
+      FontBackgroundColor,
+      FontColor,
+      FontFamily,
+      FontSize,
+      GeneralHtmlSupport,
       Heading,
+      Highlight,
+      HorizontalLine,
       ImageBlock,
       ImageCaption,
       ImageInline,
@@ -60,13 +72,25 @@ const CommonEditor = ({
       Mention,
       Paragraph,
       PasteFromOffice,
+      PlainTableOutput,
+      RemoveFormat,
       SpecialCharacters,
+      SpecialCharactersArrows,
+      SpecialCharactersCurrency,
+      SpecialCharactersEssentials,
+      SpecialCharactersLatin,
+      SpecialCharactersMathematical,
+      SpecialCharactersText,
+      Style,
+      Subscript,
+      Superscript,
       Table,
       TableCaption,
       TableCellProperties,
       TableColumnResize,
       TableProperties,
       TableToolbar,
+      TextTransformation,
       TodoList,
       Underline,
     } = cloud.CKEditor;
@@ -76,18 +100,37 @@ const CommonEditor = ({
       editorConfig: {
         toolbar: {
           items: [
+            "findAndReplace",
+            "fullscreen",
+            "|",
             "heading",
+            "style",
+            "|",
+            "fontSize",
+            "fontFamily",
+            "fontColor",
+            "fontBackgroundColor",
             "|",
             "bold",
             "italic",
             "underline",
+            "subscript",
+            "superscript",
+            "removeFormat",
             "|",
+            "emoji",
             "specialCharacters",
+            "horizontalLine",
             "link",
             "insertImage",
+            "insertImageViaUrl",
             "mediaEmbed",
             "insertTable",
+            "insertTableLayout",
+            "highlight",
             "blockQuote",
+            "|",
+            "alignment",
             "|",
             "bulletedList",
             "numberedList",
@@ -95,18 +138,28 @@ const CommonEditor = ({
             "outdent",
             "indent",
           ],
-          shouldNotGroupWhenFull: false,
+          shouldNotGroupWhenFull: true,
         },
         plugins: [
+          Alignment,
+          Autoformat,
           AutoImage,
+          AutoLink,
           Autosave,
           BalloonToolbar,
           Base64UploadAdapter,
           BlockQuote,
           Bold,
-          CloudServices,
           Essentials,
+          FindAndReplace,
+          FontBackgroundColor,
+          FontColor,
+          FontFamily,
+          FontSize,
+          GeneralHtmlSupport,
           Heading,
+          Highlight,
+          HorizontalLine,
           ImageBlock,
           ImageCaption,
           ImageInline,
@@ -128,13 +181,25 @@ const CommonEditor = ({
           Mention,
           Paragraph,
           PasteFromOffice,
+          PlainTableOutput,
+          RemoveFormat,
           SpecialCharacters,
+          SpecialCharactersArrows,
+          SpecialCharactersCurrency,
+          SpecialCharactersEssentials,
+          SpecialCharactersLatin,
+          SpecialCharactersMathematical,
+          SpecialCharactersText,
+          Style,
+          Subscript,
+          Superscript,
           Table,
           TableCaption,
           TableCellProperties,
           TableColumnResize,
           TableProperties,
           TableToolbar,
+          TextTransformation,
           TodoList,
           Underline,
         ],
@@ -148,6 +213,23 @@ const CommonEditor = ({
           "bulletedList",
           "numberedList",
         ],
+        fontFamily: {
+          supportAllValues: true,
+        },
+        fontSize: {
+          options: [10, 12, 14, "default", 18, 20, 22],
+          supportAllValues: true,
+        },
+        fullscreen: {
+          onEnterCallback: (container: HTMLElement) =>
+            container.classList.add(
+              "editor-container",
+              "editor-container_classic-editor",
+              "editor-container_include-style",
+              "editor-container_include-fullscreen",
+              "main-container"
+            ),
+        },
         heading: {
           options: [
             {
@@ -193,6 +275,22 @@ const CommonEditor = ({
             },
           ],
         },
+        htmlSupport: {
+          allow: [
+            {
+              name: /^.*$/,
+              styles: {
+                '*': true as const
+              },
+              attributes: {
+                '*': true as const
+              },
+              classes: {
+                '*': true as const
+              }
+            },
+          ],
+        },
         image: {
           toolbar: [
             "toggleImageCaption",
@@ -204,12 +302,9 @@ const CommonEditor = ({
             "|",
             "resizeImage",
           ],
-          upload: {
-            types: ["jpeg", "png", "gif"], // Allowed image types
-          },
         },
+        initialData:"",
         licenseKey: LICENSE_KEY,
-        allowedContent: "true",
         link: {
           addTargetToExternalLinks: true,
           defaultProtocol: "https://",
@@ -240,7 +335,59 @@ const CommonEditor = ({
             },
           ],
         },
+        menuBar: {
+          isVisible: true,
+        },
         placeholder: "",
+        style: {
+          definitions: [
+            {
+              name: "Article category",
+              element: "h3",
+              classes: ["category"],
+            },
+            {
+              name: "Title",
+              element: "h2",
+              classes: ["document-title"],
+            },
+            {
+              name: "Subtitle",
+              element: "h3",
+              classes: ["document-subtitle"],
+            },
+            {
+              name: "Info box",
+              element: "p",
+              classes: ["info-box"],
+            },
+            {
+              name: "Side quote",
+              element: "blockquote",
+              classes: ["side-quote"],
+            },
+            {
+              name: "Marker",
+              element: "span",
+              classes: ["marker"],
+            },
+            {
+              name: "Spoiler",
+              element: "span",
+              classes: ["spoiler"],
+            },
+            {
+              name: "Code (dark)",
+              element: "pre",
+              classes: ["fancy-code", "fancy-code-dark"],
+            },
+            {
+              name: "Code (bright)",
+              element: "pre",
+              classes: ["fancy-code", "fancy-code-bright"],
+            },
+          ],
+        },
         table: {
           contentToolbar: [
             "tableColumn",
