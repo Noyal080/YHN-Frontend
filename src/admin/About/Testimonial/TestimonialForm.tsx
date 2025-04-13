@@ -23,10 +23,11 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { compressImage } from "@/helper/imageCompressor";
+import { FiPlus } from "react-icons/fi";
 
 interface DesignationOptions {
   label: string;
@@ -35,6 +36,8 @@ interface DesignationOptions {
 
 const TestimonialForm = () => {
   const { id } = useParams();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const { showToast } = useCommonToast();
   const [selectedImage, setSelectedImage] = useState<string | null>();
   const [isLoading, setIsLoading] = useState(false);
@@ -238,122 +241,178 @@ const TestimonialForm = () => {
                 />
               </HStack>
               <VStack gap={4} align="stretch">
-                <Controller
-                  name="name"
-                  control={control}
-                  rules={{ required: "Testimonee Name is required" }}
-                  render={({ field }) => (
-                    <Field label="Testimonee Name">
-                      <Input
-                        {...field}
-                        placeholder="Enter testimonee name"
-                        size="md"
-                        onChange={(e) =>
-                          handleFieldChange("name", e.target.value)
-                        }
-                      />
-                      {errors.name && (
-                        <Text textStyle="sm" color="red">
-                          {errors.name.message}
-                        </Text>
+                <HStack gap={6} align="start">
+                  <Controller
+                    name="image"
+                    control={control}
+                    rules={{ required: "Image is required" }}
+                    render={({ field }) => (
+                      <Box position="relative">
+                        {!field.value && !selectedImage ? (
+                          <Box
+                            width="120px"
+                            height="120px"
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="center"
+                            border="2px dashed gray"
+                            rounded="full"
+                            cursor="pointer"
+                            onClick={() => fileInputRef.current?.click()}
+                          >
+                            <FiPlus size={30} color="gray" />
+                          </Box>
+                        ) : (
+                          <Image
+                            src={
+                              selectedImage ||
+                              (typeof testimonialData.image === "string"
+                                ? testimonialData.image
+                                : undefined)
+                            }
+                            alt="Uploaded or Existing Image"
+                            boxSize="120px"
+                            rounded="full"
+                            objectFit="cover"
+                            cursor="pointer"
+                            onClick={() => fileInputRef.current?.click()}
+                          />
+                        )}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          hidden
+                          ref={fileInputRef}
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              field.onChange(file);
+                              handleImageUpload(file);
+                            }
+                          }}
+                        />
+                      </Box>
+                    )}
+                  />
+                  <VStack gap={4} flex="1">
+                    <Controller
+                      name="name"
+                      control={control}
+                      rules={{ required: "Testimonee Name is required" }}
+                      render={({ field }) => (
+                        <Field label="Testimonee Name">
+                          <Input
+                            {...field}
+                            placeholder="Enter testimonee name"
+                            size="md"
+                            onChange={(e) =>
+                              handleFieldChange("name", e.target.value)
+                            }
+                          />
+                          {errors.name && (
+                            <Text textStyle="sm" color="red">
+                              {errors.name.message}
+                            </Text>
+                          )}
+                        </Field>
                       )}
-                    </Field>
-                  )}
-                />
-
-                <HStack>
-                  <Controller
-                    name="designation_id"
-                    control={control}
-                    rules={{ required: "User Designation is required" }}
-                    render={({ field }) => (
-                      <Field label="User Designation">
-                        <CreatableSelect
-                          {...field}
-                          placeholder="Create or select user designation"
-                          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                          options={designationOption as any}
-                          value={
-                            // Find the matching option object if field.value is a number
-                            typeof field.value === "number"
-                              ? designationOption.find(
-                                  (option) => option.value === field.value
-                                )
-                              : // If it's a custom value (string) or null, handle accordingly
-                              field.value
-                              ? {
-                                  label: String(field.value),
-                                  value: field.value,
-                                }
-                              : null
-                          }
-                          onChange={(selectedOption) => {
-                            // Update both React Hook Form state and local state
-                            field.onChange(selectedOption?.value || null);
-                            handleFieldChange(
-                              "designation_id",
-                              selectedOption?.value || null
-                            );
-                          }}
-                          // onBlur={field.onBlur}
-                          styles={{
-                            container: (base) => ({
-                              ...base,
-                              width: "100%",
-                            }),
-                            control: (base) => ({
-                              ...base,
-                              width: "100%",
-                              borderColor: errors.designation_id
-                                ? "red"
-                                : base.borderColor,
-                            }),
-                            menu: (base) => ({
-                              ...base,
-                              width: "100%",
-                            }),
-                            valueContainer: (base) => ({
-                              ...base,
-                              width: "100%",
-                            }),
-                            input: (base) => ({
-                              ...base,
-                              width: "100%",
-                            }),
-                          }}
-                        />
-                        {errors.designation_id && (
-                          <Text textStyle="sm" color="red">
-                            {errors.designation_id.message}
-                          </Text>
+                    />
+                    <HStack width={"100%"}>
+                      <Controller
+                        name="designation_id"
+                        control={control}
+                        rules={{ required: "User Designation is required" }}
+                        render={({ field }) => (
+                          <Field label="User Designation">
+                            <CreatableSelect
+                              {...field}
+                              placeholder="Create or select user designation"
+                              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                              options={designationOption as any}
+                              value={
+                                // Find the matching option object if field.value is a number
+                                typeof field.value === "number"
+                                  ? designationOption.find(
+                                      (option) => option.value === field.value
+                                    )
+                                  : // If it's a custom value (string) or null, handle accordingly
+                                  field.value
+                                  ? {
+                                      label: String(field.value),
+                                      value: field.value,
+                                    }
+                                  : null
+                              }
+                              onChange={(selectedOption) => {
+                                // Update both React Hook Form state and local state
+                                field.onChange(selectedOption?.value || null);
+                                handleFieldChange(
+                                  "designation_id",
+                                  selectedOption?.value || null
+                                );
+                              }}
+                              // onBlur={field.onBlur}
+                              styles={{
+                                container: (base) => ({
+                                  ...base,
+                                  width: "100%",
+                                }),
+                                control: (base) => ({
+                                  ...base,
+                                  width: "100%",
+                                  borderColor: errors.designation_id
+                                    ? "red"
+                                    : base.borderColor,
+                                }),
+                                menu: (base) => ({
+                                  ...base,
+                                  width: "100%",
+                                }),
+                                valueContainer: (base) => ({
+                                  ...base,
+                                  width: "100%",
+                                }),
+                                input: (base) => ({
+                                  ...base,
+                                  width: "100%",
+                                }),
+                              }}
+                            />
+                            {errors.designation_id && (
+                              <Text textStyle="sm" color="red">
+                                {errors.designation_id.message}
+                              </Text>
+                            )}
+                          </Field>
                         )}
-                      </Field>
-                    )}
-                  />
-                  <Controller
-                    name="category"
-                    control={control}
-                    rules={{ required: "User Category is required" }}
-                    render={({ field }) => (
-                      <Field label="User Category">
-                        <Input
-                          {...field}
-                          placeholder="Enter user category"
-                          size="md"
-                          onChange={(e) =>
-                            handleFieldChange("category", e.target.value)
-                          }
-                        />
-                        {errors.category && (
-                          <Text textStyle="sm" color="red">
-                            {errors.category.message}
-                          </Text>
+                      />
+                      <Controller
+                        name="category"
+                        control={control}
+                        rules={{ required: "User Category is required" }}
+                        render={({ field }) => (
+                          <Field label="User Category">
+                            <Input
+                              {...field}
+                              placeholder="Enter user category"
+                              size="md"
+                              onChange={(e) =>
+                                handleFieldChange("category", e.target.value)
+                              }
+                            />
+                            {errors.category && (
+                              <Text textStyle="sm" color="red">
+                                {errors.category.message}
+                              </Text>
+                            )}
+                          </Field>
                         )}
-                      </Field>
-                    )}
-                  />
+                      />
+                    </HStack>
+                  </VStack>
                 </HStack>
-                <Controller
+
+                {/* <Controller
                   name="image"
                   control={control}
                   rules={{ required: "Image URL is required" }}
@@ -398,7 +457,7 @@ const TestimonialForm = () => {
                       )}
                     </Field>
                   )}
-                />
+                /> */}
                 <Controller
                   name="description"
                   control={control}
