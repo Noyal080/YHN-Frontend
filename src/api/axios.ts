@@ -6,7 +6,6 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 export const axiosInstance = axios.create({
   baseURL: API_URL, // Use the API URL from the .env file
-  timeout: 30000, // Request timeout in ms
   headers: {
     "Content-Type": "application/json",
     "Cache-Control": "no-cache",
@@ -34,7 +33,6 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-
 axiosInstance.interceptors.response.use(
   (response) => {
     return response;
@@ -44,19 +42,19 @@ axiosInstance.interceptors.response.use(
       if (error.response?.status === 401) {
         // Clear localStorage
         localStorage.clear();
-        
+
         // Dispatch action to clear auth state in Redux
         store.dispatch(logout());
-        
+
         // Redirect to login page
         // Option 1: If using React Router v6+
-        window.location.href = '/login';
-        
+        window.location.href = "/login";
+
         // Option 2: If not using React Router
         // window.location.href = '/login';
       }
     }
-    
+
     return Promise.reject(error);
   }
 );

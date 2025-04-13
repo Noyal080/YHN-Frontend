@@ -5,10 +5,6 @@ import CommonEditor from "@/common/Editor";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import CreatableSelect from "react-select/creatable";
-import {
-  FileUploadDropzone,
-  FileUploadRoot,
-} from "@/components/ui/file-upload";
 import { Switch } from "@/components/ui/switch";
 import { TestimonialInput } from "@/utils/types";
 import {

@@ -87,6 +87,7 @@ const SliderSection = () => {
   // axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
   useEffect(() => {
+    setLoading(true);
     const fetchSliders = async () => {
       try {
         const res = await axiosInstance.get("/sliders/", {
@@ -95,9 +96,9 @@ const SliderSection = () => {
         const data = res.data.data;
         setRows(data.data);
         setPaginationData(data.pagination);
-        setLoading(false);
       } catch (err) {
         console.log(err);
+      } finally {
         setLoading(false);
       }
     };

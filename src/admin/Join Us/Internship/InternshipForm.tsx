@@ -27,7 +27,7 @@ const InternshipForm = () => {
     title: "",
     description: "",
     apply_link: "",
-    status: 1,
+    status: 0,
     start_date: new Date().toISOString().split("T")[0],
     end_date: "",
   });

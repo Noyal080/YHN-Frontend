@@ -38,10 +38,10 @@ const SliderForm = () => {
   const [sliderData, setSliderData] = useState<SliderInput>({
     title: "",
     sub_title: "",
-    priority_order: 1,
+    priority_order: "",
     image: "",
     status: 1,
-    buttons: [],
+    buttons: [{ button_name: "", button_link: "" }],
   });
   const {
     control,
@@ -52,9 +52,9 @@ const SliderForm = () => {
       id: sliderData.id,
       title: sliderData.title || "",
       sub_title: sliderData.sub_title || "",
-      priority_order: sliderData.priority_order || 1,
+      priority_order: sliderData.priority_order || "",
       image: sliderData.image || "",
-      status: sliderData.status || 1,
+      status: sliderData.status || 0,
       buttons: sliderData.buttons || [],
     },
   });
@@ -112,10 +112,12 @@ const SliderForm = () => {
   };
 
   const removeButton = (index: number) => {
-    setSliderData((prev) => ({
-      ...prev,
-      buttons: (prev.buttons ?? []).filter((_, i) => i !== index),
-    }));
+    if (sliderData.buttons && sliderData.buttons.length > 1) {
+      setSliderData((prev) => ({
+        ...prev,
+        buttons: (prev.buttons ?? []).filter((_, i) => i !== index),
+      }));
+    }
   };
 
   const onSubmit = async (data: SliderInput) => {
@@ -359,22 +361,23 @@ const SliderForm = () => {
                             }
                             ps="7.8ch"
                           />
-                          {/* <Input  placeholder="yoursite.com" /> */}
                         </InputGroup>
                       </Field>
-                      <motion.div
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                      >
-                        <IconButton
-                          aria-label={`Remove button ${index + 1}`}
-                          colorScheme="red"
-                          variant="ghost"
-                          onClick={() => removeButton(index)}
+                      {sliderData.buttons && sliderData.buttons.length > 1 && (
+                        <motion.div
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
                         >
-                          <FiTrash />
-                        </IconButton>
-                      </motion.div>
+                          <IconButton
+                            aria-label={`Remove button ${index + 1}`}
+                            colorScheme="red"
+                            variant="ghost"
+                            onClick={() => removeButton(index)}
+                          >
+                            <FiTrash />
+                          </IconButton>
+                        </motion.div>
+                      )}
                     </HStack>
                   </motion.div>
                 ))}
@@ -426,7 +429,7 @@ const SliderForm = () => {
                   )}
                 />
 
-                {/* <Controller
+                <Controller
                   name="priority_order"
                   control={control}
                   rules={{ required: "Priority order is required" }}
@@ -452,7 +455,7 @@ const SliderForm = () => {
                       )}
                     </Field>
                   )}
-                /> */}
+                />
               </VStack>
               <HStack justifyContent="flex-end" mt={4}>
                 <Button variant={"ghost"} onClick={() => navigate(-1)}>

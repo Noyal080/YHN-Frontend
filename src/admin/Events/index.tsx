@@ -146,10 +146,10 @@ const EventSection = () => {
     <AdminLayout
       breadcrumbItems={[
         { label: "Dashboard", link: "/admin" },
-        { label: "News & Events" },
+        { label: "Events" },
       ]}
-      title={`News & Events Section`}
-      activeSidebarItem="News & Events"
+      title={`Events Section`}
+      activeSidebarItem="Events"
     >
       <CommonTable
         title="Event List"

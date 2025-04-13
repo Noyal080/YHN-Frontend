@@ -9,8 +9,6 @@ import { axiosInstance } from "@/api/axios";
 import useCommonToast from "@/common/CommonToast";
 import CommonModal from "@/common/CommonModal";
 import { Image, Text } from "@chakra-ui/react";
-import ImageSlider from "../Gallery/Image/ImageSlider";
-import EditorTextView from "@/common/EditorTextView";
 import { Switch } from "@/components/ui/switch";
 
 const ProjectSection = () => {
@@ -18,12 +16,6 @@ const ProjectSection = () => {
   const columns: Column<OurWorks>[] = [
     { key: "id", label: "Id", visible: true },
     { key: "title", label: "Title", visible: true },
-    {
-      key: "description",
-      label: "Description",
-      visible: false,
-      render: (row) => <EditorTextView message={row.description} />,
-    },
     {
       key: "sector",
       label: "Sector",
@@ -50,31 +42,6 @@ const ProjectSection = () => {
     },
     { key: "banner_start_date", label: "Start Date", visible: false },
     { key: "banner_end_date", label: "End Date", visible: false },
-    { key: "banner_location_country", label: "Country", visible: false },
-    {
-      key: "banner_location_stateorprovince",
-      label: "Province",
-      visible: false,
-    },
-    { key: "banner_location_cityordistrict", label: "City", visible: false },
-    {
-      key: "gallery",
-      label: "Gallery",
-      visible: false,
-      render: (row) => <ImageSlider images={row.gallery.gallery_images} />,
-    },
-    {
-      key: "objectives",
-      label: "Objective",
-      visible: false,
-      render: (row) => <EditorTextView message={row.objectives} />,
-    },
-    {
-      key: "activities",
-      label: "Activities",
-      visible: false,
-      render: (row) => <EditorTextView message={row.activities} />,
-    },
     {
       key: "status",
       label: "Status",

@@ -40,9 +40,30 @@ interface SectorOptions {
   value: number;
 }
 
+const SectionToggle = ({
+  label,
+  isChecked,
+  onChange,
+}: {
+  label: string;
+  isChecked: boolean;
+  onChange: (checked: boolean) => void;
+}) => (
+  <HStack alignItems="center" gap={16}>
+    <Text fontWeight="medium">{label}</Text>
+    <Switch
+      checked={isChecked}
+      onChange={() => onChange(!isChecked)}
+      colorPalette="blue"
+    />
+  </HStack>
+);
+
 const WorkForms = () => {
   //Gallery is missing
   const { id } = useParams();
+  const [showObjectives, setShowObjectives] = useState(false);
+  const [showActivities, setShowActivities] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>();
   const [options, setOptions] = useState<GalleryOptions[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -57,9 +78,9 @@ const WorkForms = () => {
     banner_image: "",
     banner_start_date: "",
     banner_end_date: "",
-    banner_location_country: "",
-    banner_location_stateorprovince: "",
-    banner_location_cityordistrict: "",
+    banner_location_district: "",
+    banner_location_state: "",
+    banner_location_city: "",
     gallery_id: null,
     objectives: "",
     activities: "",
@@ -81,12 +102,10 @@ const WorkForms = () => {
       banner_image: pageData.banner_image || "",
       banner_start_date: pageData.banner_start_date || "",
       banner_end_date: pageData.banner_end_date || "",
-      banner_location_country: pageData.banner_location_country || "",
-      banner_location_stateorprovince:
-        pageData.banner_location_stateorprovince || "",
-      banner_location_cityordistrict:
-        pageData.banner_location_cityordistrict || "",
-      gallery_id: pageData.gallery_id || null,
+      banner_location_district: pageData.banner_location_district || "",
+      banner_location_state: pageData.banner_location_state || "",
+      banner_location_city: pageData.banner_location_city || "",
+      gallery_id: pageData.gallery_id,
       objectives: pageData.objectives || "",
       activities: pageData.activities || "",
       upload_pdf: pageData.upload_pdf || "",
@@ -156,7 +175,7 @@ const WorkForms = () => {
         const res = await axiosInstance.get(`/ourwork/${id}`);
         const result = res.data.data;
         setPageData(result);
-        const selectedState = result.banner_location_stateorprovince;
+        const selectedState = result.banner_location_state;
         if (selectedState) {
           const cities =
             nepalData
@@ -180,11 +199,7 @@ const WorkForms = () => {
     setIsLoading(true);
     try {
       const submissionData = { ...data };
-      if (submissionData.banner_location_country) {
-        submissionData.banner_location_country += ", Nepal";
-      } else {
-        submissionData.banner_location_country = "Nepal";
-      }
+
       if (typeof submissionData.sector_id === "string") {
         // Create new position first
         const positionResponse = await axiosInstance.post("/sectors", {
@@ -197,6 +212,13 @@ const WorkForms = () => {
         // Update the submission data with the new position ID
         submissionData.sector_id = newPositionId;
       }
+      if (
+        submissionData.gallery_id === null ||
+        submissionData.gallery_id === undefined
+      ) {
+        delete submissionData.gallery_id;
+      }
+
       const formData = new FormData();
       Object.entries(submissionData).forEach(([key, value]) => {
         if (
@@ -294,7 +316,7 @@ const WorkForms = () => {
                 <Controller
                   name="title"
                   control={control}
-                  rules={{ required: "Title is requried" }}
+                  rules={{ required: "Title is required" }}
                   render={({ field }) => (
                     <Field label="Title">
                       <Input
@@ -346,6 +368,7 @@ const WorkForms = () => {
                             container: (base) => ({
                               ...base,
                               width: "100%",
+                              zIndex: 9999, // High z-index for the container
                             }),
                             control: (base) => ({
                               ...base,
@@ -353,14 +376,21 @@ const WorkForms = () => {
                               borderColor: errors.sector_id
                                 ? "red"
                                 : base.borderColor,
+                              zIndex: 9999, // High z-index for the control
                             }),
                             menu: (base) => ({
                               ...base,
                               width: "100%",
+                              zIndex: 9999, // High z-index for the dropdown menu
+                            }),
+                            menuPortal: (base) => ({
+                              ...base,
+                              zIndex: 9999, // High z-index for the menu portal
                             }),
                             valueContainer: (base) => ({
                               ...base,
                               width: "100%",
+                              zIndex: 9999, // High z-index for the value container
                             }),
                             input: (base) => ({
                               ...base,
@@ -438,7 +468,6 @@ const WorkForms = () => {
                   <Controller
                     name="banner_start_date"
                     control={control}
-                    rules={{ required: "Start Date is requried" }}
                     render={({ field }) => (
                       <Field label="Start Date">
                         <Input
@@ -458,7 +487,6 @@ const WorkForms = () => {
                   <Controller
                     name="banner_end_date"
                     control={control}
-                    rules={{ required: "End Date is requried" }}
                     render={({ field }) => (
                       <Field label="End Date">
                         <Input
@@ -479,9 +507,8 @@ const WorkForms = () => {
 
                 <HStack>
                   <Controller
-                    name={"banner_location_stateorprovince"}
+                    name={"banner_location_state"}
                     control={control}
-                    rules={{ required: "State is required" }}
                     render={({ field }) => (
                       <Field>
                         State
@@ -524,9 +551,9 @@ const WorkForms = () => {
                             }),
                           }}
                         />
-                        {errors.banner_location_stateorprovince && (
+                        {errors.banner_location_state && (
                           <Text textStyle="sm" color="red">
-                            {errors.banner_location_stateorprovince.message}
+                            {errors.banner_location_state.message}
                           </Text>
                         )}
                       </Field>
@@ -534,12 +561,11 @@ const WorkForms = () => {
                   />
 
                   <Controller
-                    name={"banner_location_cityordistrict"}
+                    name={"banner_location_district"}
                     control={control}
-                    rules={{ required: "City is required" }}
                     render={({ field }) => (
                       <Field>
-                        City
+                        District
                         <Select
                           {...field}
                           options={cityOptions}
@@ -549,7 +575,7 @@ const WorkForms = () => {
                           onChange={(selectedOption) => {
                             field.onChange(selectedOption?.value || "");
                           }}
-                          placeholder="Select City"
+                          placeholder="Select District"
                           isDisabled={cityOptions.length === 0}
                           styles={{
                             container: (base) => ({
@@ -582,13 +608,34 @@ const WorkForms = () => {
                       </Field>
                     )}
                   />
-                  {errors.banner_location_cityordistrict && (
+                  {errors.banner_location_district && (
                     <Text textStyle="sm" color="red">
-                      {errors.banner_location_cityordistrict.message}
+                      {errors.banner_location_district.message}
                     </Text>
                   )}
                 </HStack>
-
+                <Controller
+                  name={"banner_location_city"}
+                  control={control}
+                  render={({ field }) => (
+                    <Field>
+                      City
+                      <Input
+                        width={"1/2"}
+                        {...field}
+                        placeholder="Enter City"
+                        value={field.value}
+                        size={"md"}
+                        onChange={(value) => field.onChange(value)}
+                      />
+                    </Field>
+                  )}
+                />
+                {errors.banner_location_city && (
+                  <Text textStyle="sm" color="red">
+                    {errors.banner_location_city.message}
+                  </Text>
+                )}
                 <Controller
                   name="description"
                   control={control}
@@ -611,24 +658,36 @@ const WorkForms = () => {
                     </Field>
                   )}
                 />
+
                 <Controller
                   name="objectives"
                   control={control}
-                  rules={{ required: "Objective is required" }}
                   render={({ field }) => (
-                    <Field label="Objective">
-                      <CommonEditor
-                        value={field.value}
-                        onChange={(value) => {
-                          field.onChange(value);
-                          // handleFieldChange("sub_title", value);
-                        }}
-                      />
-
-                      {errors.objectives && (
-                        <Text textStyle="sm" color="red">
-                          {errors.objectives.message}
-                        </Text>
+                    <Field
+                      label={
+                        <Box w="full">
+                          <SectionToggle
+                            label="Objectives"
+                            isChecked={showObjectives}
+                            onChange={setShowObjectives}
+                          />
+                        </Box>
+                      }
+                    >
+                      {showObjectives && (
+                        <>
+                          <CommonEditor
+                            value={field.value || ""}
+                            onChange={(value) => {
+                              field.onChange(value);
+                            }}
+                          />
+                          {errors.objectives && (
+                            <Text textStyle="sm" color="red">
+                              {errors.objectives.message}
+                            </Text>
+                          )}
+                        </>
                       )}
                     </Field>
                   )}
@@ -636,21 +695,32 @@ const WorkForms = () => {
                 <Controller
                   name="activities"
                   control={control}
-                  rules={{ required: "Activities is required" }}
                   render={({ field }) => (
-                    <Field label="Activities">
-                      <CommonEditor
-                        value={field.value}
-                        onChange={(value) => {
-                          field.onChange(value);
-                          // handleFieldChange("sub_title", value);
-                        }}
-                      />
+                    <Field
+                      label={
+                        <SectionToggle
+                          label="Activities"
+                          isChecked={showActivities}
+                          onChange={setShowActivities}
+                        />
+                      }
+                    >
+                      {showActivities && (
+                        <>
+                          <CommonEditor
+                            value={field.value || ""}
+                            onChange={(value) => {
+                              field.onChange(value);
+                              // handleFieldChange("sub_title", value);
+                            }}
+                          />
 
-                      {errors.activities && (
-                        <Text textStyle="sm" color="red">
-                          {errors.activities.message}
-                        </Text>
+                          {errors.activities && (
+                            <Text textStyle="sm" color="red">
+                              {errors.activities.message}
+                            </Text>
+                          )}
+                        </>
                       )}
                     </Field>
                   )}
@@ -723,9 +793,9 @@ const WorkForms = () => {
                       fileSize: (value) => {
                         if (
                           value instanceof File &&
-                          value.size > 2 * 1024 * 1024
+                          value.size > 10 * 1024 * 1024
                         ) {
-                          return "File size must be less than 2MB";
+                          return "File size must be less than 10MB";
                         }
                         return true;
                       },
@@ -748,7 +818,7 @@ const WorkForms = () => {
                             typeof field.value === "string" ? field.value : ""
                           }
                           label="Drag and drop PDF here"
-                          description=".pdf files up to 2MB"
+                          description=".pdf files up to 10MB"
                         />
                         <FileUploadList />
                         {typeof field.value === "string" && field.value && (

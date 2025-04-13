@@ -25,7 +25,7 @@ export type SliderInput = {
   id?: number;
   title: string;
   sub_title: string;
-  priority_order: number;
+  priority_order: string;
   image: string | File;
   status: number;
   button_title?: string;
@@ -151,9 +151,9 @@ export type OurWorks = {
   banner_image: File | string;
   banner_start_date: string;
   banner_end_date: string;
-  banner_location_country: string;
-  banner_location_stateorprovince: string;
-  banner_location_cityordistrict: string;
+  banner_location_district?: string;
+  banner_location_state?: string;
+  banner_location_city?: string;
   gallery_id: number | null;
   gallery: GallerEventType;
   objectives: string;
@@ -166,16 +166,16 @@ export type OurWorkType = {
   title: string;
   description: string;
   sector_id: number | null;
-  banner_image: File | string;
-  banner_start_date: string;
-  banner_end_date: string;
-  banner_location_country: string;
-  banner_location_stateorprovince: string;
-  banner_location_cityordistrict: string;
-  gallery_id: number | null;
-  objectives: string;
-  activities: string;
-  upload_pdf: File | string | null;
+  banner_image?: File | string;
+  banner_start_date?: string;
+  banner_end_date?: string;
+  banner_location_district?: string;
+  banner_location_state?: string;
+  banner_location_city?: string;
+  gallery_id?: number | null;
+  objectives?: string;
+  activities?: string;
+  upload_pdf?: File | string | null;
   status: number;
 };
 

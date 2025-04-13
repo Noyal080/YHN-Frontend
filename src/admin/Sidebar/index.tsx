@@ -29,8 +29,9 @@ import {
   FiBookOpen,
   FiSettings,
 } from "react-icons/fi";
-import { GiPublicSpeaker } from "react-icons/gi";
-import { PiChartLineUp } from "react-icons/pi";
+import { GiNewspaper, GiPublicSpeaker } from "react-icons/gi";
+import { MdOutlineEventAvailable } from "react-icons/md";
+// import { PiChartLineUp } from "react-icons/pi";
 import { GoOrganization } from "react-icons/go";
 import {
   LuContactRound,
@@ -105,12 +106,12 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
           icon: GiPublicSpeaker,
           link: "/admin/chairperson-message",
         },
-        {
-          id: 25,
-          label: "Our Impact",
-          icon: PiChartLineUp,
-          link: "/admin/impact",
-        },
+        // {
+        //   id: 25,
+        //   label: "Our Impact",
+        //   icon: PiChartLineUp,
+        //   link: "/admin/impact",
+        // },
       ],
     },
     {
@@ -119,12 +120,6 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
       icon: FiInfo,
       children: [
         { id: 31, label: "Who are we", icon: FiUser, link: "/admin/about" },
-        // {
-        //   id: 32,
-        //   label: "Board of Directors",
-        //   icon: FiSettings,
-        //   link: "/admin/founder",
-        // },
         { id: 33, label: "Our Team", icon: FiUsers, link: "/admin/teams" },
         {
           id: 94,
@@ -132,11 +127,28 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
           icon: LuQuote,
           link: "/admin/testimonials",
         },
-       
       ],
     },
     { id: 4, label: "Our Works", icon: FiFolder, link: "/admin/our-works" },
-    { id: 5, label: "News & Events", icon: FiCalendar, link: "/admin/events" },
+    {
+      id: 5,
+      label: "News & Events",
+      icon: FiCalendar,
+      children: [
+        {
+          id: 51,
+          label: "Events",
+          icon: MdOutlineEventAvailable,
+          link: "/admin/events",
+        },
+        {
+          id: 52,
+          label: "News",
+          icon: GiNewspaper,
+          link: "/admin/events",
+        },
+      ],
+    },
     {
       id: 7,
       label: "Gallery",
@@ -183,23 +195,25 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
     },
 
     { id: 6, label: "Services", icon: FaWrench, link: "/admin/services" },
-    { id: 10, label: "Settings", icon: FiSettings, children :[
-      {
-        id: 34,
-        label: "Contact Information",
-        icon: LuContactRound,
-        link: "/admin/contact-us",
-      },
-      {
-        id: 34,
-        label: "Organisation Information",
-        icon: GoOrganization,
-        link: "/admin/contact-us",
-      },
-    ]  
-  },
-
-    
+    {
+      id: 10,
+      label: "Settings",
+      icon: FiSettings,
+      children: [
+        {
+          id: 34,
+          label: "Contact Information",
+          icon: LuContactRound,
+          link: "/admin/contact-us",
+        },
+        {
+          id: 34,
+          label: "Organisation Information",
+          icon: GoOrganization,
+          link: "/admin/contact-us",
+        },
+      ],
+    },
   ];
 
   const renderMenuItem = (item: MenuItem) => {
