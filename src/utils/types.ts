@@ -272,12 +272,15 @@ export type ViewWorkandEventType = {
   banner_image: string;
   banner_start_date: string;
   banner_end_date: string;
-  banner_location_country: string;
-  banner_location_stateorprovince: string;
-  banner_location_cityordistrict: string;
+  banner_location_district?: string;
+  banner_location_state?: string;
+  banner_location_city?: string;
   gallery_id: number | null;
   objectives?: string;
   activities?: string;
+  register_link?: string;
+  mail?: string;
+  phone?: string;
 };
 
 export type ChairpersonMessageType = {
