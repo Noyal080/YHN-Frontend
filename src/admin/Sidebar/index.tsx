@@ -145,7 +145,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
           id: 52,
           label: "News",
           icon: GiNewspaper,
-          link: "/admin/events",
+          link: "/admin/news",
         },
       ],
     },

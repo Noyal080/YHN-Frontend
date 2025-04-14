@@ -44,10 +44,15 @@ const EventForm = () => {
     banner_image: "",
     banner_start_date: "",
     banner_end_date: "",
-    banner_location_country: "",
-    banner_location_stateorprovince: "",
-    banner_location_cityordistrict: "",
+    banner_location_city: "",
+    banner_location_state: "",
+    banner_location_district: "",
     gallery_id: null,
+    register_link: "",
+    mail: "",
+    phone: "",
+    banner_start_time: "",
+    banner_end_time: "",
     status: 1,
   });
   const navigate = useNavigate();
@@ -66,12 +71,15 @@ const EventForm = () => {
       banner_image: pageData.banner_image || "",
       banner_start_date: pageData.banner_start_date || "",
       banner_end_date: pageData.banner_end_date || "",
-      banner_location_country: pageData.banner_location_country || "",
-      banner_location_stateorprovince:
-        pageData.banner_location_stateorprovince || "",
-      banner_location_cityordistrict:
-        pageData.banner_location_cityordistrict || "",
+      banner_location_city: pageData.banner_location_city || "",
+      banner_location_state: pageData.banner_location_state || "",
+      banner_location_district: pageData.banner_location_district || "",
       gallery_id: pageData.gallery_id || null,
+      banner_start_time: pageData.banner_start_time || "",
+      banner_end_time: pageData.banner_end_time || "",
+      register_link: pageData.register_link || "",
+      mail: pageData.mail || "",
+      phone: pageData.phone || "",
       status: pageData.status || 1,
     },
   });
@@ -133,9 +141,9 @@ const EventForm = () => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const res = await axiosInstance.get(`/newsandevents/${id}`);
+        const res = await axiosInstance.get(`/events/${id}`);
         setPageData(res.data.data);
-        const selectedState = res.data.data.banner_location_stateorprovince;
+        const selectedState = res.data.data.banner_location_state;
         if (selectedState) {
           const cities =
             nepalData
@@ -169,8 +177,11 @@ const EventForm = () => {
     setIsLoading(true);
     try {
       const formData = new FormData();
-      formData.append("banner_location_country", "Nepal");
       Object.entries(data).forEach(([key, value]) => {
+        if (value === null && key === "gallery_id") {
+          // Skip appending if gallery-id is null
+          return;
+        }
         if (key === "banner_image" && typeof value === "string") {
           formData.append(key, "");
         } else {
@@ -178,7 +189,7 @@ const EventForm = () => {
         }
       });
       if (id) {
-        await axiosInstance.post(`/newsandevents/${id}`, formData, {
+        await axiosInstance.post(`/events/${id}`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         showToast({
@@ -186,7 +197,7 @@ const EventForm = () => {
           type: "success",
         });
       } else {
-        await axiosInstance.post(`/newsandevents`, formData, {
+        await axiosInstance.post(`/events`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         showToast({
@@ -217,11 +228,11 @@ const EventForm = () => {
     <AdminLayout
       breadcrumbItems={[
         { label: "Dashboard", link: "/admin" },
-        { label: "News & Events", link: "/admin/events" },
-        { label: `${id ? "Edit" : "Add"} News & Events` },
+        { label: "Events", link: "/admin/events" },
+        { label: `${id ? "Edit" : "Add"} Events` },
       ]}
-      title={`News & Events Section`}
-      activeSidebarItem="News & Events"
+      title={`Events Section`}
+      activeSidebarItem="Events"
     >
       <Box position="relative">
         {/* Overlay and Spinner */}
@@ -292,11 +303,10 @@ const EventForm = () => {
                   )}
                 />
 
-                <HStack w={"1/2"}>
+                <HStack>
                   <Controller
                     name="gallery_id"
                     control={control}
-                    rules={{ required: "Gallery is required" }}
                     render={({ field }) => (
                       <Field label="Gallery">
                         <Select
@@ -350,12 +360,9 @@ const EventForm = () => {
                       </Field>
                     )}
                   />
-                </HStack>
-                <HStack>
                   <Controller
-                    name={"banner_location_stateorprovince"}
+                    name={"banner_location_state"}
                     control={control}
-                    rules={{ required: "State is required" }}
                     render={({ field }) => (
                       <Field>
                         State
@@ -368,7 +375,7 @@ const EventForm = () => {
                           onChange={(selectedOption) => {
                             handleStateChange(selectedOption, field.onChange);
                             handleFieldChange(
-                              "banner_location_stateorprovince",
+                              "banner_location_state",
                               selectedOption?.value || ""
                             );
                           }}
@@ -399,22 +406,22 @@ const EventForm = () => {
                             }),
                           }}
                         />
-                        {errors.banner_location_stateorprovince && (
+                        {errors.banner_location_state && (
                           <Text textStyle="sm" color="red">
-                            {errors.banner_location_stateorprovince.message}
+                            {errors.banner_location_state.message}
                           </Text>
                         )}
                       </Field>
                     )}
                   />
-
+                </HStack>
+                <HStack>
                   <Controller
-                    name={"banner_location_cityordistrict"}
+                    name={"banner_location_district"}
                     control={control}
-                    rules={{ required: "City is required" }}
                     render={({ field }) => (
                       <Field>
-                        City
+                        District
                         <Select
                           {...field}
                           options={cityOptions}
@@ -424,11 +431,11 @@ const EventForm = () => {
                           onChange={(selectedOption) => {
                             field.onChange(selectedOption?.value || "");
                             handleFieldChange(
-                              "banner_location_cityordistrict",
+                              "banner_location_district",
                               selectedOption?.value || ""
                             );
                           }}
-                          placeholder="Select City"
+                          placeholder="Select district"
                           isDisabled={cityOptions.length === 0}
                           styles={{
                             container: (base) => ({
@@ -456,14 +463,39 @@ const EventForm = () => {
                             }),
                           }}
                         />
+                        {errors.banner_location_district && (
+                          <Text textStyle="sm" color="red">
+                            {errors.banner_location_district.message}
+                          </Text>
+                        )}
                       </Field>
                     )}
                   />
-                  {errors.banner_location_cityordistrict && (
-                    <Text textStyle="sm" color="red">
-                      {errors.banner_location_cityordistrict.message}
-                    </Text>
-                  )}
+
+                  <Controller
+                    name="banner_location_city"
+                    control={control}
+                    render={({ field }) => (
+                      <Field label="City">
+                        <Input
+                          {...field}
+                          placeholder="Enter a city"
+                          size={"md"}
+                          onChange={(e) => {
+                            handleFieldChange(
+                              "banner_location_city",
+                              e.target.value
+                            );
+                          }}
+                        />
+                        {errors.banner_location_city && (
+                          <Text textStyle="sm" color="red">
+                            {errors.banner_location_city.message}
+                          </Text>
+                        )}
+                      </Field>
+                    )}
+                  />
                 </HStack>
                 <HStack>
                   <Controller
@@ -508,6 +540,53 @@ const EventForm = () => {
                         {errors.banner_end_date && (
                           <Text textStyle="sm" color="red">
                             {errors.banner_end_date.message}
+                          </Text>
+                        )}
+                      </Field>
+                    )}
+                  />
+                </HStack>
+                <HStack>
+                  <Controller
+                    name="banner_start_time"
+                    control={control}
+                    render={({ field }) => (
+                      <Field label="Start Time">
+                        <Input
+                          {...field}
+                          type="time"
+                          size={"md"}
+                          onChange={(e) =>
+                            handleFieldChange(
+                              "banner_start_time",
+                              e.target.value
+                            )
+                          }
+                        />
+                        {errors.banner_start_time && (
+                          <Text textStyle="sm" color="red">
+                            {errors.banner_start_time.message}
+                          </Text>
+                        )}
+                      </Field>
+                    )}
+                  />
+                  <Controller
+                    name="banner_end_time"
+                    control={control}
+                    render={({ field }) => (
+                      <Field label="End Time">
+                        <Input
+                          {...field}
+                          type="time"
+                          size={"md"}
+                          onChange={(e) =>
+                            handleFieldChange("banner_end_time", e.target.value)
+                          }
+                        />
+                        {errors.banner_end_time && (
+                          <Text textStyle="sm" color="red">
+                            {errors.banner_end_time.message}
                           </Text>
                         )}
                       </Field>

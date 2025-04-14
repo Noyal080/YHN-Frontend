@@ -10,9 +10,6 @@ import CommonModal from "@/common/CommonModal";
 import { Image, Text } from "@chakra-ui/react";
 import useCommonToast from "@/common/CommonToast";
 import { Switch } from "@/components/ui/switch";
-import ImageSlider from "../Gallery/Image/ImageSlider";
-import EditorTextView from "@/common/EditorTextView";
-
 const EventSection = () => {
   const [selectedRow, setSelectedRow] = useState<EventType | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -31,12 +28,6 @@ const EventSection = () => {
     { key: "id", label: "Id", visible: true },
     { key: "title", label: "Title", visible: true },
     {
-      key: "description",
-      label: "Description",
-      visible: false,
-      render: (row) => <EditorTextView message={row.description} />,
-    },
-    {
       key: "banner_image",
       label: "Banner",
       visible: true,
@@ -52,19 +43,7 @@ const EventSection = () => {
     },
     { key: "banner_start_date", label: "Start Date", visible: false },
     { key: "banner_end_date", label: "End Date", visible: false },
-    { key: "banner_location_country", label: "Country", visible: false },
-    {
-      key: "banner_location_stateorprovince",
-      label: "Province",
-      visible: false,
-    },
-    { key: "banner_location_cityordistrict", label: "City", visible: false },
-    {
-      key: "gallery",
-      label: "Gallery",
-      visible: false,
-      render: (row) => <ImageSlider images={row.gallery.gallery_images} />,
-    },
+
     {
       key: "status",
       label: "Status",
@@ -89,7 +68,7 @@ const EventSection = () => {
 
   const handleDelete = async (row: EventType) => {
     try {
-      await axiosInstance.delete(`/newsandevents/${row.id}`);
+      await axiosInstance.delete(`/events/${row.id}`);
       showToast({
         description: `${row.title} deleted succesfully`,
         type: "success",
@@ -111,7 +90,7 @@ const EventSection = () => {
     setLoading(true);
     const fetchVolunteerData = async () => {
       try {
-        const res = await axiosInstance.get("/newsandevents", {
+        const res = await axiosInstance.get("/events", {
           params: { page, search: debouncedSearch },
         });
         const data = res.data.data;
@@ -132,7 +111,7 @@ const EventSection = () => {
   const handleStatusChange = async (id: string, status: number) => {
     const newStatus = status === 1 ? 0 : 1;
     try {
-      await axiosInstance.post(`/newsandevents/${id}`, {
+      await axiosInstance.post(`/events/${id}`, {
         status: newStatus,
       });
       setTriggerFetch(true);

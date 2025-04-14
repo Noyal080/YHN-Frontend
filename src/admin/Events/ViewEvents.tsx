@@ -15,7 +15,7 @@ const ViewEvents = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axiosInstance.get(`/newsandevents/${id}`);
+        const res = await axiosInstance.get(`/events/${id}`);
         const result = res.data.data;
         setPageData(result);
       } catch (e) {
@@ -33,11 +33,11 @@ const ViewEvents = () => {
     <AdminLayout
       breadcrumbItems={[
         { label: "Dashboard", link: "/admin" },
-        { label: "Our Works", link: "/admin/our-works" },
+        { label: "Events", link: "/admin/events" },
         { label: `View Events` },
       ]}
       title={`View Events`}
-      activeSidebarItem="Our Works"
+      activeSidebarItem="Events"
     >
       {isLoading ? (
         <Box>
