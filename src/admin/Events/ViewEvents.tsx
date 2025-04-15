@@ -8,6 +8,7 @@ import { Box } from "@chakra-ui/react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const ViewEvents = () => {
+  //Change the view
   const { id } = useParams();
   const [pageData, setPageData] = useState<ViewWorkandEventType | null>(null);
   const [isLoading, setIsLoading] = useState(true);

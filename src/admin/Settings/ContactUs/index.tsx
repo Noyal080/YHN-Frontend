@@ -42,6 +42,8 @@ interface FormValues {
   social_media: SocialMediaField[];
   address: string;
   map_url: string;
+  opening_time: string;
+  closing_time: string;
 }
 
 const ContactUsPage = () => {
@@ -63,6 +65,8 @@ const ContactUsPage = () => {
     social_media: [{ platform: "facebook", value: "" }],
     address: "",
     map_url: "",
+    opening_time: "",
+    closing_time: "",
   };
 
   const {
@@ -81,6 +85,8 @@ const ContactUsPage = () => {
       ],
       address: initialData?.address || "",
       map_url: initialData?.map_url || "",
+      opening_time: initialData?.opening_time || "",
+      closing_time: initialData?.closing_time || "",
     },
   });
 
@@ -92,6 +98,8 @@ const ContactUsPage = () => {
         phone: data.phones,
         social_media: data.social_media,
         map_url: data.map_url?.replace(/"/g, "'") || "",
+        opening_time: data.opening_time || "",
+        closing_time: data.closing_time || "",
       };
 
       await axiosInstance.patch("/contactus/1", payload);
@@ -114,6 +122,7 @@ const ContactUsPage = () => {
         setIsLoading(true);
         const response = await axiosInstance.get("/contactus/1"); // Adjust endpoint as needed
         const resData = response.data.data.contact;
+        console.log(resData);
 
         setInitialData(resData);
       } catch (error) {
@@ -467,6 +476,71 @@ const ContactUsPage = () => {
                     )}
                   />
                 </Box>
+
+                <Box>
+                  <HStack alignItems="center" gap={4}>
+                    <Box flex={1}>
+                      <Flex
+                        justifyContent="space-between"
+                        alignItems="center"
+                        mb={2}
+                      >
+                        <Field fontWeight={"semibold"}>Opening time</Field>
+                      </Flex>
+                      <Controller
+                        name="opening_time"
+                        control={control}
+                        render={({ field }) => (
+                          <>
+                            <Input
+                              type="time"
+                              value={field.value}
+                              onChange={(value) => {
+                                field.onChange(value);
+                              }}
+                            />
+                            {errors.opening_time && (
+                              <Text textStyle="sm" color="red">
+                                {errors.opening_time.message}
+                              </Text>
+                            )}
+                          </>
+                        )}
+                      />
+                    </Box>
+
+                    <Box flex={1}>
+                      <Flex
+                        justifyContent="space-between"
+                        alignItems="center"
+                        mb={2}
+                      >
+                        <Field fontWeight={"semibold"}>Closing time</Field>
+                      </Flex>
+                      <Controller
+                        name="closing_time"
+                        control={control}
+                        render={({ field }) => (
+                          <>
+                            <Input
+                              type="time"
+                              value={field.value}
+                              onChange={(value) => {
+                                field.onChange(value);
+                              }}
+                            />
+                            {errors.closing_time && (
+                              <Text textStyle="sm" color="red">
+                                {errors.closing_time.message}
+                              </Text>
+                            )}
+                          </>
+                        )}
+                      />
+                    </Box>
+                  </HStack>
+                </Box>
+
                 {/* Submit Button */}
               </VStack>
               <HStack justifyContent="flex-end" mt={4}>

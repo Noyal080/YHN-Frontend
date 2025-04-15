@@ -58,7 +58,13 @@ const ImageViewSection = lazy(
 const VideoSection = lazy(() => import("./admin/Gallery/Video"));
 const VideoForm = lazy(() => import("./admin/Gallery/Video/VideoForm"));
 const ProfilePage = lazy(() => import("./admin/profile"));
-const ContactUsPage = lazy(() => import("./admin/About/ContactUs"));
+const ContactUsPage = lazy(() => import("./admin/Settings/ContactUs"));
+const NewsSection = lazy(() => import("./admin/News"));
+const NewsForm = lazy(() => import("./admin/News/NewsForm"));
+const NewsView = lazy(() => import("./admin/News/NewsView"));
+const OrganizationDetails = lazy(
+  () => import("./admin/Settings/Organization Details")
+);
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -130,6 +136,15 @@ const adminRoutes = [
   // Profile Section
   { path: "/admin/profile", element: <ProfilePage /> },
   { path: "/admin/contact-us", element: <ContactUsPage /> },
+
+  // News Section
+  { path: "/admin/news", element: <NewsSection /> },
+  { path: "/admin/news/add", element: <NewsForm /> },
+  { path: "/admin/news/edit/:id", element: <NewsForm /> },
+  { path: "/admin/news/view/:id", element: <NewsView /> },
+
+  // Organization Details Section
+  { path: "/admin/organization-details", element: <OrganizationDetails /> },
 ];
 
 function App() {

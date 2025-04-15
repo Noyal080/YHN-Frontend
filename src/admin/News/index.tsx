@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import AdminLayout from "../Layout";
 import { Column } from "@/utils";
-import { EventType, PaginationProps } from "@/utils/types";
+import { NewsType, PaginationProps } from "@/utils/types";
 import { useEffect, useState } from "react";
 import CommonTable from "@/common/Table/CommonTable";
 import useDebounce from "@/helper/debounce";
@@ -10,10 +10,10 @@ import CommonModal from "@/common/CommonModal";
 import { Image, Text } from "@chakra-ui/react";
 import useCommonToast from "@/common/CommonToast";
 import { Switch } from "@/components/ui/switch";
-const EventSection = () => {
-  const [selectedRow, setSelectedRow] = useState<EventType | null>(null);
+const NewsSection = () => {
+  const [selectedRow, setSelectedRow] = useState<NewsType | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [rows, setRows] = useState<EventType[]>([]);
+  const [rows, setRows] = useState<NewsType[]>([]);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [triggerFetch, setTriggerFetch] = useState(false);
   const { showToast } = useCommonToast();
@@ -24,12 +24,12 @@ const EventSection = () => {
   const debouncedSearch = useDebounce(searchQuery, 500);
   const navigate = useNavigate();
 
-  const columns: Column<EventType>[] = [
+  const columns: Column<NewsType>[] = [
     { key: "id", label: "Id", visible: true },
     { key: "title", label: "Title", visible: true },
     {
-      key: "banner_image",
-      label: "Banner",
+      key: "image",
+      label: "Banner Image",
       visible: true,
       render: (row) => (
         <Image
@@ -37,12 +37,11 @@ const EventSection = () => {
           h="200px"
           w="300px"
           fit="contain"
-          src={row["banner_image"]}
+          src={row["image"]}
         />
       ),
     },
-    { key: "banner_start_date", label: "Start Date", visible: false },
-    { key: "banner_end_date", label: "End Date", visible: false },
+    { key: "publish_date", label: "Publish Date", visible: false },
 
     {
       key: "status",
@@ -62,13 +61,13 @@ const EventSection = () => {
     },
   ];
 
-  const handleEdit = (row: EventType) => {
-    navigate(`/admin/events/edit/${row.id}`);
+  const handleEdit = (row: NewsType) => {
+    navigate(`/admin/news/edit/${row.id}`);
   };
 
-  const handleDelete = async (row: EventType) => {
+  const handleDelete = async (row: NewsType) => {
     try {
-      await axiosInstance.delete(`/events/${row.id}`);
+      await axiosInstance.delete(`/news/${row.id}`);
       showToast({
         description: `${row.title} deleted succesfully`,
         type: "success",
@@ -79,7 +78,7 @@ const EventSection = () => {
     } catch (e) {
       console.log(e);
       showToast({
-        description: "Error while removing events data",
+        description: "Error while removing news data",
         type: "error",
       });
       setLoading(false);
@@ -90,7 +89,7 @@ const EventSection = () => {
     setLoading(true);
     const fetchVolunteerData = async () => {
       try {
-        const res = await axiosInstance.get("/events", {
+        const res = await axiosInstance.get("/news", {
           params: { page, search: debouncedSearch },
         });
         const data = res.data.data;
@@ -111,7 +110,7 @@ const EventSection = () => {
   const handleStatusChange = async (id: string, status: number) => {
     const newStatus = status === 1 ? 0 : 1;
     try {
-      await axiosInstance.post(`/events/${id}`, {
+      await axiosInstance.post(`/news/${id}`, {
         status: newStatus,
       });
       setTriggerFetch(true);
@@ -125,16 +124,16 @@ const EventSection = () => {
     <AdminLayout
       breadcrumbItems={[
         { label: "Dashboard", link: "/admin" },
-        { label: "Events" },
+        { label: "News" },
       ]}
-      title={`Events Section`}
-      activeSidebarItem="Events"
+      title={`News Section`}
+      activeSidebarItem="News"
     >
       <CommonTable
-        title="Event List"
+        title="News List"
         columns={columns}
         rows={rows}
-        onView={(row) => navigate(`/admin/events/view/${row.id}`)}
+        onView={(row) => navigate(`/admin/news/view/${row.id}`)}
         onEdit={handleEdit}
         onDelete={(row) => {
           setModalOpen(true);
@@ -142,7 +141,7 @@ const EventSection = () => {
         }}
         loading={loading}
         onSearch={(query) => setSearchQuery(query)}
-        onAdd={() => navigate("/admin/events/add")}
+        onAdd={() => navigate("/admin/news/add")}
         // filterComponent={<SliderFilter />}
         count={paginationData?.total_records}
         pageSize={paginationData?.per_page}
@@ -150,24 +149,24 @@ const EventSection = () => {
         onPageChange={(page) => {
           setPage(page);
         }}
-        addName="Add Events"
+        addName="Add News"
       />
 
       <CommonModal
         open={modalOpen}
         onOpenChange={() => setModalOpen(false)}
-        title={"Remove Event Data"}
-        onButtonClick={() => handleDelete(selectedRow as EventType)}
+        title={"Remove News Data"}
+        onButtonClick={() => handleDelete(selectedRow as NewsType)}
       >
         <Text>
           {" "}
           Are you sure you want to remove{" "}
           <strong> {selectedRow?.title} </strong> ? This will permanently remove
-          all the data regarding the events{" "}
+          all the data regarding the news.
         </Text>
       </CommonModal>
     </AdminLayout>
   );
 };
 
-export default EventSection;
+export default NewsSection;

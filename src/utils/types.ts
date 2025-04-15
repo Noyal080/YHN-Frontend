@@ -291,3 +291,21 @@ export type ChairpersonMessageType = {
   chairperson_contact: string;
   chairperson_image: string;
 };
+
+export type NewsType = {
+  id?: number;
+  title: string;
+  description: string;
+  image: string;
+  publish_date: string;
+  status: number;
+};
+
+export type NewsInputType = {
+  id?: number;
+  title: string;
+  description: string;
+  image: File | string;
+  publish_date: string;
+  status: number;
+};

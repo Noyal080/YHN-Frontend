@@ -31,6 +31,8 @@ import Select from "react-select";
 import useDebounce from "@/helper/debounce";
 import useCommonToast from "@/common/CommonToast";
 import { GalleryOptions } from "@/utils";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 const EventForm = () => {
   const { id } = useParams();
@@ -193,7 +195,7 @@ const EventForm = () => {
           headers: { "Content-Type": "multipart/form-data" },
         });
         showToast({
-          description: "News and Event updated successfully!",
+          description: "Events updated successfully!",
           type: "success",
         });
       } else {
@@ -201,7 +203,7 @@ const EventForm = () => {
           headers: { "Content-Type": "multipart/form-data" },
         });
         showToast({
-          description: "News and Event added successfully",
+          description: "Events added successfully",
           type: "success",
         });
       }
@@ -210,12 +212,12 @@ const EventForm = () => {
       console.error(e);
       if (id) {
         showToast({
-          description: "Failed to update the news and events",
+          description: "Failed to update the events",
           type: "error",
         });
       } else {
         showToast({
-          description: "Failed to add the news and events",
+          description: "Failed to add the events",
           type: "error",
         });
       }
@@ -256,7 +258,7 @@ const EventForm = () => {
           <CardBody>
             <form onSubmit={handleSubmit(onSubmit)}>
               <HStack justifyContent="space-between" align="center">
-                <Heading mb={6}>{id ? "Edit" : "Add"} News & Events</Heading>
+                <Heading mb={6}>{id ? "Edit" : "Add"} Events</Heading>
                 <Controller
                   name="status"
                   control={control}
@@ -302,64 +304,8 @@ const EventForm = () => {
                     </Field>
                   )}
                 />
-
+                {/* <Heading size={"lg"}> Event Location Detail </Heading> */}
                 <HStack>
-                  <Controller
-                    name="gallery_id"
-                    control={control}
-                    render={({ field }) => (
-                      <Field label="Gallery">
-                        <Select
-                          {...field}
-                          isClearable
-                          options={options}
-                          value={options.find(
-                            (option) => option.value === field.value
-                          )}
-                          onChange={(selectedOption) =>
-                            handleFieldChange(
-                              "gallery_id",
-                              selectedOption?.value || ""
-                            )
-                          }
-                          placeholder="Select Gallery related to the event"
-                          onInputChange={(inputValue) =>
-                            setSearchQuery(inputValue)
-                          }
-                          styles={{
-                            container: (base) => ({
-                              ...base,
-                              width: "100%",
-                            }),
-                            control: (base) => ({
-                              ...base,
-                              width: "100%",
-                              borderColor: errors.gallery_id
-                                ? "red"
-                                : base.borderColor,
-                            }),
-                            menu: (base) => ({
-                              ...base,
-                              width: "100%",
-                            }),
-                            valueContainer: (base) => ({
-                              ...base,
-                              width: "100%",
-                            }),
-                            input: (base) => ({
-                              ...base,
-                              width: "100%",
-                            }),
-                          }}
-                        />
-                        {errors.gallery_id && (
-                          <Text textStyle="sm" color="red">
-                            {errors.gallery_id.message}
-                          </Text>
-                        )}
-                      </Field>
-                    )}
-                  />
                   <Controller
                     name={"banner_location_state"}
                     control={control}
@@ -414,8 +360,6 @@ const EventForm = () => {
                       </Field>
                     )}
                   />
-                </HStack>
-                <HStack>
                   <Controller
                     name={"banner_location_district"}
                     control={control}
@@ -471,7 +415,8 @@ const EventForm = () => {
                       </Field>
                     )}
                   />
-
+                </HStack>
+                <HStack w={"1/2"}>
                   <Controller
                     name="banner_location_city"
                     control={control}
@@ -497,6 +442,7 @@ const EventForm = () => {
                     )}
                   />
                 </HStack>
+                {/* <Heading size={"lg"}> Event Time Date Details </Heading> */}
                 <HStack>
                   <Controller
                     name="banner_start_date"
@@ -587,6 +533,143 @@ const EventForm = () => {
                         {errors.banner_end_time && (
                           <Text textStyle="sm" color="red">
                             {errors.banner_end_time.message}
+                          </Text>
+                        )}
+                      </Field>
+                    )}
+                  />
+                </HStack>
+                <HStack>
+                  <Controller
+                    name="mail"
+                    control={control}
+                    render={({ field }) => (
+                      <Field label="Organizer Email">
+                        <Input
+                          {...field}
+                          type="email"
+                          placeholder="Enter organizer e-mail"
+                          size={"md"}
+                          onChange={(e) => {
+                            handleFieldChange("mail", e.target.value);
+                          }}
+                        />
+                        {errors.mail && (
+                          <Text textStyle="sm" color="red">
+                            {errors.mail.message}
+                          </Text>
+                        )}
+                      </Field>
+                    )}
+                  />
+                  <Controller
+                    name="phone"
+                    control={control}
+                    render={({ field }) => (
+                      <Field label="Organizer Phone Number">
+                        <PhoneInput
+                          {...field}
+                          placeholder="Enter organizer phone number"
+                          country="np"
+                          onlyCountries={["np"]}
+                          inputStyle={{
+                            width: "100%",
+                            borderRadius: "0.375rem",
+                            border: "1px solid #E2E8F0",
+                          }}
+                          onChange={(value) => {
+                            handleFieldChange("phone", value);
+                          }}
+                        />
+                        {errors.phone && (
+                          <Text textStyle="sm" color="red">
+                            {errors.phone.message}
+                          </Text>
+                        )}
+                      </Field>
+                    )}
+                  />
+                </HStack>
+                <HStack>
+                  <Controller
+                    name="gallery_id"
+                    control={control}
+                    render={({ field }) => (
+                      <Field label="Gallery">
+                        <Select
+                          {...field}
+                          isClearable
+                          options={options}
+                          value={options.find(
+                            (option) => option.value === field.value
+                          )}
+                          onChange={(selectedOption) =>
+                            handleFieldChange(
+                              "gallery_id",
+                              selectedOption?.value || ""
+                            )
+                          }
+                          placeholder="Select Gallery related to the event"
+                          onInputChange={(inputValue) =>
+                            setSearchQuery(inputValue)
+                          }
+                          styles={{
+                            container: (base) => ({
+                              ...base,
+                              width: "100%",
+                            }),
+                            control: (base) => ({
+                              ...base,
+                              width: "100%",
+                              borderColor: errors.gallery_id
+                                ? "red"
+                                : base.borderColor,
+                            }),
+                            menu: (base) => ({
+                              ...base,
+                              width: "100%",
+                            }),
+                            valueContainer: (base) => ({
+                              ...base,
+                              width: "100%",
+                            }),
+                            input: (base) => ({
+                              ...base,
+                              width: "100%",
+                            }),
+                          }}
+                        />
+                        {errors.gallery_id && (
+                          <Text textStyle="sm" color="red">
+                            {errors.gallery_id.message}
+                          </Text>
+                        )}
+                      </Field>
+                    )}
+                  />
+                  <Controller
+                    name="register_link"
+                    control={control}
+                    rules={{
+                      pattern: {
+                        value: /^https:\/\/[\w.-]+\.[a-z]{2,6}([/\w.-]*)*\/?$/,
+                        message:
+                          "Please enter a valid URL (e.g., https://example.com)",
+                      },
+                    }}
+                    render={({ field }) => (
+                      <Field label="Register Link">
+                        <Input
+                          {...field}
+                          placeholder="Enter register link"
+                          size={"md"}
+                          onChange={(e) => {
+                            handleFieldChange("register_link", e.target.value);
+                          }}
+                        />
+                        {errors.register_link && (
+                          <Text textStyle="sm" color="red">
+                            {errors.register_link.message}
                           </Text>
                         )}
                       </Field>

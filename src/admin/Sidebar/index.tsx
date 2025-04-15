@@ -210,7 +210,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
           id: 34,
           label: "Organisation Information",
           icon: GoOrganization,
-          link: "/admin/contact-us",
+          link: "/admin/organization-details",
         },
       ],
     },

@@ -224,9 +224,9 @@ const VolunteerForm = () => {
                   <Controller
                     name="start_date"
                     control={control}
-                    rules={{ required: "Start Date is requried" }}
+                    rules={{ required: "Application Publish Date is requried" }}
                     render={({ field }) => (
-                      <Field label="Start Date">
+                      <Field label="Application Publish Date">
                         <Input
                           {...field}
                           type="date"
@@ -244,9 +244,9 @@ const VolunteerForm = () => {
                   <Controller
                     name="end_date"
                     control={control}
-                    rules={{ required: "End Date is requried" }}
+                    rules={{ required: "Deadline is requried" }}
                     render={({ field }) => (
-                      <Field label="End Date">
+                      <Field label="Deadline">
                         <Input
                           {...field}
                           type="date"
