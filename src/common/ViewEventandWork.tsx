@@ -21,6 +21,11 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event }) => {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    if (event.gallery_id == null) {
+      setLoading(false); // Ensure loading is set to false if we're not fetching
+      return;
+    }
+
     const fetchImageData = async () => {
       try {
         const res = await axiosInstance.get(`/gallery/${event.gallery_id}`);

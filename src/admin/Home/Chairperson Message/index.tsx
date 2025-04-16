@@ -4,10 +4,6 @@ import useCommonToast from "@/common/CommonToast";
 import CommonEditor from "@/common/Editor";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
-import {
-  FileUploadDropzone,
-  FileUploadRoot,
-} from "@/components/ui/file-upload";
 import { compressImage } from "@/helper/imageCompressor";
 import { ChairpersonMessageType } from "@/utils/types";
 import {
@@ -22,8 +18,9 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { FiPlus } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 
 interface ContactFields {
@@ -49,6 +46,7 @@ const ChairpersonMessage = () => {
     chairperson_contact: "",
     chairperson_image: "",
   });
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { showToast } = useCommonToast();
 
@@ -97,7 +95,6 @@ const ChairpersonMessage = () => {
           });
         }
 
-        // Handle additional_information - parse if it's a string
         if (data.additional_information) {
           const additionalInfo =
             typeof data.additional_information === "string"
@@ -214,26 +211,92 @@ const ChairpersonMessage = () => {
             <Heading mb={6}>Chairperson Message</Heading>
             <form onSubmit={handleSubmit(onSubmit)}>
               <VStack gap={4} align={"stretch"}>
-                <Controller
-                  name="chairperson_fullname"
-                  rules={{ required: "Fullname is required" }}
-                  control={control}
-                  render={({ field }) => (
-                    <Field label="Name">
-                      <Input
-                        {...field}
-                        size="md"
-                        onChange={(e) => field.onChange(e.target.value)}
-                        placeholder="Enter the chairperson name"
-                      />
-                      {errors.chairperson_fullname && (
-                        <Text textStyle="sm" color="red">
-                          {errors.chairperson_fullname.message}
-                        </Text>
+                <HStack gap={6} align="start">
+                  <Controller
+                    name="chairperson_image"
+                    control={control}
+                    render={({ field }) => (
+                      <Box position="relative">
+                        {!field.value && !selectedImage ? (
+                          <Box
+                            width="250px"
+                            height="250px"
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="center"
+                            border="2px dashed gray"
+                            rounded="full"
+                            cursor="pointer"
+                            onClick={() => fileInputRef.current?.click()}
+                          >
+                            <FiPlus size={30} color="gray" />
+                          </Box>
+                        ) : (
+                          <Image
+                            src={
+                              selectedImage ||
+                              (typeof pageData.chairperson_image === "string"
+                                ? pageData.chairperson_image
+                                : undefined)
+                            }
+                            alt="Uploaded or Existing Image"
+                            boxSize="250px"
+                            rounded="full"
+                            objectFit="cover"
+                            cursor="pointer"
+                            onClick={() => fileInputRef.current?.click()}
+                          />
+                        )}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          hidden
+                          ref={fileInputRef}
+                          onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+                            try {
+                              // Compress the image and get the compressed file
+                              const compressedFile = await compressImage(file);
+
+                              // Set the preview image URL (you can remove this line if not needed)
+                              setSelectedImage(
+                                URL.createObjectURL(compressedFile)
+                              );
+
+                              // Update the form state with the compressed image file
+                              field.onChange(compressedFile);
+                            } catch (error) {
+                              console.error("Compression error:", error);
+                            }
+                          }}
+                        />
+                      </Box>
+                    )}
+                  />
+                  <VStack gap={4} flex="1">
+                    <Controller
+                      name="chairperson_fullname"
+                      rules={{ required: "Fullname is required" }}
+                      control={control}
+                      render={({ field }) => (
+                        <Field label="Name">
+                          <Input
+                            {...field}
+                            size="md"
+                            onChange={(e) => field.onChange(e.target.value)}
+                            placeholder="Enter the chairperson name"
+                          />
+                          {errors.chairperson_fullname && (
+                            <Text textStyle="sm" color="red">
+                              {errors.chairperson_fullname.message}
+                            </Text>
+                          )}
+                        </Field>
                       )}
-                    </Field>
-                  )}
-                />
+                    />
+                  </VStack>
+                </HStack>
                 {/* <Controller
                   name="company_description"
                   rules={{ required: "Organisation Description is required" }}
@@ -387,7 +450,7 @@ const ChairpersonMessage = () => {
                     </Field>
                   )}
                 /> */}
-                <Controller
+                {/* <Controller
                   name="chairperson_image"
                   control={control}
                   rules={{ required: "Image URL is required" }}
@@ -444,7 +507,7 @@ const ChairpersonMessage = () => {
                       )}
                     </Field>
                   )}
-                />
+                /> */}
               </VStack>
               <HStack justifyContent="flex-end" mt={4}>
                 <Button variant={"ghost"} onClick={() => navigate(-1)}>

@@ -89,6 +89,12 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
       link: "/admin/messages",
     },
     {
+      id: 95,
+      label: "Donation",
+      icon: FiDollarSign,
+      link: "/admin/donation",
+    },
+    {
       id: 2,
       label: "Home Section",
       icon: FiHome,
@@ -184,12 +190,6 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
           label: "Internship",
           icon: FiBookOpen,
           link: "/admin/internship",
-        },
-        {
-          id: 95,
-          label: "Donation",
-          icon: FiDollarSign,
-          link: "/admin/donation",
         },
       ],
     },

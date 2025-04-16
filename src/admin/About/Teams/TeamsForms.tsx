@@ -1,10 +1,7 @@
 import AdminLayout from "@/admin/Layout";
 import useCommonToast from "@/common/CommonToast";
 import { Field } from "@/components/ui/field";
-import {
-  FileUploadDropzone,
-  FileUploadRoot,
-} from "@/components/ui/file-upload";
+
 import { compressImage } from "@/helper/imageCompressor";
 import { TeamsInput } from "@/utils/types";
 import {
@@ -19,7 +16,7 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import CreatableSelect from "react-select/creatable";
@@ -27,6 +24,7 @@ import Select from "react-select";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { axiosInstance } from "@/api/axios";
+import { FiPlus } from "react-icons/fi";
 
 interface RoleOption {
   label: string;
@@ -54,6 +52,7 @@ const TeamsForms = () => {
   const navigate = useNavigate();
   // const token = localStorage.getItem("accessToken");
   // axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const options: RoleOption[] = [
     { label: "BOD", value: "BOD" },
@@ -230,154 +229,212 @@ const TeamsForms = () => {
                 />
               </HStack>
               <VStack gap={4} align="stretch">
-                <Controller
-                  name="name"
-                  control={control}
-                  rules={{ required: "Name is required" }}
-                  render={({ field }) => (
-                    <Field label="Name">
-                      <Input
-                        {...field}
-                        placeholder="Enter user name"
-                        size={"md"}
-                        onChange={(e) =>
-                          handleFieldChange("name", e.target.value)
-                        }
-                      />
-                      {errors.name && (
-                        <Text textStyle="sm" color="red">
-                          {errors.name.message}
-                        </Text>
-                      )}
-                    </Field>
-                  )}
-                />
-                <HStack>
+                <HStack gap={6} align="start">
                   <Controller
-                    name="position_id"
+                    name="image"
                     control={control}
-                    rules={{ required: "Position is required" }}
+                    rules={!id ? { required: "Image URL is required" } : {}}
                     render={({ field }) => (
-                      <Field label="Position">
-                        <CreatableSelect
-                          {...field}
-                          placeholder="Create or select user position"
-                          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                          options={positionOption as any}
-                          onChange={(selectedOption) => {
-                            // Update both React Hook Form state and local state
-                            field.onChange(selectedOption?.value || null);
-                            handleFieldChange(
-                              "position_id",
-                              selectedOption?.value || null
-                            );
-                          }}
-                          value={
-                            // Find the matching option object if field.value is a number
-                            typeof field.value === "number"
-                              ? positionOption.find(
-                                  (option) => option.value === field.value
-                                )
-                              : // If it's a custom value (string) or null, handle accordingly
-                              field.value
-                              ? {
-                                  label: String(field.value),
-                                  value: field.value,
-                                }
-                              : null
-                          }
-                          styles={{
-                            container: (base) => ({
-                              ...base,
-                              width: "100%",
-                            }),
-                            control: (base) => ({
-                              ...base,
-                              width: "100%",
-                              borderColor: errors.position_id
-                                ? "red"
-                                : base.borderColor,
-                            }),
-                            menu: (base) => ({
-                              ...base,
-                              width: "100%",
-                            }),
-                            valueContainer: (base) => ({
-                              ...base,
-                              width: "100%",
-                            }),
-                            input: (base) => ({
-                              ...base,
-                              width: "100%",
-                            }),
+                      <Box position="relative">
+                        {!field.value &&
+                        !selectedImage &&
+                        !teamData.image_url ? (
+                          <Box
+                            width="250px"
+                            height="250px"
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="center"
+                            border="2px dashed gray"
+                            rounded="full"
+                            cursor="pointer"
+                            onClick={() => fileInputRef.current?.click()}
+                          >
+                            <FiPlus size={30} color="gray" />
+                          </Box>
+                        ) : (
+                          <Image
+                            src={
+                              selectedImage ||
+                              teamData.image_url ||
+                              (typeof teamData.image === "string"
+                                ? teamData.image
+                                : undefined)
+                            }
+                            alt="Uploaded or Existing Image"
+                            boxSize="250px"
+                            rounded="full"
+                            objectFit="cover"
+                            cursor="pointer"
+                            onClick={() => fileInputRef.current?.click()}
+                          />
+                        )}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          hidden
+                          ref={fileInputRef}
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              field.onChange(file);
+                              handleImageUpload(file);
+                            }
                           }}
                         />
-                        {errors.position_id && (
-                          <Text textStyle="sm" color="red">
-                            {errors.position_id.message}
-                          </Text>
-                        )}
-                      </Field>
+                      </Box>
                     )}
                   />
-
-                  <Controller
-                    name="role"
-                    control={control}
-                    rules={{ required: "Role is required" }}
-                    render={({ field }) => (
-                      <Field label="Role">
-                        <Select
-                          {...field}
-                          isClearable
-                          options={options}
-                          value={options.find(
-                            (option) => option.value === field.value
+                  <VStack flex={1}>
+                    <Controller
+                      name="name"
+                      control={control}
+                      rules={{ required: "Name is required" }}
+                      render={({ field }) => (
+                        <Field label="Name">
+                          <Input
+                            {...field}
+                            placeholder="Enter user name"
+                            size={"md"}
+                            onChange={(e) =>
+                              handleFieldChange("name", e.target.value)
+                            }
+                          />
+                          {errors.name && (
+                            <Text textStyle="sm" color="red">
+                              {errors.name.message}
+                            </Text>
                           )}
-                          onChange={(selectedOption) =>
-                            handleFieldChange(
-                              "role",
-                              selectedOption?.value || ""
-                            )
-                          }
-                          placeholder="Select user role"
-                          styles={{
-                            container: (base) => ({
-                              ...base,
-                              width: "100%",
-                            }),
-                            control: (base) => ({
-                              ...base,
-                              width: "100%",
-                              borderColor: errors.role
-                                ? "red"
-                                : base.borderColor,
-                            }),
-                            menu: (base) => ({
-                              ...base,
-                              width: "100%",
-                            }),
-                            valueContainer: (base) => ({
-                              ...base,
-                              width: "100%",
-                            }),
-                            input: (base) => ({
-                              ...base,
-                              width: "100%",
-                            }),
-                          }}
-                        />
-                        {errors.role && (
-                          <Text textStyle="sm" color="red">
-                            {errors.role.message}
-                          </Text>
-                        )}
-                      </Field>
-                    )}
-                  />
+                        </Field>
+                      )}
+                    />
+
+                    <Controller
+                      name="position_id"
+                      control={control}
+                      rules={{ required: "Position is required" }}
+                      render={({ field }) => (
+                        <Field label="Position">
+                          <CreatableSelect
+                            {...field}
+                            placeholder="Create or select user position"
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                            options={positionOption as any}
+                            onChange={(selectedOption) => {
+                              // Update both React Hook Form state and local state
+                              field.onChange(selectedOption?.value || null);
+                              handleFieldChange(
+                                "position_id",
+                                selectedOption?.value || null
+                              );
+                            }}
+                            value={
+                              // Find the matching option object if field.value is a number
+                              typeof field.value === "number"
+                                ? positionOption.find(
+                                    (option) => option.value === field.value
+                                  )
+                                : // If it's a custom value (string) or null, handle accordingly
+                                field.value
+                                ? {
+                                    label: String(field.value),
+                                    value: field.value,
+                                  }
+                                : null
+                            }
+                            styles={{
+                              container: (base) => ({
+                                ...base,
+                                width: "100%",
+                              }),
+                              control: (base) => ({
+                                ...base,
+                                width: "100%",
+                                borderColor: errors.position_id
+                                  ? "red"
+                                  : base.borderColor,
+                              }),
+                              menu: (base) => ({
+                                ...base,
+                                width: "100%",
+                              }),
+                              valueContainer: (base) => ({
+                                ...base,
+                                width: "100%",
+                              }),
+                              input: (base) => ({
+                                ...base,
+                                width: "100%",
+                              }),
+                            }}
+                          />
+                          {errors.position_id && (
+                            <Text textStyle="sm" color="red">
+                              {errors.position_id.message}
+                            </Text>
+                          )}
+                        </Field>
+                      )}
+                    />
+
+                    <Controller
+                      name="role"
+                      control={control}
+                      rules={{ required: "Role is required" }}
+                      render={({ field }) => (
+                        <Field label="Role">
+                          <Select
+                            {...field}
+                            isClearable
+                            options={options}
+                            value={options.find(
+                              (option) => option.value === field.value
+                            )}
+                            onChange={(selectedOption) =>
+                              handleFieldChange(
+                                "role",
+                                selectedOption?.value || ""
+                              )
+                            }
+                            placeholder="Select user role"
+                            styles={{
+                              container: (base) => ({
+                                ...base,
+                                width: "100%",
+                              }),
+                              control: (base) => ({
+                                ...base,
+                                width: "100%",
+                                borderColor: errors.role
+                                  ? "red"
+                                  : base.borderColor,
+                              }),
+                              menu: (base) => ({
+                                ...base,
+                                width: "100%",
+                              }),
+                              valueContainer: (base) => ({
+                                ...base,
+                                width: "100%",
+                              }),
+                              input: (base) => ({
+                                ...base,
+                                width: "100%",
+                              }),
+                            }}
+                          />
+                          {errors.role && (
+                            <Text textStyle="sm" color="red">
+                              {errors.role.message}
+                            </Text>
+                          )}
+                        </Field>
+                      )}
+                    />
+                  </VStack>
                 </HStack>
 
-                <Controller
+                {/* <Controller
                   name="image"
                   control={control}
                   rules={!id ? { required: "Image URL is required" } : {}}
@@ -425,7 +482,7 @@ const TeamsForms = () => {
                       )}
                     </Field>
                   )}
-                />
+                /> */}
               </VStack>
               <HStack justifyContent="flex-end" mt={4}>
                 <Button variant={"ghost"} onClick={() => navigate(-1)}>
