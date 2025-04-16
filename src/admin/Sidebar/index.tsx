@@ -31,7 +31,7 @@ import {
 } from "react-icons/fi";
 import { GiNewspaper, GiPublicSpeaker } from "react-icons/gi";
 import { MdOutlineEventAvailable } from "react-icons/md";
-// import { PiChartLineUp } from "react-icons/pi";
+import { PiChartLineUp } from "react-icons/pi";
 import { GoOrganization } from "react-icons/go";
 import {
   LuContactRound,
@@ -106,12 +106,12 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
           icon: GiPublicSpeaker,
           link: "/admin/chairperson-message",
         },
-        // {
-        //   id: 25,
-        //   label: "Our Impact",
-        //   icon: PiChartLineUp,
-        //   link: "/admin/impact",
-        // },
+        {
+          id: 25,
+          label: "Our Impact",
+          icon: PiChartLineUp,
+          link: "/admin/our-impact",
+        },
       ],
     },
     {

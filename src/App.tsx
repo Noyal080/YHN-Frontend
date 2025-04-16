@@ -4,7 +4,7 @@ import {
   Routes,
   useLocation,
 } from "react-router-dom";
-import { Suspense, useEffect, lazy } from "react";
+import { Suspense, useEffect, lazy, useCallback, memo } from "react";
 import { ProtectedRoute, ReverseProtectedRoute } from "./common/ProtectedRoute";
 import SkeletonLoading from "./LazyLoader";
 import "./App.css";
@@ -65,14 +65,19 @@ const NewsView = lazy(() => import("./admin/News/NewsView"));
 const OrganizationDetails = lazy(
   () => import("./admin/Settings/Organization Details")
 );
-
-const ScrollToTop = () => {
+const OurImpact = lazy(() => import("./admin/Home/Our Impact"));
+const OurImpactForm = lazy(
+  () => import("./admin/Home/Our Impact/OurImpactForm")
+);
+const ScrollToTop = memo(() => {
   const { pathname } = useLocation();
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
+
   return null;
-};
+});
 
 // Route configuration objects for better organization
 const adminRoutes = [
@@ -88,6 +93,9 @@ const adminRoutes = [
   { path: "/admin/partners/edit/:id", element: <PartnerSliderForm /> },
   { path: "/admin/messages", element: <MessageRequest /> },
   { path: "/admin/chairperson-message", element: <ChairpersonMessage /> },
+  { path: "/admin/our-impact", element: <OurImpact /> },
+  { path: "/admin/our-impact/add", element: <OurImpactForm /> },
+  { path: "/admin/our-impact/edit/:id", element: <OurImpactForm /> },
 
   // About Us Section
   { path: "/admin/about", element: <UsSection /> },
@@ -145,9 +153,21 @@ const adminRoutes = [
 
   // Organization Details Section
   { path: "/admin/organization-details", element: <OrganizationDetails /> },
+  { path: "/admin/our-impact", element: <OurImpact /> },
 ];
 
 function App() {
+  const renderRoute = useCallback(
+    (route: (typeof adminRoutes)[0]) => (
+      <Route
+        key={route.path}
+        path={route.path}
+        element={<ProtectedRoute>{route.element}</ProtectedRoute>}
+      />
+    ),
+    []
+  );
+
   return (
     <Router>
       <ScrollToTop />
@@ -161,16 +181,7 @@ function App() {
               </ReverseProtectedRoute>
             }
           />
-
-          {/* Map through all admin routes */}
-          {adminRoutes.map((route) => (
-            <Route
-              key={route.path}
-              path={route.path}
-              element={<ProtectedRoute>{route.element}</ProtectedRoute>}
-            />
-          ))}
-
+          {adminRoutes.map(renderRoute)}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>

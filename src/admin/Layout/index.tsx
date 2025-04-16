@@ -1,10 +1,13 @@
-import React, { useMemo } from "react";
+import React, { useMemo, memo } from "react";
 import { Box, Flex } from "@chakra-ui/react";
 import Sidebar from "../Sidebar";
 import { AdminLayoutProps } from "@/utils";
 import AdminNavbar from "../Navbar";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+
+const MemoizedSidebar = memo(Sidebar);
+const MemoizedNavbar = memo(AdminNavbar);
 
 const AdminLayout: React.FC<AdminLayoutProps> = ({
   children,
@@ -16,38 +19,26 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
     (state: RootState) => state.sidebar.isExpanded
   );
 
-  // Memoize the sidebar width calculation
-  const sidebarWidth = useMemo(
-    () => (isExpanded ? "300px" : "80px"),
-    [isExpanded]
-  );
+  const layout = useMemo(() => {
+    const sidebarWidth = isExpanded ? "300px" : "80px";
 
-  // Memoize the sidebar component to prevent unnecessary re-renders
-  const memoizedSidebar = useMemo(
-    () => <Sidebar activeSidebarItem={activeSidebarItem} />,
-    [activeSidebarItem]
-  );
-
-  // Memoize the navbar component since breadcrumbItems might be a new array each render
-  const memoizedNavbar = useMemo(
-    () => <AdminNavbar title={title} breadcrumbItems={breadcrumbItems} />,
-    [title, breadcrumbItems]
-  );
-
-  return (
-    <Flex h="100vh">
-      <Box width={sidebarWidth} transition="width 0.3s ease" flexShrink={0}>
-        {memoizedSidebar}
-      </Box>
-
-      <Flex flex={1} flexDirection="column" overflow="hidden">
-        {memoizedNavbar}
-        <Box flex={1} px={4} py={4} overflow="auto">
-          {children}
+    return (
+      <Flex h="100vh">
+        <Box width={sidebarWidth} transition="width 0.3s ease" flexShrink={0}>
+          <MemoizedSidebar activeSidebarItem={activeSidebarItem} />
         </Box>
+
+        <Flex flex={1} flexDirection="column" overflow="hidden">
+          <MemoizedNavbar title={title} breadcrumbItems={breadcrumbItems} />
+          <Box flex={1} px={4} py={4} overflow="auto">
+            {children}
+          </Box>
+        </Flex>
       </Flex>
-    </Flex>
-  );
+    );
+  }, [isExpanded, activeSidebarItem, title, breadcrumbItems, children]);
+
+  return layout;
 };
 
-export default React.memo(AdminLayout);
+export default memo(AdminLayout);

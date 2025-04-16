@@ -309,3 +309,11 @@ export type NewsInputType = {
   publish_date: string;
   status: number;
 };
+
+export type OurImpactType = {
+  id?: number;
+  name: string;
+  number: string;
+  icon: string;
+  status: number;
+};

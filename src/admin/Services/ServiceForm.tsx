@@ -46,7 +46,7 @@ const iconList: IconOption[] = Object.keys(Icons)
     iconClass: `fas fa-${key.replace("fa", "").toLowerCase()}`, // Alternative display
   }));
 
-const MenuList = (props: MenuListProps<IconOption>) => {
+export const MenuList = (props: MenuListProps<IconOption>) => {
   const { options, children, maxHeight, getValue } = props;
   const [value] = getValue();
   const initialOffset = options.indexOf(value) * 35;
