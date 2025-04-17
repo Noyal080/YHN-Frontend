@@ -472,7 +472,6 @@ const EventForm = () => {
                   <Controller
                     name="banner_end_date"
                     control={control}
-                    rules={{ required: "End Date is requried" }}
                     render={({ field }) => (
                       <Field label="End Date">
                         <Input

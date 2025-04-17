@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "@/api/axios";
 import CommonModal from "@/common/CommonModal";
 import { Text } from "@chakra-ui/react";
+import { Switch } from "@/components/ui/switch";
 
 const VideoSection = () => {
   const navigate = useNavigate();
@@ -53,7 +54,34 @@ const VideoSection = () => {
         </div>
       ),
     },
+    {
+      key: "status",
+      label: "Status",
+      visible: true,
+      render: (row) => (
+        <Switch
+          checked={row.status === 1}
+          onCheckedChange={() => {
+            handleStatusChange(String(row.id), row.status);
+          }}
+          colorPalette={"green"}
+        />
+      ),
+    },
   ];
+
+  const handleStatusChange = async (id: string, status: number) => {
+    const newStatus = status === 1 ? 0 : 1;
+    try {
+      await axiosInstance.patch(`/video/${id}`, {
+        status: newStatus,
+      });
+      setTriggerFetch(true);
+    } catch (error) {
+      console.error("Error changing status:", error);
+      // Handle error (e.g., show an error message to the user)
+    }
+  };
 
   useEffect(() => {
     const fetchGallery = async () => {
@@ -82,7 +110,7 @@ const VideoSection = () => {
 
   const handleDelete = async (row: VideoInputTypes) => {
     try {
-      await axiosInstance.delete(`/videos/${row.id}`);
+      await axiosInstance.delete(`/video/${row.id}`);
       showToast({
         description: `${row.title} deleted succesfully`,
         type: "success",

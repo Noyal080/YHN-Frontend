@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { axiosInstance } from "@/api/axios";
+import { Switch } from "@/components/ui/switch";
 
 const VideoForm = () => {
   const { id } = useParams();
@@ -27,6 +28,7 @@ const VideoForm = () => {
   const [videoData, setVideoData] = useState<VideoInputTypes>({
     title: "",
     video_url: "",
+    status: 1,
   });
 
   const {
@@ -38,6 +40,7 @@ const VideoForm = () => {
       id: videoData.id,
       title: videoData.title || "",
       video_url: videoData.video_url || "",
+      status: videoData.status || 1,
     },
   });
 
@@ -130,8 +133,31 @@ const VideoForm = () => {
         )}
         <CardRoot m="auto" maxWidth="800px" mt={8} boxShadow="lg">
           <CardBody>
-            <Heading mb={6}>{id ? "Edit" : "Add"} Video</Heading>
             <form onSubmit={handleSubmit(onSubmit)}>
+              <HStack justifyContent="space-between" mb={4}>
+                <Heading mb={6}>{id ? "Edit" : "Add"} Video</Heading>
+                <Controller
+                  name="status"
+                  control={control}
+                  render={({ field }) => (
+                    <HStack justify="space-between" align="center">
+                      <Text fontWeight="500" textStyle="md">
+                        {field.value === 1 ? "Active" : "Inactive"}
+                      </Text>
+                      <Switch
+                        checked={field.value === 1}
+                        onCheckedChange={(value) => {
+                          const statusValue = value.checked ? 1 : 0;
+                          field.onChange(statusValue);
+                          handleFieldChange("status", statusValue);
+                        }}
+                        color="black"
+                        colorPalette="green"
+                      />
+                    </HStack>
+                  )}
+                />
+              </HStack>
               <VStack gap={4} align={"stretch"}>
                 <Controller
                   name="title"

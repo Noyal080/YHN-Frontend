@@ -55,7 +55,7 @@ const Services = () => {
   const navigate = useNavigate();
 
   const handleEdit = (row: ServicesType) => {
-    navigate(`/admin/services/edit/${row.id}`);
+    navigate(`/admin/sectors/edit/${row.id}`);
   };
 
   const handleDelete = async (row: ServicesType) => {
@@ -71,7 +71,7 @@ const Services = () => {
     } catch (e) {
       console.log(e);
       showToast({
-        description: "Error while removing events data",
+        description: "Error while removing sector data",
         type: "error",
       });
       setLoading(false);
@@ -117,13 +117,13 @@ const Services = () => {
     <AdminLayout
       breadcrumbItems={[
         { label: "Dashboard", link: "/admin" },
-        { label: "Services" },
+        { label: "Sectors" },
       ]}
-      title={`Our Services`}
-      activeSidebarItem="Services"
+      title={`Sectors`}
+      activeSidebarItem="Sectors"
     >
       <CommonTable
-        title="Service List"
+        title="Sector List"
         columns={columns}
         rows={rows}
         onEdit={handleEdit}
@@ -133,7 +133,7 @@ const Services = () => {
         }}
         loading={loading}
         onSearch={(query) => setSearchQuery(query)}
-        onAdd={() => navigate("/admin/services/add")}
+        onAdd={() => navigate("/admin/sectors/add")}
         // filterComponent={<SliderFilter />}
         count={paginationData?.total_records}
         pageSize={paginationData?.per_page}
@@ -141,19 +141,19 @@ const Services = () => {
         onPageChange={(page) => {
           setPage(page);
         }}
-        addName="Add Services"
+        addName="Add Sector"
       />
       <CommonModal
         open={modalOpen}
         onOpenChange={() => setModalOpen(false)}
-        title={"Remove Event Data"}
+        title={"Remove Sector Data"}
         onButtonClick={() => handleDelete(selectedRow as ServicesType)}
       >
         <Text>
           {" "}
           Are you sure you want to remove{" "}
           <strong> {selectedRow?.title} </strong> ? This will permanently remove
-          all the data regarding the services{" "}
+          all the data regarding the sector{" "}
         </Text>
       </CommonModal>
     </AdminLayout>

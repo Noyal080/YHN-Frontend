@@ -129,9 +129,9 @@ const adminRoutes = [
   { path: "/admin/internship/edit/:id", element: <InternshipForm /> },
 
   // Services Section
-  { path: "/admin/services", element: <Services /> },
-  { path: "/admin/services/add", element: <ServiceForms /> },
-  { path: "/admin/services/edit/:id", element: <ServiceForms /> },
+  { path: "/admin/sectors", element: <Services /> },
+  { path: "/admin/sectors/add", element: <ServiceForms /> },
+  { path: "/admin/sectors/edit/:id", element: <ServiceForms /> },
 
   // Gallery Section
   { path: "/admin/gallery/images", element: <ImageSection /> },

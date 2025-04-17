@@ -236,6 +236,7 @@ export type VideoInputTypes = {
   id?: number;
   title: string;
   video_url: string;
+  status: number;
 };
 
 export type ServicesType = {

@@ -46,14 +46,9 @@ const Testimonial = () => {
     },
     {
       key: "designation",
-      label: "User Desgination",
+      label: "Desgination",
       visible: true,
       render: (row) => <Text>{row.designation.Name}</Text>,
-    },
-    {
-      key: "category",
-      label: "User Category",
-      visible: true,
     },
     {
       key: "status",

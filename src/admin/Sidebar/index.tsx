@@ -46,7 +46,7 @@ import { toggleDropdown, toggleSidebar } from "@/redux/sidebarSlice";
 import { RootState } from "@/redux/store";
 import Logo from "../../assets/YHN_Logo.jpg";
 import SmallLogo from "../../assets/LogoSmall.png";
-import { FaWrench } from "react-icons/fa";
+import { FaHandsHelping, FaTools } from "react-icons/fa";
 
 interface MenuItem {
   id: number;
@@ -135,7 +135,21 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
         },
       ],
     },
-    { id: 4, label: "Our Works", icon: FiFolder, link: "/admin/our-works" },
+    {
+      id: 4,
+      label: "What we do",
+      icon: FaHandsHelping,
+      children: [
+        {
+          id: 41,
+          label: "Our Works",
+          icon: FiFolder,
+          link: "/admin/our-works",
+        },
+        { id: 42, label: "Sectors", icon: FaTools, link: "/admin/sectors" },
+      ],
+    },
+
     {
       id: 5,
       label: "News & Events",
@@ -194,7 +208,6 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
       ],
     },
 
-    { id: 6, label: "Services", icon: FaWrench, link: "/admin/services" },
     {
       id: 10,
       label: "Settings",
@@ -207,7 +220,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
           link: "/admin/contact-us",
         },
         {
-          id: 34,
+          id: 35,
           label: "Organisation Information",
           icon: GoOrganization,
           link: "/admin/organization-details",

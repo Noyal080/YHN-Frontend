@@ -136,27 +136,27 @@ const ServiceForms = () => {
       if (id) {
         await axiosInstance.post(`/service/${id}`, data);
         showToast({
-          description: "Services updated successfully!",
+          description: "Sector updated successfully!",
           type: "success",
         });
       } else {
         await axiosInstance.post(`/service`, data);
         showToast({
-          description: "Services added successfully",
+          description: "Sector added successfully",
           type: "success",
         });
       }
-      navigate("/admin/services");
+      navigate("/admin/sectors");
     } catch (e) {
       console.error(e);
       if (id) {
         showToast({
-          description: "Failed to update the Services",
+          description: "Failed to update the Sector",
           type: "error",
         });
       } else {
         showToast({
-          description: "Failed to add the Services",
+          description: "Failed to add the Sector",
           type: "error",
         });
       }
@@ -169,11 +169,11 @@ const ServiceForms = () => {
     <AdminLayout
       breadcrumbItems={[
         { label: "Dashboard", link: "/admin" },
-        { label: "Services", link: "/admin/services" },
-        { label: `${id ? "Edit" : "Add"} Services` },
+        { label: "Sectors", link: "/admin/sectors" },
+        { label: `${id ? "Edit" : "Add"} Sector` },
       ]}
-      title={`Our Services`}
-      activeSidebarItem="Services"
+      title={`Sectors`}
+      activeSidebarItem="Sectors"
     >
       <Box position="relative">
         {isLoading && (
@@ -196,7 +196,7 @@ const ServiceForms = () => {
           <CardBody>
             <form onSubmit={handleSubmit(onSubmit)}>
               <HStack mb={4} justifyContent="space-between">
-                <Heading mb={6}>{id ? "Edit" : "Add"} Services</Heading>
+                <Heading mb={6}>{id ? "Edit" : "Add"} Sector</Heading>
 
                 <Controller
                   name="status"
