@@ -105,7 +105,7 @@ const OurImpact = () => {
   const handleStatusChange = async (id: string, status: number) => {
     const newStatus = status === 1 ? 0 : 1;
     try {
-      await axiosInstance.post(`/ourimpact/${id}`, {
+      await axiosInstance.patch(`/ourimpact/${id}`, {
         status: newStatus,
       });
       setTriggerFetch(true);
