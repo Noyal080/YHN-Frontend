@@ -69,6 +69,13 @@ const OurImpact = lazy(() => import("./admin/Home/Our Impact"));
 const OurImpactForm = lazy(
   () => import("./admin/Home/Our Impact/OurImpactForm")
 );
+const ViewInternship = lazy(
+  () => import("./admin/Join Us/Internship/ViewInternship")
+);
+const ViewVolunteer = lazy(
+  () => import("./admin/Join Us/Volunteer/ViewVolunteerForm")
+);
+
 const ScrollToTop = memo(() => {
   const { pathname } = useLocation();
 
@@ -127,6 +134,8 @@ const adminRoutes = [
   { path: "/admin/internship", element: <InternshipSection /> },
   { path: "/admin/internship/add", element: <InternshipForm /> },
   { path: "/admin/internship/edit/:id", element: <InternshipForm /> },
+  { path: "/admin/internship/view/:id", element: <ViewInternship /> },
+  { path: "/admin/volunteer/view/:id", element: <ViewVolunteer /> },
 
   // Services Section
   { path: "/admin/sectors", element: <Services /> },
@@ -153,7 +162,6 @@ const adminRoutes = [
 
   // Organization Details Section
   { path: "/admin/organization-details", element: <OrganizationDetails /> },
-  { path: "/admin/our-impact", element: <OurImpact /> },
 ];
 
 function App() {

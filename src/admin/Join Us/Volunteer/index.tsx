@@ -2,7 +2,6 @@ import AdminLayout from "@/admin/Layout";
 import { axiosInstance } from "@/api/axios";
 import CommonModal from "@/common/CommonModal";
 import useCommonToast from "@/common/CommonToast";
-import EditorTextView from "@/common/EditorTextView";
 import CommonTable from "@/common/Table/CommonTable";
 import { Switch } from "@/components/ui/switch";
 import useDebounce from "@/helper/debounce";
@@ -31,12 +30,7 @@ const VolunteerSection = () => {
   const columns: Column<InternshipType>[] = [
     { key: "id", label: "Id", visible: true },
     { key: "title", label: "Title", visible: true },
-    {
-      key: "description",
-      label: "Description",
-      visible: true,
-      render: (row) => <EditorTextView message={row.description} />,
-    },
+    { key: "end_date", label: "Deadline", visible: true },
     { key: "apply_link", label: "Application Link", visible: true },
     {
       key: "status",
@@ -134,6 +128,7 @@ const VolunteerSection = () => {
         title="Volunteer List"
         columns={columns}
         rows={rows}
+        onView={(row) => navigate(`/admin/volunteer/view/${row.id}`)}
         onEdit={handleEdit}
         onDelete={(row) => {
           setModalOpen(true);
