@@ -489,6 +489,7 @@ const WorkForms = () => {
                       <Field label="End Date">
                         <Input
                           {...field}
+                          min={pageData.banner_start_date}
                           type="date"
                           size={"md"}
                           onChange={(value) => field.onChange(value)}

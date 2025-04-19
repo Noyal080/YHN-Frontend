@@ -459,12 +459,13 @@ const EventForm = () => {
                           {...field}
                           type="date"
                           size={"md"}
-                          onChange={(e) =>
+                          onChange={(e) => {
+                            field.onChange(e.target.value);
                             handleFieldChange(
                               "banner_start_date",
                               e.target.value
-                            )
-                          }
+                            );
+                          }}
                         />
                         {errors.banner_start_date && (
                           <Text textStyle="sm" color="red">
@@ -481,6 +482,7 @@ const EventForm = () => {
                       <Field label="End Date">
                         <Input
                           {...field}
+                          min={pageData.banner_start_date}
                           type="date"
                           size={"md"}
                           onChange={(e) =>

@@ -249,6 +249,7 @@ const VolunteerForm = () => {
                       <Field label="Deadline">
                         <Input
                           {...field}
+                          min={volunteerData.start_date}
                           type="date"
                           size={"md"}
                           onChange={(value) => field.onChange(value)}

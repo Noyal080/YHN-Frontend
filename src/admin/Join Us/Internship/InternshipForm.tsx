@@ -243,6 +243,7 @@ const InternshipForm = () => {
                       <Field label="Deadline">
                         <Input
                           {...field}
+                          min={internshipData.start_date}
                           type="date"
                           size={"md"}
                           onChange={(value) => field.onChange(value)}
