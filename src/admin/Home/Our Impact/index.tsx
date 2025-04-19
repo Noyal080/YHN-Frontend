@@ -148,7 +148,7 @@ const OurImpact = () => {
       <CommonModal
         open={modalOpen}
         onOpenChange={() => setModalOpen(false)}
-        title={"Remove Message Request Data"}
+        title={"Remove Impact Data"}
         onButtonClick={() => handleDelete(selectedRow as OurImpactType)}
       >
         <Text>

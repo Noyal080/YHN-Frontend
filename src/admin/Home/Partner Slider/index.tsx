@@ -175,7 +175,7 @@ const PartnerSlider = () => {
       <CommonModal
         open={modalOpen}
         onOpenChange={() => setModalOpen(false)}
-        title={"Remove PartnerSlider"}
+        title={"Remove Partner Slider"}
         onButtonClick={() => handleDelete(selectedRow as PartnerSliderType)}
       >
         <Text>

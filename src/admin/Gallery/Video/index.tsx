@@ -159,7 +159,7 @@ const VideoSection = () => {
       <CommonModal
         open={modalOpen}
         onOpenChange={() => setModalOpen(false)}
-        title={"Remove Gallery Image"}
+        title={"Remove Gallery Video"}
         onButtonClick={() => handleDelete(selectedRow as VideoInputTypes)}
       >
         <Text>

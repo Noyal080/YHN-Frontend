@@ -167,7 +167,7 @@ const ProjectSection = () => {
       <CommonModal
         open={modalOpen}
         onOpenChange={() => setModalOpen(false)}
-        title={"Remove Event Data"}
+        title={"Remove Work Data"}
         onButtonClick={() => handleDelete(selectedRow as OurWorks)}
       >
         <Text>
