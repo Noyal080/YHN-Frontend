@@ -43,7 +43,7 @@ const OurImpactForm = () => {
       name: pageData.name,
       number: pageData.number,
       icon: pageData.icon,
-      status: pageData.status || 1,
+      status: pageData.status,
     },
   });
 

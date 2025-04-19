@@ -1,50 +1,53 @@
-import AdminLayout from "@/admin/Layout";
+import { useNavigate } from "react-router-dom";
+import AdminLayout from "../../Layout";
+import CommonTable from "@/common/Table/CommonTable";
+import { useEffect, useState } from "react";
+import { Column } from "@/utils";
+import { Switch } from "@/components/ui/switch";
+import { Image, Text } from "@chakra-ui/react";
+import { PaginationProps, TeamsData } from "@/utils/types";
 import { axiosInstance } from "@/api/axios";
 import CommonModal from "@/common/CommonModal";
 import useCommonToast from "@/common/CommonToast";
-import CommonTable from "@/common/Table/CommonTable";
-import { Switch } from "@/components/ui/switch";
 import useDebounce from "@/helper/debounce";
-import { Column } from "@/utils";
-import { OurImpactType, PaginationProps } from "@/utils/types";
-import { Text } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
-const OurImpact = () => {
-  const [selectedRow, setSelectedRow] = useState<OurImpactType | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [rows, setRows] = useState<OurImpactType[]>([]);
+const BodSection = () => {
+  const navigate = useNavigate();
+  // const token = localStorage.getItem("accessToken");
   const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [selectedRow, setSelectedRow] = useState<TeamsData | null>(null);
   const [triggerFetch, setTriggerFetch] = useState(false);
   const { showToast } = useCommonToast();
-  const navigate = useNavigate();
 
+  //Pagination
   const [paginationData, setPaginationData] = useState<PaginationProps>();
   const [page, setPage] = useState<number>(1);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const debouncedSearch = useDebounce(searchQuery, 500);
 
-  const columns: Column<OurImpactType>[] = [
+  const columns: Column<TeamsData>[] = [
+    { key: "priority_order", label: "Priority Order", visible: true },
+    { key: "name", label: "Name", visible: true },
     {
-      key: "id",
-      label: "Id",
+      key: "image_url",
+      label: "Image",
       visible: true,
+      render: (row) => (
+        <Image
+          rounded="md"
+          h="200px"
+          w="300px"
+          fit="contain"
+          src={row["image_url"]}
+        />
+      ),
     },
     {
-      key: "name",
-      label: "Impact Name",
+      key: "position",
+      label: "Position",
       visible: true,
-    },
-    {
-      key: "number",
-      label: "Impact Number",
-      visible: true,
-    },
-    {
-      key: "icon",
-      label: "Icon",
-      visible: true,
+      render: (row) => <Text>{row.position.Name}</Text>,
     },
     {
       key: "status",
@@ -52,17 +55,23 @@ const OurImpact = () => {
       visible: true,
       render: (row) => (
         <Switch
-          checked={row.status === 1}
-          onCheckedChange={() => handleStatusChange(String(row.id), row.status)}
           colorPalette={"green"}
+          checked={row.status === 1}
+          onCheckedChange={() => {
+            handleStatusChange(String(row.id), row.status);
+          }}
         />
       ),
     },
   ];
 
-  const handleDelete = async (row: OurImpactType) => {
+  const handleEdit = (row: TeamsData) => {
+    navigate(`/admin/bod/edit/${row.id}`);
+  };
+
+  const handleDelete = async (row: TeamsData) => {
     try {
-      await axiosInstance.delete(`/ourimpact/${row.id}`);
+      await axiosInstance.delete(`/teams/${row.id}`);
       showToast({
         description: `${row.name} deleted succesfully`,
         type: "success",
@@ -73,44 +82,44 @@ const OurImpact = () => {
     } catch (e) {
       console.log(e);
       showToast({
-        description: "Error while removing message request data",
+        description: "Error while removing team data",
         type: "error",
       });
       setLoading(false);
     }
   };
 
+  const [rows, setRows] = useState<TeamsData[]>([]);
+  // axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   useEffect(() => {
-    setLoading(true);
-    const fetchVolunteerData = async () => {
+    const fetchTeams = async () => {
+      setLoading(true);
       try {
-        const res = await axiosInstance.get("/ourimpact", {
-          params: { page, search: debouncedSearch },
+        const res = await axiosInstance.get("/teams", {
+          params: { page, name: debouncedSearch, role: "BOD" },
         });
         const data = res.data.data;
         setRows(data.data);
         setPaginationData(data.pagination);
         setLoading(false);
-        setTriggerFetch(false);
       } catch (e) {
         console.log(e);
         setLoading(false);
-        setTriggerFetch(false);
       }
     };
-
-    fetchVolunteerData();
+    fetchTeams();
   }, [triggerFetch, page, debouncedSearch]);
 
   const handleStatusChange = async (id: string, status: number) => {
     const newStatus = status === 1 ? 0 : 1;
     try {
-      await axiosInstance.patch(`/ourimpact/${id}/status`, {
+      await axiosInstance.patch(`/teams/${id}/status`, {
         status: newStatus,
       });
       setTriggerFetch(true);
     } catch (error) {
       console.error("Error changing status:", error);
+      // Handle error (e.g., show an error message to the user)
     }
   };
 
@@ -118,25 +127,24 @@ const OurImpact = () => {
     <AdminLayout
       breadcrumbItems={[
         { label: "Dashboard", link: "/admin" },
-        { label: "Our Impact" },
+        { label: "Board of Directors" },
       ]}
-      title={`Our Impact`}
-      activeSidebarItem="Our Impact"
+      title={`Board of Directors`}
+      activeSidebarItem="Board of Directors"
     >
       <CommonTable
-        title="Our Impact"
+        loading={loading}
+        title="BOD List"
         columns={columns}
         rows={rows}
+        onEdit={handleEdit}
         onDelete={(row) => {
           setModalOpen(true);
           setSelectedRow(row);
         }}
-        onEdit={(row) => navigate(`/admin/our-impact/edit/${row.id}`)}
-        addName="Add Impact"
-        // onView={(row) => navigate(`/admin/messages/view/${row.id}`)}
-        onAdd={() => navigate("/admin/our-impact/add")}
-        loading={loading}
         onSearch={(query) => setSearchQuery(query)}
+        onAdd={() => navigate("/admin/bod/add")}
+        addName="Add BOD"
         count={paginationData?.total_records}
         pageSize={paginationData?.per_page}
         currentPage={page}
@@ -148,8 +156,8 @@ const OurImpact = () => {
       <CommonModal
         open={modalOpen}
         onOpenChange={() => setModalOpen(false)}
-        title={"Remove Message Request Data"}
-        onButtonClick={() => handleDelete(selectedRow as OurImpactType)}
+        title={"Remove BOD"}
+        onButtonClick={() => handleDelete(selectedRow as TeamsData)}
       >
         <Text>
           {" "}
@@ -157,11 +165,11 @@ const OurImpact = () => {
             {" "}
             {selectedRow?.name}{" "}
           </strong>{" "}
-          ? This will permanently remove all the data regarding the impact.
+          ? This will permanently remove all the data regarding this BOD member{" "}
         </Text>
       </CommonModal>
     </AdminLayout>
   );
 };
 
-export default OurImpact;
+export default BodSection;

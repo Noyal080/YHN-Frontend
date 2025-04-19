@@ -34,9 +34,9 @@ const TestimonialForm = lazy(
 );
 const Donations = lazy(() => import("./admin/About/Donation"));
 const DonationView = lazy(() => import("./admin/About/Donation/DonationView"));
-const ProjectSection = lazy(() => import("./admin/Projects"));
-const WorkForms = lazy(() => import("./admin/Projects/WorkForm"));
-const ViewWork = lazy(() => import("./admin/Projects/ViewWork"));
+const ProjectSection = lazy(() => import("./admin/Our Work"));
+const WorkForms = lazy(() => import("./admin/Our Work/WorkForm"));
+const ViewWork = lazy(() => import("./admin/Our Work/ViewWork"));
 const EventSection = lazy(() => import("./admin/Events"));
 const EventForm = lazy(() => import("./admin/Events/EventForm"));
 const ViewEvent = lazy(() => import("./admin/Events/ViewEvents"));
@@ -75,6 +75,8 @@ const ViewInternship = lazy(
 const ViewVolunteer = lazy(
   () => import("./admin/Join Us/Volunteer/ViewVolunteerForm")
 );
+const BOD = lazy(() => import("./admin/About/BOD"));
+const BODForm = lazy(() => import("./admin/About/BOD/BODForm"));
 
 const ScrollToTop = memo(() => {
   const { pathname } = useLocation();
@@ -114,6 +116,9 @@ const adminRoutes = [
   { path: "/admin/testimonials/edit/:id", element: <TestimonialForm /> },
   { path: "/admin/donation", element: <Donations /> },
   { path: "/admin/donation/:id", element: <DonationView /> },
+  { path: "/admin/bod", element: <BOD /> },
+  { path: "/admin/bod/add", element: <BODForm /> },
+  { path: "/admin/bod/edit/:id", element: <BODForm /> },
 
   // Projects Section
   { path: "/admin/our-works", element: <ProjectSection /> },

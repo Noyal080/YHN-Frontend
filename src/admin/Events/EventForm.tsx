@@ -291,8 +291,10 @@ const EventForm = () => {
                       <Input
                         {...field}
                         placeholder="Enter a title"
+                        value={field.value}
                         size={"md"}
                         onChange={(e) => {
+                          field.onChange(e.target.value);
                           handleFieldChange("title", e.target.value);
                         }}
                       />
@@ -320,6 +322,7 @@ const EventForm = () => {
                           )}
                           onChange={(selectedOption) => {
                             handleStateChange(selectedOption, field.onChange);
+                            field.onChange(selectedOption?.value);
                             handleFieldChange(
                               "banner_location_state",
                               selectedOption?.value || ""
@@ -424,9 +427,11 @@ const EventForm = () => {
                       <Field label="City">
                         <Input
                           {...field}
+                          value={field.value}
                           placeholder="Enter a city"
                           size={"md"}
                           onChange={(e) => {
+                            field.onChange(e.target.value);
                             handleFieldChange(
                               "banner_location_city",
                               e.target.value

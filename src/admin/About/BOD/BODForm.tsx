@@ -25,17 +25,12 @@ import { Button } from "@/components/ui/button";
 import { axiosInstance } from "@/api/axios";
 import { FiPlus } from "react-icons/fi";
 
-// interface RoleOption {
-//   label: string;
-//   value: string;
-// }
-
 interface PositionOption {
   label: string;
   value: number;
 }
 
-const TeamsForms = () => {
+const BODForms = () => {
   const { id } = useParams();
   const { showToast } = useCommonToast();
   const [selectedImage, setSelectedImage] = useState<string | null>();
@@ -45,7 +40,7 @@ const TeamsForms = () => {
     name: "",
     image: "",
     position_id: null,
-    role: "Staff",
+    role: "BOD",
     priority_order: null,
     status: 1,
   });
@@ -53,11 +48,6 @@ const TeamsForms = () => {
   // const token = localStorage.getItem("accessToken");
   // axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  // const options: RoleOption[] = [
-  //   { label: "BOD", value: "BOD" },
-  //   { label: "Staff", value: "Staff" },
-  // ];
 
   const {
     control,
@@ -69,7 +59,7 @@ const TeamsForms = () => {
       name: teamData.name,
       image: teamData.image,
       position_id: teamData.position_id,
-      role: "Staff",
+      role: "BOD",
       status: teamData.status,
       image_url: teamData.image_url,
       priority_order: teamData.priority_order,
@@ -155,13 +145,13 @@ const TeamsForms = () => {
           description: "Team updated successfully",
           type: "success",
         });
-        navigate("/admin/teams");
+        navigate("/admin/bod");
       } else {
         await axiosInstance.post("/teams", submissionData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         showToast({ description: "Team added successfully", type: "success" });
-        navigate("/admin/teams");
+        navigate("/admin/bod");
       }
     } catch (e) {
       console.error(e);
@@ -178,11 +168,12 @@ const TeamsForms = () => {
     <AdminLayout
       breadcrumbItems={[
         { label: "Dashboard", link: "/admin" },
-        { label: "Our Team", link: "/admin/teams" },
-        { label: `${id ? "Edit" : "Add"} Team` },
+        { label: "Board of Directors", link: "/admin/bod" },
+        { label: `${id ? "Edit" : "Add"} Board of Directors` },
       ]}
-      activeSidebarItem="Our Team"
-      title={`${id ? "Edit" : "Add"} Team`}
+      activeSidebarItem="Board of Directors"
+      title={`${id ? "Edit" : "Add"} Board of Directors
+`}
     >
       <Box position="relative">
         {/* Overlay and Spinner */}
@@ -206,7 +197,10 @@ const TeamsForms = () => {
           <CardBody>
             <form onSubmit={handleSubmit(onSubmit)}>
               <HStack justifyContent="space-between" alignItems="center">
-                <Heading mb={6}> {id ? "Edit" : "Add"} Teams </Heading>
+                <Heading mb={6}>
+                  {" "}
+                  {id ? "Edit" : "Add"} Board of Directors
+                </Heading>
                 <Controller
                   name="status"
                   control={control}
@@ -295,7 +289,7 @@ const TeamsForms = () => {
                         <Field label="Name">
                           <Input
                             {...field}
-                            placeholder="Enter team name"
+                            placeholder="Enter member name"
                             size={"md"}
                             onChange={(e) =>
                               handleFieldChange("name", e.target.value)
@@ -378,60 +372,6 @@ const TeamsForms = () => {
                       )}
                     />
 
-                    {/* <Controller
-                      name="role"
-                      control={control}
-                      rules={{ required: "Role is required" }}
-                      render={({ field }) => (
-                        <Field label="Role">
-                          <Select
-                            {...field}
-                            isClearable
-                            options={options}
-                            value={options.find(
-                              (option) => option.value === field.value
-                            )}
-                            onChange={(selectedOption) =>
-                              handleFieldChange(
-                                "role",
-                                selectedOption?.value || ""
-                              )
-                            }
-                            placeholder="Select user role"
-                            styles={{
-                              container: (base) => ({
-                                ...base,
-                                width: "100%",
-                              }),
-                              control: (base) => ({
-                                ...base,
-                                width: "100%",
-                                borderColor: errors.role
-                                  ? "red"
-                                  : base.borderColor,
-                              }),
-                              menu: (base) => ({
-                                ...base,
-                                width: "100%",
-                              }),
-                              valueContainer: (base) => ({
-                                ...base,
-                                width: "100%",
-                              }),
-                              input: (base) => ({
-                                ...base,
-                                width: "100%",
-                              }),
-                            }}
-                          />
-                          {errors.role && (
-                            <Text textStyle="sm" color="red">
-                              {errors.role.message}
-                            </Text>
-                          )}
-                        </Field>
-                      )}
-                    /> */}
                     <Controller
                       name="priority_order"
                       control={control}
@@ -465,6 +405,56 @@ const TeamsForms = () => {
                     />
                   </VStack>
                 </HStack>
+
+                {/* <Controller
+                  name="image"
+                  control={control}
+                  rules={!id ? { required: "Image URL is required" } : {}}
+                  render={({ field }) => (
+                    <Field label="Image URL">
+                      <FileUploadRoot
+                        alignItems="stretch"
+                        maxFiles={1}
+                        accept={["image/*"]}
+                        onFileAccept={(value) => {
+                          const file = value.files[0];
+                          field.onChange(file);
+                          handleImageUpload(file);
+                        }}
+                      >
+                        <FileUploadDropzone
+                          value={
+                            typeof field.value === "string" ? field.value : ""
+                          }
+                          label="Drag and drop here to upload"
+                          description=".png, .jpg up to 5MB"
+                        />
+                        {(selectedImage ||
+                          teamData.image ||
+                          teamData.image_url) && (
+                          <Image
+                            src={
+                              selectedImage ||
+                              (typeof teamData.image === "string"
+                                ? teamData.image
+                                : undefined) ||
+                              teamData.image_url
+                            }
+                            alt="Uploaded or Existing Image"
+                            objectFit="contain"
+                            aspectRatio={2 / 1}
+                            mt={4}
+                          />
+                        )}
+                      </FileUploadRoot>
+                      {errors.image && (
+                        <Text textStyle="sm" color="red">
+                          {errors.image.message}
+                        </Text>
+                      )}
+                    </Field>
+                  )}
+                /> */}
               </VStack>
               <HStack justifyContent="flex-end" mt={4}>
                 <Button variant={"ghost"} onClick={() => navigate(-1)}>
@@ -484,4 +474,4 @@ const TeamsForms = () => {
   );
 };
 
-export default TeamsForms;
+export default BODForms;

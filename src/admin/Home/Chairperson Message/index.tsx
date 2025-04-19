@@ -29,15 +29,31 @@ interface ContactFields {
   Mobile: string;
 }
 
+interface AboutUsSection {
+  name: string;
+  desc: string;
+}
+
 interface AdditionalInformation {
-  "Our Mission": string;
-  "Our Vision": string;
+  [key: string]: string; // Dynamic keys for sections
 }
 
 const ChairpersonMessage = () => {
   const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState<string | null>();
   const [isLoading, setIsLoading] = useState(false);
+
+  const [aboutUsData, setAboutUsData] = useState<AboutUsSection[]>([]);
+  const [selectedSections, setSelectedSections] = useState<
+    Record<string, boolean>
+  >({});
+
+  const handleSectionToggle = (sectionName: string) => {
+    setSelectedSections((prev) => ({
+      ...prev,
+      [sectionName]: !prev[sectionName],
+    }));
+  };
   const [pageData, setPageData] = useState<ChairpersonMessageType>({
     company_description: "",
     message_from_chairperson: "",
@@ -81,6 +97,7 @@ const ChairpersonMessage = () => {
     const fetchData = async () => {
       try {
         const res = await axiosInstance.get("/chairpersonmessage");
+        const aboutRes = await axiosInstance.get("/aboutus");
         const data = res.data.data;
         setPageData(data);
         if (data.chairperson_contact) {
@@ -100,10 +117,20 @@ const ChairpersonMessage = () => {
             typeof data.additional_information === "string"
               ? JSON.parse(data.additional_information)
               : data.additional_information;
-          setAdditionalInfo({
-            "Our Mission": additionalInfo["Our Mission"] || "",
-            "Our Vision": additionalInfo["Our Vision"] || "",
+          setAdditionalInfo(additionalInfo);
+
+          // Initialize selected sections based on existing additional info
+          const initialSelected: Record<string, boolean> = {};
+          Object.keys(additionalInfo).forEach((key) => {
+            initialSelected[key] = true;
           });
+          setSelectedSections(initialSelected);
+        }
+
+        // Handle about us data
+        if (aboutRes.data.data && aboutRes.data.data.length > 0) {
+          const sections = aboutRes.data.data[0].sections;
+          setAboutUsData(sections);
         }
       } catch (e) {
         console.log(e);
@@ -114,12 +141,89 @@ const ChairpersonMessage = () => {
     fetchData();
   }, []);
 
+  // const onSubmit = async (data: ChairpersonMessageType) => {
+  //   setIsLoading(true);
+  //   try {
+  //     const formData = new FormData();
+
+  //     // Add simple string fields
+  //     formData.append("company_description", data.company_description);
+  //     formData.append(
+  //       "message_from_chairperson",
+  //       data.message_from_chairperson
+  //     );
+  //     formData.append("chairperson_fullname", data.chairperson_fullname);
+
+  //     const additionalInfoData: Record<string, string> = {};
+
+  //     // Add selected sections from About Us
+  //     aboutUsData.forEach((section) => {
+  //       if (selectedSections[section.name]) {
+  //         additionalInfoData[section.name] = section.desc;
+  //       }
+  //     });
+
+  //     // Add any existing additional info that might not be in aboutUsData
+  //     Object.entries(additionalInfo).forEach(([key, value]) => {
+  //       if (!aboutUsData.some((section) => section.name === key) && value) {
+  //         additionalInfoData[key] = value;
+  //       }
+  //     });
+
+  //     // Append as raw object (FormData will handle serialization)
+  //     formData.append(
+  //       "additional_information",
+  //       JSON.stringify(additionalInfoData)
+  //     );
+
+  //     // Handle chairperson_contact (convert object to JSON string)
+  //     formData.append("chairperson_contact", JSON.stringify(contactFields));
+
+  //     // Handle image upload
+  //     Object.entries(data).forEach(([key, value]) => {
+  //       if (key === "chairperson_image" && typeof value === "string") {
+  //         formData.append(key, "");
+  //       } else if (
+  //         key === "additional_information" &&
+  //         JSON.stringify(value) !== pageData.additional_information
+  //       ) {
+  //         formData.append(key, JSON.stringify(value));
+  //       } else if (
+  //         key === "chairperson_contact" &&
+  //         JSON.stringify(value) !== pageData.chairperson_contact
+  //       ) {
+  //         formData.append(key, JSON.stringify(value));
+  //       } else if (value && typeof value === "object" && "size" in value) {
+  //         formData.append(key, value as Blob);
+  //       } else {
+  //         formData.append(key, String(value));
+  //       }
+  //     });
+  //     await axiosInstance.post(`/chairpersonmessage`, formData, {
+  //       headers: {
+  //         "Content-Type": "multipart/form-data",
+  //       },
+  //     });
+  //     showToast({
+  //       description: "Updated Successfully",
+  //       type: "success",
+  //     });
+  //   } catch (e) {
+  //     console.log(e);
+  //     showToast({
+  //       description: "Failed",
+  //       type: "error",
+  //     });
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
   const onSubmit = async (data: ChairpersonMessageType) => {
     setIsLoading(true);
     try {
       const formData = new FormData();
 
-      // Add simple string fields
       formData.append("company_description", data.company_description);
       formData.append(
         "message_from_chairperson",
@@ -127,43 +231,48 @@ const ChairpersonMessage = () => {
       );
       formData.append("chairperson_fullname", data.chairperson_fullname);
 
-      // Handle additional_information (convert object to JSON string)
-      formData.append("additional_information", JSON.stringify(additionalInfo));
+      // ✅ Append additional information using `aboutUsData` + `additionalInfo`
+      const additionalInfoData: Record<string, string> = {};
 
-      // Handle chairperson_contact (convert object to JSON string)
-      formData.append("chairperson_contact", JSON.stringify(contactFields));
-
-      // Handle image upload
-      Object.entries(data).forEach(([key, value]) => {
-        if (key === "chairperson_image" && typeof value === "string") {
-          formData.append(key, "");
-        } else if (
-          key === "additional_information" &&
-          JSON.stringify(value) !== pageData.additional_information
-        ) {
-          formData.append(key, JSON.stringify(value));
-        } else if (
-          key === "chairperson_contact" &&
-          JSON.stringify(value) !== pageData.chairperson_contact
-        ) {
-          formData.append(key, JSON.stringify(value));
-        } else if (value && typeof value === "object" && "size" in value) {
-          formData.append(key, value as Blob);
-        } else {
-          formData.append(key, String(value));
+      aboutUsData.forEach((section) => {
+        if (selectedSections[section.name]) {
+          additionalInfoData[section.name] = section.desc;
         }
       });
+
+      Object.entries(additionalInfo).forEach(([key, value]) => {
+        if (!aboutUsData.some((section) => section.name === key) && value) {
+          additionalInfoData[key] = value;
+        }
+      });
+
+      formData.append(
+        "additional_information",
+        JSON.stringify(additionalInfoData)
+      );
+
+      // ✅ Append contact fields from local state
+      formData.append("chairperson_contact", JSON.stringify(contactFields));
+
+      // ✅ Handle image file from selectedImage (if available)
+      const fileInput = fileInputRef.current?.files?.[0];
+      if (fileInput) {
+        const compressed = await compressImage(fileInput);
+        formData.append("chairperson_image", compressed);
+      }
+
       await axiosInstance.post(`/chairpersonmessage`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
+
       showToast({
         description: "Updated Successfully",
         type: "success",
       });
     } catch (e) {
-      console.log(e);
+      console.error(e);
       showToast({
         description: "Failed",
         type: "error",
@@ -274,7 +383,7 @@ const ChairpersonMessage = () => {
                       </Box>
                     )}
                   />
-                  <VStack gap={4} flex="1">
+                  <VStack gap={4} flex="1" align="start">
                     <Controller
                       name="chairperson_fullname"
                       rules={{ required: "Fullname is required" }}
@@ -295,6 +404,23 @@ const ChairpersonMessage = () => {
                         </Field>
                       )}
                     />
+                    <VStack align="start">
+                      <Text fontSize={"md"} fontWeight={"semibold"}>
+                        {" "}
+                        Additional Information{" "}
+                      </Text>
+                      {aboutUsData.map((section) => (
+                        <Box key={section.name} display="flex">
+                          <input
+                            type="checkbox"
+                            checked={!!selectedSections[section.name]}
+                            onChange={() => handleSectionToggle(section.name)}
+                            style={{ marginRight: "8px" }}
+                          />
+                          <Text>{section.name}</Text>
+                        </Box>
+                      ))}
+                    </VStack>
                   </VStack>
                 </HStack>
                 {/* <Controller
@@ -338,176 +464,6 @@ const ChairpersonMessage = () => {
                     </Field>
                   )}
                 />
-                {/* <Controller
-                  name="additional_information"
-                  control={control}
-                  render={({ field }) => (
-                    <Field>
-                      <Text fontWeight="medium" mb={2}>
-                        Our Mission
-                      </Text>
-                      <Textarea
-                        value={additionalInfo["Our Mission"]}
-                        onChange={(e) => {
-                          const newData = {
-                            ...additionalInfo,
-                            "Our Mission": e.target.value,
-                          };
-                          setAdditionalInfo(newData);
-                          field.onChange(JSON.stringify(newData));
-                        }}
-                        minHeight="100px"
-                        placeholder="Enter the mission statement"
-                      />
-
-                      <Text fontWeight="medium" mb={2}>
-                        Our Vision
-                      </Text>
-                      <Textarea
-                        value={additionalInfo["Our Vision"]}
-                        onChange={(e) => {
-                          const newData = {
-                            ...additionalInfo,
-                            "Our Vision": e.target.value,
-                          };
-                          setAdditionalInfo(newData);
-                          field.onChange(JSON.stringify(newData));
-                        }}
-                        minHeight="100px"
-                        placeholder="Enter the vision statement"
-                      />
-                    </Field>
-                  )}
-                />
-
-                <Controller
-                  name="chairperson_contact"
-                  control={control}
-                  render={({ field }) => (
-                    <Field label="Contact Information">
-                      <Box
-                        borderWidth="1px"
-                        borderRadius="lg"
-                        p={4}
-                        width="100%"
-                      >
-                        <Grid templateColumns="100px 1fr" gap={4}>
-                          <GridItem display="flex" alignItems="center">
-                            <Text fontWeight="medium">Email</Text>
-                          </GridItem>
-                          <GridItem>
-                            <Input
-                              value={contactFields.Email}
-                              onChange={(e) => {
-                                const newContact = {
-                                  ...contactFields,
-                                  Email: e.target.value,
-                                };
-                                setContactFields(newContact);
-                                field.onChange(JSON.stringify(newContact));
-                              }}
-                              placeholder="info@example.com"
-                            />
-                          </GridItem>
-
-                          <GridItem display="flex" alignItems="center">
-                            <Text fontWeight="medium">Phone</Text>
-                          </GridItem>
-                          <GridItem>
-                            <Input
-                              value={contactFields.Phone}
-                              onChange={(e) => {
-                                const newContact = {
-                                  ...contactFields,
-                                  Phone: e.target.value,
-                                };
-                                setContactFields(newContact);
-                                field.onChange(JSON.stringify(newContact));
-                              }}
-                              placeholder="+977-XXXXXXXXXX"
-                            />
-                          </GridItem>
-
-                          <GridItem display="flex" alignItems="center">
-                            <Text fontWeight="medium">Mobile</Text>
-                          </GridItem>
-                          <GridItem>
-                            <Input
-                              value={contactFields.Mobile}
-                              onChange={(e) => {
-                                const newContact = {
-                                  ...contactFields,
-                                  Mobile: e.target.value,
-                                };
-                                setContactFields(newContact);
-                                field.onChange(JSON.stringify(newContact));
-                              }}
-                              placeholder="+977-XXXXXXXXXX"
-                            />
-                          </GridItem>
-                        </Grid>
-                      </Box>
-                    </Field>
-                  )}
-                /> */}
-                {/* <Controller
-                  name="chairperson_image"
-                  control={control}
-                  rules={{ required: "Image URL is required" }}
-                  render={({ field }) => (
-                    <Field label="Image URL">
-                      <FileUploadRoot
-                        alignItems="stretch"
-                        maxFiles={1}
-                        accept={["image/*"]}
-                        onFileAccept={async (value) => {
-                          const file = value.files[0];
-                          try {
-                            // Compress the image and get the compressed file
-                            const compressedFile = await compressImage(file);
-
-                            // Set the preview image URL (you can remove this line if not needed)
-                            setSelectedImage(
-                              URL.createObjectURL(compressedFile)
-                            );
-
-                            // Update the form state with the compressed image file
-                            field.onChange(compressedFile);
-                          } catch (error) {
-                            console.error("Compression error:", error);
-                          }
-                        }}
-                      >
-                        <FileUploadDropzone
-                          value={
-                            typeof field.value === "string" ? field.value : ""
-                          }
-                          label="Drag and drop here to upload"
-                          description=".png, .jpg up to 5MB"
-                        />
-                        {(selectedImage || pageData.chairperson_image) && (
-                          <Image
-                            src={
-                              selectedImage ||
-                              (typeof pageData.chairperson_image === "string"
-                                ? pageData.chairperson_image
-                                : undefined)
-                            }
-                            alt="Uploaded or Existing Image"
-                            objectFit="contain"
-                            aspectRatio={2 / 1}
-                            mt={4}
-                          />
-                        )}
-                      </FileUploadRoot>
-                      {errors.chairperson_image && (
-                        <Text textStyle="sm" color="red">
-                          {errors.chairperson_image.message}
-                        </Text>
-                      )}
-                    </Field>
-                  )}
-                /> */}
               </VStack>
               <HStack justifyContent="flex-end" mt={4}>
                 <Button variant={"ghost"} onClick={() => navigate(-1)}>

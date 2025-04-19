@@ -128,7 +128,7 @@ const SliderForm = () => {
       // Append all fields to formData
       formData.append("title", data.title);
       formData.append("sub_title", data.sub_title);
-      formData.append("priority_order", "1");
+      formData.append("priority_order", data.priority_order);
       formData.append("status", String(data.status));
       // Handle image (either file or existing URL)
       if (data.image instanceof Blob) {
@@ -266,10 +266,12 @@ const SliderForm = () => {
                       <Input
                         {...field}
                         placeholder="Enter title"
+                        value={field.value}
                         size="md"
-                        onChange={(e) =>
-                          handleFieldChange("title", e.target.value)
-                        }
+                        onChange={(e) => {
+                          field.onChange(e.target.value);
+                          handleFieldChange("title", e.target.value);
+                        }}
                       />
                       {errors.title && (
                         <Text textStyle="sm" color="red">
@@ -447,6 +449,10 @@ const SliderForm = () => {
                             Number(e.target.value)
                           )
                         }
+                        onWheel={(e) => {
+                          // Prevent the input value from changing on scroll
+                          e.currentTarget.blur();
+                        }}
                       />
                       {errors.priority_order && (
                         <Text textStyle="sm" color="red">

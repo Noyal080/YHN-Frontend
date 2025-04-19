@@ -105,12 +105,14 @@ export type TeamsInput = {
   name: string;
   image: string;
   position_id: number | null;
+  priority_order: number | null;
   image_url?: string;
   role: string;
   status: number;
 };
 
 export type TeamsData = {
+  priority_order : string;
   id?: number;
   name: string;
   image_url: string;
@@ -145,9 +147,13 @@ export type OurWorks = {
   title: string;
   description: string;
   sector_id: number | null;
+  services_id: number | null;
   sector: {
     name: string;
   };
+  service : {
+    title: string;
+  }
   banner_image: File | string;
   banner_start_date: string;
   banner_end_date: string;
@@ -165,7 +171,8 @@ export type OurWorkType = {
   id?: number;
   title: string;
   description: string;
-  sector_id: number | null;
+  // sector_id: number | null;
+  services_id: number | null;
   banner_image?: File | string;
   banner_start_date?: string;
   banner_end_date?: string;

@@ -110,7 +110,7 @@ const NewsSection = () => {
   const handleStatusChange = async (id: string, status: number) => {
     const newStatus = status === 1 ? 0 : 1;
     try {
-      await axiosInstance.post(`/news/${id}`, {
+      await axiosInstance.patch(`/news/${id}/status`, {
         status: newStatus,
       });
       setTriggerFetch(true);

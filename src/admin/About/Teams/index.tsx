@@ -27,7 +27,7 @@ const TeamSection = () => {
   const debouncedSearch = useDebounce(searchQuery, 500);
 
   const columns: Column<TeamsData>[] = [
-    { key: "id", label: "Id", visible: true },
+    { key: "priority_order", label: "Priority Order", visible: true },
     { key: "name", label: "Name", visible: true },
     {
       key: "image_url",
@@ -49,7 +49,6 @@ const TeamSection = () => {
       visible: true,
       render: (row) => <Text>{row.position.Name}</Text>,
     },
-    { key: "role", label: "Role", visible: true },
     {
       key: "status",
       label: "Status",
@@ -97,7 +96,7 @@ const TeamSection = () => {
       setLoading(true);
       try {
         const res = await axiosInstance.get("/teams", {
-          params: { page, search: debouncedSearch },
+          params: { page, name: debouncedSearch, role: "Staff" },
         });
         const data = res.data.data;
         setRows(data.data);
@@ -114,7 +113,7 @@ const TeamSection = () => {
   const handleStatusChange = async (id: string, status: number) => {
     const newStatus = status === 1 ? 0 : 1;
     try {
-      await axiosInstance.post(`/teams/${id}`, {
+      await axiosInstance.patch(`/teams/${id}/status`, {
         status: newStatus,
       });
       setTriggerFetch(true);

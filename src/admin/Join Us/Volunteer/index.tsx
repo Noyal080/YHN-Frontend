@@ -96,7 +96,7 @@ const VolunteerSection = () => {
     //Change this
     const newStatus = status === 1 ? 0 : 1;
     try {
-      await axiosInstance.patch(`/volunteers/${id}`, {
+      await axiosInstance.patch(`/volunteers/${id}/status`, {
         status: newStatus,
       });
       setTriggerFetch(true);

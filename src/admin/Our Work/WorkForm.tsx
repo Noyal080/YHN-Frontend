@@ -1,7 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import AdminLayout from "../Layout";
 import { useEffect, useState } from "react";
-import CreatableSelect from "react-select/creatable";
 import Select from "react-select";
 import { ImageInputTypes, OurWorkType } from "@/utils/types";
 import { Controller, useForm } from "react-hook-form";
@@ -73,7 +72,7 @@ const WorkForms = () => {
   const { showToast } = useCommonToast();
   const [pageData, setPageData] = useState<OurWorkType>({
     title: "",
-    sector_id: null,
+    services_id: null,
     description: "",
     banner_image: "",
     banner_start_date: "",
@@ -97,7 +96,7 @@ const WorkForms = () => {
     values: {
       id: pageData.id,
       title: pageData.title || "",
-      sector_id: pageData.sector_id,
+      services_id: pageData.services_id,
       description: pageData.description || "",
       banner_image: pageData.banner_image || "",
       banner_start_date: pageData.banner_start_date || "",
@@ -138,12 +137,12 @@ const WorkForms = () => {
   };
 
   useEffect(() => {
-    const fetchGalleryandSectors = async () => {
+    const fetchGalleryandServices = async () => {
       try {
         const res = await axiosInstance.get("/gallery", {
           params: { search: debouncedSearch },
         });
-        const sectorRes = await axiosInstance.get("/sectors");
+        const sectorRes = await axiosInstance.get("/service");
 
         const resData = res.data.data;
         const mappedOptions = resData.data.map((item: ImageInputTypes) => ({
@@ -153,8 +152,8 @@ const WorkForms = () => {
         setOptions(mappedOptions);
         const result = sectorRes.data.data.data;
         setSectorOptions(
-          result.map((sector: { name: string; id: number }) => ({
-            label: sector.name,
+          result.map((sector: { title: string; id: number }) => ({
+            label: sector.title,
             value: sector.id,
           }))
         );
@@ -165,7 +164,7 @@ const WorkForms = () => {
       }
     };
 
-    fetchGalleryandSectors();
+    fetchGalleryandServices();
   }, [debouncedSearch]);
 
   useEffect(() => {
@@ -200,18 +199,18 @@ const WorkForms = () => {
     try {
       const submissionData = { ...data };
 
-      if (typeof submissionData.sector_id === "string") {
-        // Create new position first
-        const positionResponse = await axiosInstance.post("/sectors", {
-          name: submissionData.sector_id,
-        });
+      // if (typeof submissionData.sector_id === "string") {
+      //   // Create new position first
+      //   const positionResponse = await axiosInstance.post("/sectors", {
+      //     name: submissionData.sector_id,
+      //   });
 
-        // Extract the new position ID from the response
-        const newPositionId = positionResponse.data.data.data.id;
+      //   // Extract the new position ID from the response
+      //   const newPositionId = positionResponse.data.data.data.id;
 
-        // Update the submission data with the new position ID
-        submissionData.sector_id = newPositionId;
-      }
+      //   // Update the submission data with the new position ID
+      //   submissionData.sector_id = newPositionId;
+      // }
       if (
         submissionData.gallery_id === null ||
         submissionData.gallery_id === undefined
@@ -336,14 +335,13 @@ const WorkForms = () => {
 
                 <HStack>
                   <Controller
-                    name="sector_id"
+                    name="services_id"
                     control={control}
-                    rules={{ required: "Work Sector is required" }}
                     render={({ field }) => (
                       <Field label="Sector">
-                        <CreatableSelect
+                        <Select
                           {...field}
-                          placeholder="Create or select sector"
+                          placeholder="Select sector"
                           // eslint-disable-next-line @typescript-eslint/no-explicit-any
                           options={sectorOptions as any}
                           value={
@@ -373,7 +371,7 @@ const WorkForms = () => {
                             control: (base) => ({
                               ...base,
                               width: "100%",
-                              borderColor: errors.sector_id
+                              borderColor: errors.services_id
                                 ? "red"
                                 : base.borderColor,
                               zIndex: 9999, // High z-index for the control
@@ -399,9 +397,9 @@ const WorkForms = () => {
                           }}
                         />
 
-                        {errors.sector_id && (
+                        {errors.services_id && (
                           <Text textStyle="sm" color="red">
-                            {errors.sector_id.message}
+                            {errors.services_id.message}
                           </Text>
                         )}
                       </Field>

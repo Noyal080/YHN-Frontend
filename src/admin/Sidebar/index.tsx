@@ -30,7 +30,7 @@ import {
   FiSettings,
 } from "react-icons/fi";
 import { GiNewspaper, GiPublicSpeaker } from "react-icons/gi";
-import { MdOutlineEventAvailable } from "react-icons/md";
+import { MdGroups, MdOutlineEventAvailable } from "react-icons/md";
 import { PiChartLineUp } from "react-icons/pi";
 import { GoOrganization } from "react-icons/go";
 import {
@@ -46,7 +46,7 @@ import { toggleDropdown, toggleSidebar } from "@/redux/sidebarSlice";
 import { RootState } from "@/redux/store";
 import Logo from "../../assets/YHN_Logo.jpg";
 import SmallLogo from "../../assets/LogoSmall.png";
-import { FaHandsHelping, FaTools } from "react-icons/fa";
+import { FaHandsHelping, FaTools, FaUserTie } from "react-icons/fa";
 
 interface MenuItem {
   id: number;
@@ -126,7 +126,14 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
       icon: FiInfo,
       children: [
         { id: 31, label: "Who are we", icon: FiUser, link: "/admin/about" },
-        { id: 33, label: "Our Team", icon: FiUsers, link: "/admin/teams" },
+        { id: 33, label: "Our Team", icon: MdGroups, link: "/admin/teams" },
+        {
+          id: 34,
+          label: "Board of Directors",
+          icon: FaUserTie,
+          link: "/admin/bod",
+        },
+
         {
           id: 94,
           label: "Testimonial",

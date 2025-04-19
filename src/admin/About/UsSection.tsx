@@ -7,43 +7,51 @@ import {
   Spinner,
   Text,
   VStack,
+  IconButton,
+  Stack,
+  Input,
 } from "@chakra-ui/react";
 import AdminLayout from "../Layout";
 import CommonEditor from "@/common/Editor";
 import { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useFieldArray } from "react-hook-form";
 import { axiosInstance } from "@/api/axios";
 import { Button } from "@/components/ui/button";
 import useCommonToast from "@/common/CommonToast";
+import { FaPlus, FaTrash } from "react-icons/fa";
+import { Field } from "@/components/ui/field";
+
+type SectionType = {
+  name: string;
+  desc: string;
+};
 
 type AboutType = {
-  description: string;
+  sections: SectionType[];
 };
 
 const UsSection = () => {
-  const [editorData, setEditorData] = useState<AboutType>({
-    description: "",
-  });
   const [isLoading, setIsLoading] = useState(false);
   const { showToast } = useCommonToast();
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<AboutType>({
-    values: {
-      description: editorData.description || "",
-    },
+    reset,
+  } = useForm<AboutType>();
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "sections",
   });
-  // const token = localStorage.getItem("accessToken");
-  // axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
   useEffect(() => {
     setIsLoading(true);
     const fetchData = async () => {
       try {
         const res = await axiosInstance.get("/aboutus");
-        setEditorData(res.data.data);
+        // Assuming the API returns data in the format you provided
+        reset({ sections: res.data.data[0].sections });
       } catch (e) {
         console.log(e);
       } finally {
@@ -51,12 +59,12 @@ const UsSection = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [reset]);
 
   const onSubmit = async (data: AboutType) => {
     setIsLoading(true);
     try {
-      await axiosInstance.put(`/aboutus`, data);
+      await axiosInstance.patch(`/aboutus/1`, { sections: data.sections });
       showToast({
         description: "Updated Successfully",
         type: "success",
@@ -64,7 +72,7 @@ const UsSection = () => {
     } catch (e) {
       console.log(e);
       showToast({
-        description: "Failed",
+        description: "Failed to update",
         type: "error",
       });
     } finally {
@@ -72,8 +80,8 @@ const UsSection = () => {
     }
   };
 
-  const handleFieldChange = (field: keyof AboutType, value: string) => {
-    setEditorData((prev) => ({ ...prev, [field]: value }));
+  const addNewSection = () => {
+    append({ name: "", desc: "" });
   };
 
   return (
@@ -86,7 +94,6 @@ const UsSection = () => {
       activeSidebarItem="Who are we"
     >
       <Box position="relative">
-        {/* Overlay and Spinner */}
         {isLoading && (
           <Box
             position="absolute"
@@ -94,11 +101,11 @@ const UsSection = () => {
             left={0}
             right={0}
             bottom={0}
-            bg="rgba(255, 255, 255, 0.8)" // Semi-transparent white background
+            bg="rgba(255, 255, 255, 0.8)"
             display="flex"
             alignItems="center"
             justifyContent="center"
-            zIndex={1} // Ensure it's above the form
+            zIndex={1}
           >
             <Spinner size="xl" color="blue.500" />
           </Box>
@@ -113,31 +120,70 @@ const UsSection = () => {
           <CardBody>
             <Heading mb={6}>Who are we Section</Heading>
             <form onSubmit={handleSubmit(onSubmit)}>
-              <VStack gap={4} align="stretch">
-                <Controller
-                  name="description"
-                  control={control}
-                  render={({ field }) => (
-                    <>
-                      <CommonEditor
-                        value={field.value}
-                        onChange={(value) => {
-                          field.onChange(value);
-                          handleFieldChange("description", value);
-                        }}
-                      />
-                      {errors.description && (
-                        <Text textStyle="sm" color="red">
-                          {errors.description.message}
-                        </Text>
+              <VStack gap={6} align="stretch">
+                {fields.map((field, index) => (
+                  <Stack key={field.id} position="relative">
+                    <IconButton
+                      aria-label="Delete section"
+                      onClick={() => remove(index)}
+                      position="absolute"
+                      right={2}
+                      top={-4}
+                      size="sm"
+                      colorScheme="red"
+                      variant={"outline"}
+                      colorPalette={"red"}
+                    >
+                      <FaTrash />
+                    </IconButton>
+                    <Controller
+                      name={`sections.${index}.name`}
+                      control={control}
+                      render={({ field }) => (
+                        <Field label="Title">
+                          <Input
+                            {...field}
+                            size={"md"}
+                            placeholder="Enter section name"
+                          />
+                          {errors.sections?.[index]?.name && (
+                            <Text color="red.500" fontSize="sm">
+                              {errors.sections[index]?.name?.message}
+                            </Text>
+                          )}
+                        </Field>
                       )}
-                    </>
-                  )}
-                />
+                    />
+                    <Controller
+                      name={`sections.${index}.desc`}
+                      control={control}
+                      render={({ field }) => (
+                        <Field label="Description">
+                          <CommonEditor
+                            value={field.value}
+                            onChange={field.onChange}
+                          />
+                          {errors.sections?.[index]?.desc && (
+                            <Text color="red.500" fontSize="sm">
+                              {errors.sections[index]?.desc?.message}
+                            </Text>
+                          )}
+                        </Field>
+                      )}
+                    />
+                  </Stack>
+                ))}
+                <IconButton
+                  aria-label="Add new section"
+                  onClick={addNewSection}
+                  colorScheme="blue"
+                  variant="outline"
+                >
+                  <FaPlus />
+                </IconButton>
               </VStack>
               <HStack justifyContent="flex-end" mt={4}>
-                <Button type="submit" colorPalette={"blue"}>
-                  {" "}
+                <Button type="submit" colorPalette="blue">
                   Save Changes
                 </Button>
               </HStack>

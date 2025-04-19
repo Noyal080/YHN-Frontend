@@ -131,7 +131,7 @@ const PartnerSlider = () => {
   const handleStatusChange = async (id: string, status: number) => {
     const newStatus = status === 1 ? 0 : 1;
     try {
-      await axiosInstance.post(`/partner/${id}`, {
+      await axiosInstance.patch(`/partner/${id}/status`, {
         status: newStatus,
       });
       console.log(`Partner ${id} status changed to ${newStatus}`);

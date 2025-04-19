@@ -17,10 +17,10 @@ const ProjectSection = () => {
     { key: "id", label: "Id", visible: true },
     { key: "title", label: "Title", visible: true },
     {
-      key: "sector",
+      key: "service",
       label: "Sector",
       visible: true,
-      render: (row) => <Text> {row.sector.name} </Text>,
+      render: (row) => <Text> {row.service.title} </Text>,
     },
     {
       key: "banner_image",
@@ -120,7 +120,7 @@ const ProjectSection = () => {
   const handleStatusChange = async (id: string, status: number) => {
     const newStatus = status === 1 ? 0 : 1;
     try {
-      await axiosInstance.post(`/ourwork/${id}`, {
+      await axiosInstance.patch(`/ourwork/${id}/status`, {
         status: newStatus,
       });
       setTriggerFetch(true);

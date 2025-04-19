@@ -123,66 +123,7 @@ const OrganizationDetails = () => {
             <Heading mb={6}>Organisation Information</Heading>
             <form onSubmit={handleSubmit(onSubmit)}>
               <VStack gap={4} align="stretch">
-                <Controller
-                  name="organisation_description"
-                  control={control}
-                  render={({ field }) => (
-                    <Field label="Organisation Description">
-                      <CommonEditor
-                        value={field.value || ""}
-                        onChange={(value) => {
-                          field.onChange(value);
-                        }}
-                      />
-
-                      {errors.organisation_description && (
-                        <Text textStyle="sm" color="red">
-                          {errors.organisation_description.message}
-                        </Text>
-                      )}
-                    </Field>
-                  )}
-                />
-                <Controller
-                  name="mission"
-                  control={control}
-                  render={({ field }) => (
-                    <Field label="Organisation Mission">
-                      <CommonEditor
-                        value={field.value || ""}
-                        onChange={(value) => {
-                          field.onChange(value);
-                        }}
-                      />
-
-                      {errors.mission && (
-                        <Text textStyle="sm" color="red">
-                          {errors.mission.message}
-                        </Text>
-                      )}
-                    </Field>
-                  )}
-                />
-                <Controller
-                  name="vision"
-                  control={control}
-                  render={({ field }) => (
-                    <Field label="Organisation Vision">
-                      <CommonEditor
-                        value={field.value || ""}
-                        onChange={(value) => {
-                          field.onChange(value);
-                        }}
-                      />
-
-                      {errors.vision && (
-                        <Text textStyle="sm" color="red">
-                          {errors.vision.message}
-                        </Text>
-                      )}
-                    </Field>
-                  )}
-                />
+           
 
                 <Controller
                   name="logo"

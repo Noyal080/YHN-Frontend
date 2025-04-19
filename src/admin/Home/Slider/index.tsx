@@ -25,7 +25,7 @@ const SliderSection = () => {
   const debouncedSearch = useDebounce(searchQuery, 500);
 
   const columns: Column<SliderInput>[] = [
-    { key: "id", label: "Id", visible: true },
+    { key: "priority_order", label: "Priority Order", visible: true },
     { key: "title", label: "Title", visible: true },
     {
       key: "sub_title",
@@ -133,7 +133,7 @@ const SliderSection = () => {
   const handleStatusChange = async (id: string, status: number) => {
     const newStatus = status === 1 ? 0 : 1;
     try {
-      await axiosInstance.post(`/sliders/${id}`, {
+      await axiosInstance.patch(`/sliders/${id}/status`, {
         status: newStatus,
       });
       setTriggerFetch(true);

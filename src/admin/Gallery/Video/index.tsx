@@ -73,7 +73,7 @@ const VideoSection = () => {
   const handleStatusChange = async (id: string, status: number) => {
     const newStatus = status === 1 ? 0 : 1;
     try {
-      await axiosInstance.patch(`/video/${id}`, {
+      await axiosInstance.patch(`/video/${id}/status`, {
         status: newStatus,
       });
       setTriggerFetch(true);
