@@ -15,7 +15,6 @@ import useCommonToast from "@/common/CommonToast";
 import { Controller, useForm } from "react-hook-form";
 import { axiosInstance } from "@/api/axios";
 import { Field } from "@/components/ui/field";
-import CommonEditor from "@/common/Editor";
 import { Button } from "@/components/ui/button";
 import {
   FileUploadDropzone,
@@ -123,8 +122,6 @@ const OrganizationDetails = () => {
             <Heading mb={6}>Organisation Information</Heading>
             <form onSubmit={handleSubmit(onSubmit)}>
               <VStack gap={4} align="stretch">
-           
-
                 <Controller
                   name="logo"
                   control={control}
