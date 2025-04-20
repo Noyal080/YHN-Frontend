@@ -333,6 +333,7 @@ const EventForm = () => {
                             container: (base) => ({
                               ...base,
                               width: "100%",
+                              zIndex: 1000,
                             }),
                             control: (base) => ({
                               ...base,
@@ -388,6 +389,7 @@ const EventForm = () => {
                             container: (base) => ({
                               ...base,
                               width: "100%",
+                              zIndex: 1000,
                             }),
                             control: (base) => ({
                               ...base,
@@ -622,6 +624,7 @@ const EventForm = () => {
                           styles={{
                             container: (base) => ({
                               ...base,
+                              zIndex: 1000,
                               width: "100%",
                             }),
                             control: (base) => ({
@@ -720,13 +723,6 @@ const EventForm = () => {
                           handleImageUpload(file);
                         }}
                       >
-                        <FileUploadDropzone
-                          value={
-                            typeof field.value === "string" ? field.value : ""
-                          }
-                          label="Drag and drop here to upload"
-                          description=".png, .jpg up to 5MB"
-                        />
                         {(selectedImage || pageData.banner_image) && (
                           <Image
                             src={
@@ -741,6 +737,13 @@ const EventForm = () => {
                             mt={4}
                           />
                         )}
+                        <FileUploadDropzone
+                          value={
+                            typeof field.value === "string" ? field.value : ""
+                          }
+                          label="Drag and drop here to upload"
+                          description=".png, .jpg up to 5MB"
+                        />
                       </FileUploadRoot>
                       {errors.banner_image && (
                         <Text textStyle="sm" color="red">

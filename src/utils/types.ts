@@ -52,8 +52,9 @@ export type TestimonialInput = {
   status: number;
   image: string | File;
   description: string;
-  designation_id: number | null;
+  designation_id?: number | null;
   // designation: string;
+  description2: string;
   category: string;
 };
 
@@ -63,10 +64,11 @@ export type TestimonialData = {
   status: number;
   image: string;
   description: string;
-  designation_id: number | null;
-  designation: {
-    Name: string;
-  };
+  // designation_id: number | null;
+  description2: string;
+  // designation: {
+  //   Name: string;
+  // };
   category: string;
 };
 
@@ -112,7 +114,7 @@ export type TeamsInput = {
 };
 
 export type TeamsData = {
-  priority_order : string;
+  priority_order: string;
   id?: number;
   name: string;
   image_url: string;
@@ -151,9 +153,9 @@ export type OurWorks = {
   sector: {
     name: string;
   };
-  service : {
+  service: {
     title: string;
-  }
+  };
   banner_image: File | string;
   banner_start_date: string;
   banner_end_date: string;

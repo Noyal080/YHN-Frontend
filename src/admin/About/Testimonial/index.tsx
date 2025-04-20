@@ -45,10 +45,10 @@ const Testimonial = () => {
       ),
     },
     {
-      key: "designation",
+      key: "description2",
       label: "Desgination",
       visible: true,
-      render: (row) => <Text>{row.designation.Name}</Text>,
+      render: (row) => <Text>{row.description2 ?? "N/A"}</Text>,
     },
     {
       key: "status",

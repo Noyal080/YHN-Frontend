@@ -4,7 +4,6 @@ import useCommonToast from "@/common/CommonToast";
 import CommonEditor from "@/common/Editor";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
-import CreatableSelect from "react-select/creatable";
 import { Switch } from "@/components/ui/switch";
 import { TestimonialInput } from "@/utils/types";
 import {
@@ -25,10 +24,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import { compressImage } from "@/helper/imageCompressor";
 import { FiPlus } from "react-icons/fi";
 
-interface DesignationOptions {
-  label: string;
-  value: number;
-}
+// interface DesignationOptions {
+//   label: string;
+//   value: number;
+// }
 
 const TestimonialForm = () => {
   const { id } = useParams();
@@ -37,15 +36,16 @@ const TestimonialForm = () => {
   const { showToast } = useCommonToast();
   const [selectedImage, setSelectedImage] = useState<string | null>();
   const [isLoading, setIsLoading] = useState(false);
-  const [designationOption, setDesignationOption] = useState<
-    DesignationOptions[]
-  >([]);
+  // const [designationOption, setDesignationOption] = useState<
+  //   DesignationOptions[]
+  // >([]);
   const navigate = useNavigate();
   const [testimonialData, setTestimonialData] = useState<TestimonialInput>({
     name: "",
     description: "",
-    designation_id: null,
+
     category: "",
+    description2: "",
     image: "",
     status: 1,
   });
@@ -60,7 +60,7 @@ const TestimonialForm = () => {
       name: testimonialData.name || "",
       description: testimonialData.description || "",
       image: testimonialData.image || "",
-      designation_id: testimonialData.designation_id || null,
+      description2: testimonialData.description2 || "",
       category: testimonialData.category || "",
       status: testimonialData.status || 1,
     },
@@ -84,24 +84,24 @@ const TestimonialForm = () => {
     }
   }, [id]);
 
-  useEffect(() => {
-    const fetchDesignation = async () => {
-      try {
-        const res = await axiosInstance.get("/designations");
-        const result = res.data.data.data;
-        setDesignationOption(
-          result.map((position: { name: string; id: number }) => ({
-            label: position.name,
-            value: position.id,
-          }))
-        );
-      } catch (e) {
-        console.log(e);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchDesignation = async () => {
+  //     try {
+  //       const res = await axiosInstance.get("/designations");
+  //       const result = res.data.data.data;
+  //       setDesignationOption(
+  //         result.map((position: { name: string; id: number }) => ({
+  //           label: position.name,
+  //           value: position.id,
+  //         }))
+  //       );
+  //     } catch (e) {
+  //       console.log(e);
+  //     }
+  //   };
 
-    fetchDesignation();
-  }, []);
+  //   fetchDesignation();
+  // }, []);
 
   const handleFieldChange = (
     field: keyof TestimonialInput,
@@ -127,17 +127,17 @@ const TestimonialForm = () => {
       const formData = new FormData();
 
       // Check if the position is a new one (a string value)
-      if (typeof submissionData.designation_id === "string") {
-        // Create new position first
-        const positionResponse = await axiosInstance.post("/designations", {
-          name: submissionData.designation_id,
-        });
+      // if (typeof submissionData.designation_id === "string") {
+      //   // Create new position first
+      //   const positionResponse = await axiosInstance.post("/designations", {
+      //     name: submissionData.designation_id,
+      //   });
 
-        // Extract the new position ID from the response
-        const newPositionId = positionResponse.data.data.id;
-        // Update the submission data with the new position ID
-        submissionData.designation_id = newPositionId;
-      }
+      //   // Extract the new position ID from the response
+      //   const newPositionId = positionResponse.data.data.id;
+      //   // Update the submission data with the new position ID
+      //   submissionData.designation_id = newPositionId;
+      // }
 
       Object.entries(submissionData).forEach(([key, value]) => {
         if (key === "image" && typeof value === "string") {
@@ -316,12 +316,12 @@ const TestimonialForm = () => {
                     />
 
                     <Controller
-                      name="designation_id"
+                      name="description2"
                       control={control}
                       rules={{ required: "Designation is required" }}
                       render={({ field }) => (
                         <Field label=" Designation">
-                          <CreatableSelect
+                          {/* <CreatableSelect
                             {...field}
                             placeholder="Create or select designation"
                             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -353,6 +353,7 @@ const TestimonialForm = () => {
                               container: (base) => ({
                                 ...base,
                                 width: "100%",
+                                zIndex: 1000,
                               }),
                               control: (base) => ({
                                 ...base,
@@ -378,6 +379,19 @@ const TestimonialForm = () => {
                           {errors.designation_id && (
                             <Text textStyle="sm" color="red">
                               {errors.designation_id.message}
+                            </Text>
+                          )} */}
+                          <Input
+                            {...field}
+                            placeholder="Enter designation name"
+                            size="md"
+                            onChange={(e) =>
+                              handleFieldChange("description2", e.target.value)
+                            }
+                          />
+                          {errors.description2 && (
+                            <Text textStyle="sm" color="red">
+                              {errors.description2.message}
                             </Text>
                           )}
                         </Field>

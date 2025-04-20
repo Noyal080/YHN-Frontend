@@ -214,7 +214,6 @@ const PartnerSliderForm = () => {
                   name="link"
                   control={control}
                   rules={{
-                    required: "Link is required",
                     pattern: {
                       value: /^https:\/\/[\w.-]+\.[a-z]{2,6}([/\w.-]*)*\/?$/,
                       message:
@@ -264,13 +263,6 @@ const PartnerSliderForm = () => {
                           handleImageUpload(file);
                         }}
                       >
-                        <FileUploadDropzone
-                          value={
-                            typeof field.value === "string" ? field.value : ""
-                          }
-                          label="Drag and drop here to upload"
-                          description=".png, .jpg up to 5MB"
-                        />
                         {(selectedImage || sliderData.image) && (
                           <Image
                             src={
@@ -285,6 +277,13 @@ const PartnerSliderForm = () => {
                             mt={4}
                           />
                         )}
+                        <FileUploadDropzone
+                          value={
+                            typeof field.value === "string" ? field.value : ""
+                          }
+                          label="Drag and drop here to upload"
+                          description=".png, .jpg up to 5MB"
+                        />
                       </FileUploadRoot>
                       {errors.image && (
                         <Text textStyle="sm" color="red">

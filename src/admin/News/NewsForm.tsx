@@ -286,13 +286,6 @@ const NewsForm = () => {
                           handleImageUpload(file);
                         }}
                       >
-                        <FileUploadDropzone
-                          value={
-                            typeof field.value === "string" ? field.value : ""
-                          }
-                          label="Drag and drop here to upload"
-                          description=".png, .jpg up to 5MB"
-                        />
                         {(selectedImage || pageData.image) && (
                           <Image
                             src={
@@ -307,6 +300,13 @@ const NewsForm = () => {
                             mt={4}
                           />
                         )}
+                        <FileUploadDropzone
+                          value={
+                            typeof field.value === "string" ? field.value : ""
+                          }
+                          label="Drag and drop here to upload"
+                          description=".png, .jpg up to 5MB"
+                        />
                       </FileUploadRoot>
                       {errors.image && (
                         <Text textStyle="sm" color="red">

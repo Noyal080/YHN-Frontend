@@ -267,6 +267,7 @@ const ServiceForms = () => {
                         styles={{
                           container: (base) => ({
                             ...base,
+                            zIndex: 1000,
                             width: "100%",
                           }),
                           control: (base) => ({

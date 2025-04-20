@@ -69,7 +69,7 @@ const OurImpactForm = () => {
     setIsLoading(true);
     try {
       if (id) {
-        await axiosInstance.patch(`/ourimpact/${id}`, data);
+        await axiosInstance.post(`/ourimpact/${id}`, data);
         showToast({
           description: "Impact data updated successfully!",
           type: "success",

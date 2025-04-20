@@ -400,13 +400,6 @@ const SliderForm = () => {
                           handleImageUpload(file);
                         }}
                       >
-                        <FileUploadDropzone
-                          value={
-                            typeof field.value === "string" ? field.value : ""
-                          }
-                          label="Drag and drop here to upload"
-                          description=".png, .jpg up to 5MB"
-                        />
                         {(selectedImage || sliderData.image) && (
                           <Image
                             src={
@@ -421,6 +414,13 @@ const SliderForm = () => {
                             mt={4}
                           />
                         )}
+                        <FileUploadDropzone
+                          value={
+                            typeof field.value === "string" ? field.value : ""
+                          }
+                          label="Drag and drop here to upload"
+                          description=".png, .jpg up to 5MB"
+                        />
                       </FileUploadRoot>
                       {errors.image && (
                         <Text textStyle="sm" color="red">

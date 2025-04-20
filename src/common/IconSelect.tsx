@@ -90,6 +90,7 @@ export const IconSelect = React.forwardRef<HTMLDivElement, IconSelectProps>(
             container: (base) => ({
               ...base,
               width: "100%",
+              zIndex: 1000,
             }),
             control: (base) => ({
               ...base,

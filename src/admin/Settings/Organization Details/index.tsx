@@ -149,13 +149,6 @@ const OrganizationDetails = () => {
                           }
                         }}
                       >
-                        <FileUploadDropzone
-                          value={
-                            typeof field.value === "string" ? field.value : ""
-                          }
-                          label="Drag and drop here to upload"
-                          description=".png, .jpg up to 5MB"
-                        />
                         {(selectedImage || initialData?.logo) && (
                           <Image
                             src={
@@ -167,6 +160,13 @@ const OrganizationDetails = () => {
                             mt={4}
                           />
                         )}
+                        <FileUploadDropzone
+                          value={
+                            typeof field.value === "string" ? field.value : ""
+                          }
+                          label="Drag and drop here to upload"
+                          description=".png, .jpg up to 5MB"
+                        />
                       </FileUploadRoot>
                       {errors.logo && (
                         <Text textStyle="sm" color="red">
@@ -203,13 +203,6 @@ const OrganizationDetails = () => {
                           }
                         }}
                       >
-                        <FileUploadDropzone
-                          value={
-                            typeof field.value === "string" ? field.value : ""
-                          }
-                          label="Drag and drop here to upload"
-                          description=".png, .jpg up to 5MB"
-                        />
                         {(selectedSmallImage || initialData?.small_logo) && (
                           <Image
                             src={
@@ -223,6 +216,13 @@ const OrganizationDetails = () => {
                             mt={4}
                           />
                         )}
+                        <FileUploadDropzone
+                          value={
+                            typeof field.value === "string" ? field.value : ""
+                          }
+                          label="Drag and drop here to upload"
+                          description=".png, .jpg up to 5MB"
+                        />
                       </FileUploadRoot>
                       {errors.small_logo && (
                         <Text textStyle="sm" color="red">

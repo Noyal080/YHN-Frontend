@@ -241,13 +241,6 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                         handleImageUpload(file);
                       }}
                     >
-                      <FileUploadDropzone
-                        value={
-                          typeof field.value === "string" ? field.value : ""
-                        }
-                        label="Drag and drop here to upload"
-                        description=".png, .jpg up to 5MB"
-                      />
                       {(selectedImage || profileData.image) && (
                         <Image
                           src={selectedImage || profileData.image}
@@ -257,6 +250,13 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
                           mt={4}
                         />
                       )}
+                      <FileUploadDropzone
+                        value={
+                          typeof field.value === "string" ? field.value : ""
+                        }
+                        label="Drag and drop here to upload"
+                        description=".png, .jpg up to 5MB"
+                      />
                     </FileUploadRoot>
                     {errors.image && (
                       <Text textStyle="sm" color="red">
