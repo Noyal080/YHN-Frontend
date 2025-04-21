@@ -36,15 +36,23 @@ interface IconOption {
 
 const iconList: IconOption[] = Object.keys(Icons)
   .filter((key) => key.startsWith("fa"))
-  .map((key) => ({
-    value: `fas fa-${key.replace("fa", "").toLowerCase()}`, // For database/CDN
-    label: key
+  .map((key) => {
+    // Convert camelCase to kebab-case for the icon name
+    const iconName = key
       .replace("fa", "")
-      .replace(/([A-Z])/g, " $1")
-      .trim(), // Display name
-    icon: (Icons as unknown as Record<string, IconDefinition>)[key], // For React display
-    iconClass: `fas fa-${key.replace("fa", "").toLowerCase()}`, // Alternative display
-  }));
+      .replace(/([a-z])([A-Z])/g, "$1-$2")
+      .toLowerCase();
+
+    return {
+      value: `fa-solid fa-${iconName}`, // For database/CDN
+      label: key
+        .replace("fa", "")
+        .replace(/([A-Z])/g, " $1")
+        .trim(), // Display name
+      icon: (Icons as unknown as Record<string, IconDefinition>)[key], // For React display
+      iconClass: `fas fa-${iconName}`, // Alternative display
+    };
+  });
 
 export const MenuList = (props: MenuListProps<IconOption>) => {
   const { options, children, maxHeight, getValue } = props;

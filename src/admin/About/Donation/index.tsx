@@ -24,17 +24,12 @@ const Donations = () => {
     {
       key: "email",
       label: "Email",
-      visible: false,
+      visible: true,
       render: (row) => <EditorTextView message={row.email} />,
     },
     {
       key: "contributionType",
       label: "Contribution Type",
-      visible: true,
-    },
-    {
-      key: "contributionAmount",
-      label: "Contribution Amount",
       visible: true,
     },
   ];

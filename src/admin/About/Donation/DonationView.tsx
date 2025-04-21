@@ -67,18 +67,25 @@ const DonationView = () => {
         ) : (
           donationData && (
             <VStack align="stretch" gap={4}>
-              {donationFields.map((field) => (
-                <Flex key={field.key}>
-                  <Box width="350px" fontWeight="medium">
-                    <Text>{field.label}</Text>
-                  </Box>
-                  <Box flex={1}>
-                    {field.key === "contributionAmount"
-                      ? `${donationData[field.key as keyof DonationsType]}`
-                      : donationData[field.key as keyof DonationsType] || "-"}
-                  </Box>
-                </Flex>
-              ))}
+              {donationFields.map((field) => {
+                // Skip rendering if it's contributionAmount and the value is null
+                if (
+                  field.key === "contributionAmount" &&
+                  !donationData[field.key as keyof DonationsType]
+                ) {
+                  return null;
+                }
+                return (
+                  <Flex key={field.key}>
+                    <Box width="350px" fontWeight="medium">
+                      <Text>{field.label}</Text>
+                    </Box>
+                    <Box flex={1}>
+                      {donationData[field.key as keyof DonationsType] || "-"}
+                    </Box>
+                  </Flex>
+                );
+              })}
             </VStack>
           )
         )}
