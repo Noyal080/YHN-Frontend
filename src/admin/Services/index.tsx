@@ -70,10 +70,10 @@ const Services = () => {
       setTriggerFetch(true);
     } catch (e) {
       console.log(e);
-      showToast({
-        description: "Error while removing sector data",
-        type: "error",
-      });
+      // showToast({
+      //   description: "Error while removing sector data",
+      //   type: "error",
+      // });
       setLoading(false);
     }
   };

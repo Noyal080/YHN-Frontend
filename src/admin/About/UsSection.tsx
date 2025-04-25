@@ -71,10 +71,10 @@ const UsSection = () => {
       });
     } catch (e) {
       console.log(e);
-      showToast({
-        description: "Failed to update",
-        type: "error",
-      });
+      // showToast({
+      //   description: "Failed to update",
+      //   type: "error",
+      // });
     } finally {
       setIsLoading(false);
     }

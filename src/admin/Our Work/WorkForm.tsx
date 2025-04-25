@@ -336,6 +336,7 @@ const WorkForms = () => {
                 <HStack>
                   <Controller
                     name="services_id"
+                    rules={{ required: "Sector is required" }}
                     control={control}
                     render={({ field }) => (
                       <Field label="Sector">

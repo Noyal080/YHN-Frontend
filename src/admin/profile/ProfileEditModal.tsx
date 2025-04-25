@@ -107,10 +107,10 @@ const ProfileEditModal: React.FC<ProfileEditModalProps> = ({
       reset(); // Reset form state
       setSelectedImage(null); // Clear selected image
       onClose(); // Close the modal
-      showToast({
-        description: "Error while updating profile",
-        type: "error",
-      });
+      // showToast({
+      //   description: "Error while updating profile",
+      //   type: "error",
+      // });
     }
   };
 

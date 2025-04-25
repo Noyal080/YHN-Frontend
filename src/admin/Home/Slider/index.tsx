@@ -122,10 +122,10 @@ const SliderSection = () => {
       setTriggerFetch(true);
     } catch (e) {
       console.log(e);
-      showToast({
-        description: "Error while removing slider data",
-        type: "error",
-      });
+      // showToast({
+      //   description: "Error while removing slider data",
+      //   type: "error",
+      // });
       setLoading(false);
     }
   };

@@ -84,17 +84,17 @@ const OurImpactForm = () => {
       navigate("/admin/our-impact");
     } catch (e) {
       console.error(e);
-      if (id) {
-        showToast({
-          description: "Failed to update the Impact data",
-          type: "error",
-        });
-      } else {
-        showToast({
-          description: "Failed to add the Impact data",
-          type: "error",
-        });
-      }
+      // if (id) {
+      //   showToast({
+      //     description: "Failed to update the Impact data",
+      //     type: "error",
+      //   });
+      // } else {
+      //   showToast({
+      //     description: "Failed to add the Impact data",
+      //     type: "error",
+      //   });
+      // }
     } finally {
       setIsLoading(false);
     }

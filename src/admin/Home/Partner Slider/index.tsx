@@ -93,10 +93,10 @@ const PartnerSlider = () => {
         setLoading(false);
       } catch (e) {
         console.log(e);
-        showToast({
-          description: "Error while fetching data",
-          type: "error",
-        });
+        // showToast({
+        //   description: "Error while fetching data",
+        //   type: "error",
+        // });
         setLoading(false);
       }
     };
@@ -121,10 +121,10 @@ const PartnerSlider = () => {
       setTriggerFetch(true);
     } catch (e) {
       console.log(e);
-      showToast({
-        description: "Error while removing partner data",
-        type: "error",
-      });
+      // showToast({
+      //   description: "Error while removing partner data",
+      //   type: "error",
+      // });
     }
   };
 

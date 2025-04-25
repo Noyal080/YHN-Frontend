@@ -109,7 +109,7 @@ const ImageForm = () => {
       navigate("/admin/gallery/images");
     } catch (e) {
       console.log(e);
-      showToast({ type: "error", description: "Error while adding data" });
+      // showToast({ type: "error", description: "Error while adding data" });
     } finally {
       setIsLoading(false);
     }

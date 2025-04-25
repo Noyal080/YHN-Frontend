@@ -159,17 +159,17 @@ const SliderForm = () => {
       navigate("/admin/sliders");
     } catch (e) {
       console.error(e);
-      if (id) {
-        showToast({
-          description: "Failed to update the slider",
-          type: "error",
-        });
-      } else {
-        showToast({
-          description: "Failed to add the slider",
-          type: "error",
-        });
-      }
+      // if (id) {
+      //   showToast({
+      //     description: "Failed to update the slider",
+      //     type: "error",
+      //   });
+      // } else {
+      //   showToast({
+      //     description: "Failed to add the slider",
+      //     type: "error",
+      //   });
+      // }
     } finally {
       setIsLoading(false);
     }

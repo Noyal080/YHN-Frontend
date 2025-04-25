@@ -113,10 +113,10 @@ const Testimonial = () => {
       setTriggerFetch(true);
     } catch (e) {
       console.log(e);
-      showToast({
-        description: "Error while removing testimonial",
-        type: "error",
-      });
+      // showToast({
+      //   description: "Error while removing testimonial",
+      //   type: "error",
+      // });
       setLoading(false);
     }
   };

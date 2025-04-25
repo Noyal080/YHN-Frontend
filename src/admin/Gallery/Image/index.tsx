@@ -98,10 +98,10 @@ const ImageSection = () => {
       setTriggerFetch(true);
     } catch (e) {
       console.log(e);
-      showToast({
-        description: "Error while removing gallery data",
-        type: "error",
-      });
+      // showToast({
+      //   description: "Error while removing gallery data",
+      //   type: "error",
+      // });
     }
   };
 

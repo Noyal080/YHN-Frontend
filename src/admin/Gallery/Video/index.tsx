@@ -119,10 +119,10 @@ const VideoSection = () => {
       setTriggerFetch(true);
     } catch (e) {
       console.log(e);
-      showToast({
-        description: "Error while removing video data",
-        type: "error",
-      });
+      // showToast({
+      //   description: "Error while removing video data",
+      //   type: "error",
+      // });
     }
   };
 

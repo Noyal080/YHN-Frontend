@@ -77,10 +77,10 @@ const NewsSection = () => {
       setTriggerFetch(true);
     } catch (e) {
       console.log(e);
-      showToast({
-        description: "Error while removing news data",
-        type: "error",
-      });
+      // showToast({
+      //   description: "Error while removing news data",
+      //   type: "error",
+      // });
       setLoading(false);
     }
   };

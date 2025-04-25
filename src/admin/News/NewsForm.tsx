@@ -128,17 +128,17 @@ const NewsForm = () => {
       navigate("/admin/news");
     } catch (e) {
       console.error(e);
-      if (id) {
-        showToast({
-          description: "Failed to update the news",
-          type: "error",
-        });
-      } else {
-        showToast({
-          description: "Failed to add the news",
-          type: "error",
-        });
-      }
+      // if (id) {
+      //   showToast({
+      //     description: "Failed to update the news",
+      //     type: "error",
+      //   });
+      // } else {
+      //   showToast({
+      //     description: "Failed to add the news",
+      //     type: "error",
+      //   });
+      // }
     } finally {
       setIsLoading(false);
     }

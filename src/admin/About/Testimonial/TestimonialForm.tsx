@@ -168,12 +168,12 @@ const TestimonialForm = () => {
       }
     } catch (e) {
       console.error(e);
-      showToast({
-        description: id
-          ? `Failed to update the Testimonial`
-          : "Failed to add Testimonial",
-        type: "error",
-      });
+      // showToast({
+      //   description: id
+      //     ? `Failed to update the Testimonial`
+      //     : "Failed to add Testimonial",
+      //   type: "error",
+      // });
     } finally {
       setIsLoading(false);
     }

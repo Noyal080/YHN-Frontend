@@ -273,10 +273,10 @@ const ChairpersonMessage = () => {
       });
     } catch (e) {
       console.error(e);
-      showToast({
-        description: "Failed",
-        type: "error",
-      });
+      // showToast({
+      //   description: "Failed",
+      //   type: "error",
+      // });
     } finally {
       setIsLoading(false);
     }

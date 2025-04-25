@@ -17,7 +17,6 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
@@ -91,17 +90,18 @@ const InternshipForm = () => {
       }
       navigate("/admin/internship");
     } catch (error) {
-      let errorMessage = "Failed to update internship";
-      if (axios.isAxiosError(error)) {
-        // Try to get the error message from response data first
-        errorMessage = error.response?.data?.message;
-      } else if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-      showToast({
-        description: errorMessage,
-        type: "error",
-      });
+      console.error(error);
+      // let errorMessage = "Failed to update internship";
+      // if (axios.isAxiosError(error)) {
+      //   // Try to get the error message from response data first
+      //   errorMessage = error.response?.data?.message;
+      // } else if (error instanceof Error) {
+      //   errorMessage = error.message;
+      // }
+      // showToast({
+      //   description: errorMessage,
+      //   type: "error",
+      // });
     } finally {
       setIsLoading(false);
     }

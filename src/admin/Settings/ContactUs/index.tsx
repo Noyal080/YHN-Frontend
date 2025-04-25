@@ -109,10 +109,10 @@ const ContactUsPage = () => {
       });
     } catch (error) {
       console.error("Update failed:", error);
-      showToast({
-        description: "Error while updating Contact Information",
-        type: "error",
-      });
+      // showToast({
+      //   description: "Error while updating Contact Information",
+      //   type: "error",
+      // });
     }
   };
 

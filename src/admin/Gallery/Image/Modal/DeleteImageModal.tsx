@@ -31,7 +31,7 @@ const DeleteImageModal = ({
       showToast({ description: "Image deleted successfully", type: "success" });
     } catch (e) {
       console.log(e);
-      showToast({ description: "Error while deleting image", type: "error" });
+      // showToast({ description: "Error while deleting image", type: "error" });
     }
   };
 

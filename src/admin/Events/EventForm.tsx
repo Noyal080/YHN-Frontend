@@ -210,17 +210,17 @@ const EventForm = () => {
       navigate("/admin/events");
     } catch (e) {
       console.error(e);
-      if (id) {
-        showToast({
-          description: "Failed to update the events",
-          type: "error",
-        });
-      } else {
-        showToast({
-          description: "Failed to add the events",
-          type: "error",
-        });
-      }
+      // if (id) {
+      //   showToast({
+      //     description: "Failed to update the events",
+      //     type: "error",
+      //   });
+      // } else {
+      //   showToast({
+      //     description: "Failed to add the events",
+      //     type: "error",
+      //   });
+      // }
     } finally {
       setIsLoading(false);
     }

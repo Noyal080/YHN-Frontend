@@ -1,6 +1,7 @@
 import { logout } from "@/redux/authSlice";
 import { RootState, store } from "@/redux/store";
 import axios from "axios";
+import { showErrorToast } from "./errorToast";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -40,19 +41,40 @@ axiosInstance.interceptors.response.use(
   (error) => {
     if (axios.isAxiosError(error)) {
       if (error.response?.status === 401) {
-        // Clear localStorage
         localStorage.clear();
-
-        // Dispatch action to clear auth state in Redux
         store.dispatch(logout());
-
-        // Redirect to login page
-        // Option 1: If using React Router v6+
         window.location.href = "/login";
-
-        // Option 2: If not using React Router
-        // window.location.href = '/login';
+        return Promise.reject(error);
       }
+
+      // Handle other error responses
+      let errorMessage = "An unexpected error occurred";
+
+      if (error.response) {
+        const responseData = error.response.data;
+
+        if (responseData.message) {
+          errorMessage = responseData.message;
+          console.log("herer2");
+        }
+        // Case 1: Field-specific errors (like services_id)
+        else if (responseData.error && typeof responseData.error === "object") {
+          // Join all error messages from different fields
+          errorMessage = Object.values(responseData.error)
+            .flatMap((errors) => (Array.isArray(errors) ? errors : [errors]))
+            .join("\n");
+          console.log("herer1");
+        }
+        // Case 2: Simple message
+
+        // Case 3: Fallback to status text or generic message
+        else {
+          errorMessage = error.response.statusText || errorMessage;
+          console.log("herer3");
+        }
+      }
+
+      showErrorToast(errorMessage);
     }
 
     return Promise.reject(error);

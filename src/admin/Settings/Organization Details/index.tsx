@@ -84,10 +84,10 @@ const OrganizationDetails = () => {
       });
     } catch (error) {
       console.error("Update failed:", error);
-      showToast({
-        description: "Error while updating Organisation Information",
-        type: "error",
-      });
+      // showToast({
+      //   description: "Error while updating Organisation Information",
+      //   type: "error",
+      // });
     }
   };
   return (

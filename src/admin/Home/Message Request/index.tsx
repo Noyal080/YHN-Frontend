@@ -71,10 +71,10 @@ const MessageRequest = () => {
       setTriggerFetch(true);
     } catch (e) {
       console.log(e);
-      showToast({
-        description: "Error while removing message request data",
-        type: "error",
-      });
+      // showToast({
+      //   description: "Error while removing message request data",
+      //   type: "error",
+      // });
       setLoading(false);
     }
   };

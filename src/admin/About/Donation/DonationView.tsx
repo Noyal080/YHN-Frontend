@@ -68,7 +68,6 @@ const DonationView = () => {
           donationData && (
             <VStack align="stretch" gap={4}>
               {donationFields.map((field) => {
-                // Skip rendering if it's contributionAmount and the value is null
                 if (
                   field.key === "contributionAmount" &&
                   !donationData[field.key as keyof DonationsType]

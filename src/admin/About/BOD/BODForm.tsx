@@ -155,10 +155,10 @@ const BODForms = () => {
       }
     } catch (e) {
       console.error(e);
-      showToast({
-        description: id ? `Failed to update the team` : "Failed to add team",
-        type: "error",
-      });
+      // showToast({
+      //   description: id ? `Failed to update the team` : "Failed to add team",
+      //   type: "error",
+      // });
     } finally {
       setIsLoading(false); // Set loading to false when submission ends (success or error)
     }

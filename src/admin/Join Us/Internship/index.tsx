@@ -8,7 +8,6 @@ import useDebounce from "@/helper/debounce";
 import { Column } from "@/utils";
 import { InternshipType, PaginationProps } from "@/utils/types";
 import { Text } from "@chakra-ui/react";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -61,10 +60,10 @@ const InternshipSection = () => {
       setTriggerFetch(true);
     } catch (e) {
       console.log(e);
-      showToast({
-        description: "Error while removing internship data",
-        type: "error",
-      });
+      // showToast({
+      //   description: "Error while removing internship data",
+      //   type: "error",
+      // });
       setLoading(false);
     }
   };
@@ -102,17 +101,18 @@ const InternshipSection = () => {
       });
       setTriggerFetch(true);
     } catch (error) {
-      let errorMessage = "Failed to update volunteer status";
-      if (axios.isAxiosError(error)) {
-        // Try to get the error message from response data first
-        errorMessage = error.response?.data?.message;
-      } else if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-      showToast({
-        description: errorMessage,
-        type: "error",
-      });
+      console.error(error);
+      // let errorMessage = "Failed to update volunteer status";
+      // if (axios.isAxiosError(error)) {
+      //   // Try to get the error message from response data first
+      //   errorMessage = error.response?.data?.message;
+      // } else if (error instanceof Error) {
+      //   errorMessage = error.message;
+      // }
+      // showToast({
+      //   description: errorMessage,
+      //   type: "error",
+      // });
     }
   };
 

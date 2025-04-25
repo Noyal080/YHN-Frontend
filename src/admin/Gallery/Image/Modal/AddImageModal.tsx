@@ -69,7 +69,7 @@ const AddImageModal = ({
       showToast({ description: "Images added successfully", type: "success" });
     } catch (e) {
       console.log(e);
-      showToast({ description: "Error while adding images", type: "error" });
+      // showToast({ description: "Error while adding images", type: "error" });
     }
   };
 

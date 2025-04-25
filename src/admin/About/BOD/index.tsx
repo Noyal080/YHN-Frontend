@@ -81,10 +81,10 @@ const BodSection = () => {
       setTriggerFetch(true);
     } catch (e) {
       console.log(e);
-      showToast({
-        description: "Error while removing team data",
-        type: "error",
-      });
+      // showToast({
+      //   description: "Error while removing team data",
+      //   type: "error",
+      // });
       setLoading(false);
     }
   };

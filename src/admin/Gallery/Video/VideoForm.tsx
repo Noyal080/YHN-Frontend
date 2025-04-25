@@ -87,17 +87,17 @@ const VideoForm = () => {
       navigate("/admin/gallery/videos");
     } catch (e) {
       console.error(e);
-      if (id) {
-        showToast({
-          description: "Failed to update the video",
-          type: "error",
-        });
-      } else {
-        showToast({
-          description: "Failed to add the video",
-          type: "error",
-        });
-      }
+      // if (id) {
+      //   showToast({
+      //     description: "Failed to update the video",
+      //     type: "error",
+      //   });
+      // } else {
+      //   showToast({
+      //     description: "Failed to add the video",
+      //     type: "error",
+      //   });
+      // }
     } finally {
       setIsLoading(false);
     }

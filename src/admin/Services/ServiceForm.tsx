@@ -157,17 +157,17 @@ const ServiceForms = () => {
       navigate("/admin/sectors");
     } catch (e) {
       console.error(e);
-      if (id) {
-        showToast({
-          description: "Failed to update the Sector",
-          type: "error",
-        });
-      } else {
-        showToast({
-          description: "Failed to add the Sector",
-          type: "error",
-        });
-      }
+      // if (id) {
+      //   showToast({
+      //     description: "Failed to update the Sector",
+      //     type: "error",
+      //   });
+      // } else {
+      //   showToast({
+      //     description: "Failed to add the Sector",
+      //     type: "error",
+      //   });
+      // }
     } finally {
       setIsLoading(false);
     }

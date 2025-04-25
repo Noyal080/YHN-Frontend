@@ -119,12 +119,12 @@ const PartnerSliderForm = () => {
       navigate("/admin/partners");
     } catch (e) {
       console.error(e);
-      showToast({
-        description: id
-          ? "Failed to update the slider"
-          : "Failed to add the slider",
-        type: "error",
-      });
+      // showToast({
+      //   description: id
+      //     ? "Failed to update the slider"
+      //     : "Failed to add the slider",
+      //   type: "error",
+      // });
     } finally {
       setIsLoading(false);
     }

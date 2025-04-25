@@ -17,7 +17,6 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
@@ -90,24 +89,26 @@ const VolunteerForm = () => {
       }
       navigate("/admin/volunteer");
     } catch (error) {
-      let errorMessage = "Failed to update volunteer status";
-      if (axios.isAxiosError(error)) {
-        // Try to get the error message from response data first
-        errorMessage =
-          error.response?.data?.message ||
-          // Additional debugging info
-          console.log("Error details:", {
-            status: error.response?.status,
-            data: error.response?.data,
-          });
-      } else if (error instanceof Error) {
-        errorMessage = error.message;
-        console.log(errorMessage);
-      }
-      showToast({
-        description: errorMessage,
-        type: "error",
-      });
+      console.error(error);
+
+      // let errorMessage = "Failed to update volunteer status";
+      // if (axios.isAxiosError(error)) {
+      //   // Try to get the error message from response data first
+      //   errorMessage =
+      //     error.response?.data?.message ||
+      //     // Additional debugging info
+      //     console.log("Error details:", {
+      //       status: error.response?.status,
+      //       data: error.response?.data,
+      //     });
+      // } else if (error instanceof Error) {
+      //   errorMessage = error.message;
+      //   console.log(errorMessage);
+      // }
+      // showToast({
+      //   description: errorMessage,
+      //   type: "error",
+      // });
     } finally {
       setIsLoading(false);
     }
