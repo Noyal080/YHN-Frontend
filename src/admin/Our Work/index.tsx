@@ -41,18 +41,6 @@ const ProjectSection = () => {
       ),
     },
     {
-      key: "banner_start_date",
-      label: "Start Date",
-      visible: false,
-      render: (row) => row.banner_start_date ?? "N/A",
-    },
-    {
-      key: "banner_end_date",
-      label: "End Date",
-      visible: false,
-      render: (row) => row.banner_end_date ?? "N/A",
-    },
-    {
       key: "status",
       label: "Status",
       visible: true,
