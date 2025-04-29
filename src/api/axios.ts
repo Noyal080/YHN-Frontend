@@ -11,6 +11,7 @@ export const axiosInstance = axios.create({
     "Content-Type": "application/json",
     "Cache-Control": "no-cache",
     Pragma: "no-cache",
+    timeout: 20000,
     Expires: "0",
   },
 });

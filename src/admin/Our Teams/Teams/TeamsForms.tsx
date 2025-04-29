@@ -181,7 +181,7 @@ const TeamsForms = () => {
         { label: "Our Team", link: "/admin/teams" },
         { label: `${id ? "Edit" : "Add"} Team` },
       ]}
-      activeSidebarItem="Our Team"
+      activeSidebarItem="Core Team"
       title={`${id ? "Edit" : "Add"} Team`}
     >
       <Box position="relative">
@@ -297,9 +297,11 @@ const TeamsForms = () => {
                             {...field}
                             placeholder="Enter team name"
                             size={"md"}
-                            onChange={(e) =>
-                              handleFieldChange("name", e.target.value)
-                            }
+                            value={field.value}
+                            onChange={(e) => {
+                              field.onChange(e.target.value);
+                              handleFieldChange("name", e.target.value);
+                            }}
                           />
                           {errors.name && (
                             <Text textStyle="sm" color="red">

@@ -88,10 +88,10 @@ const UsSection = () => {
     <AdminLayout
       breadcrumbItems={[
         { label: "Dashboard", link: "/admin" },
-        { label: "Who are we" },
+        { label: "Who we are" },
       ]}
-      title={`Who are we`}
-      activeSidebarItem="Who are we"
+      title={`Who we are`}
+      activeSidebarItem="Who we are"
     >
       <Box position="relative">
         {isLoading && (
@@ -118,7 +118,7 @@ const UsSection = () => {
           variant={"elevated"}
         >
           <CardBody>
-            <Heading mb={6}>Who are we Section</Heading>
+            <Heading mb={6}>Who we are Section</Heading>
             <form onSubmit={handleSubmit(onSubmit)}>
               <VStack gap={6} align="stretch">
                 {fields.map((field, index) => (

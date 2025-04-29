@@ -75,8 +75,8 @@ const WorkForms = () => {
     services_id: null,
     description: "",
     banner_image: "",
-    banner_start_date: "",
-    banner_end_date: "",
+    // banner_start_date: "",
+    // banner_end_date: "",
     banner_location_district: "",
     banner_location_state: "",
     banner_location_city: "",
@@ -99,8 +99,8 @@ const WorkForms = () => {
       services_id: pageData.services_id,
       description: pageData.description || "",
       banner_image: pageData.banner_image || "",
-      banner_start_date: pageData.banner_start_date || "",
-      banner_end_date: pageData.banner_end_date || "",
+      // banner_start_date: pageData.banner_start_date || "",
+      // banner_end_date: pageData.banner_end_date || "",
       banner_location_district: pageData.banner_location_district || "",
       banner_location_state: pageData.banner_location_state || "",
       banner_location_city: pageData.banner_location_city || "",
@@ -199,18 +199,6 @@ const WorkForms = () => {
     try {
       const submissionData = { ...data };
 
-      // if (typeof submissionData.sector_id === "string") {
-      //   // Create new position first
-      //   const positionResponse = await axiosInstance.post("/sectors", {
-      //     name: submissionData.sector_id,
-      //   });
-
-      //   // Extract the new position ID from the response
-      //   const newPositionId = positionResponse.data.data.data.id;
-
-      //   // Update the submission data with the new position ID
-      //   submissionData.sector_id = newPositionId;
-      // }
       if (
         submissionData.gallery_id === null ||
         submissionData.gallery_id === undefined
@@ -429,7 +417,7 @@ const WorkForms = () => {
                             container: (base) => ({
                               ...base,
                               width: "100%",
-                              zIndex: 1000,
+                              zIndex: 10001,
                             }),
                             control: (base) => ({
                               ...base,
@@ -464,7 +452,7 @@ const WorkForms = () => {
                   />
                 </HStack>
 
-                <HStack>
+                {/* <HStack>
                   <Controller
                     name="banner_start_date"
                     control={control}
@@ -504,7 +492,7 @@ const WorkForms = () => {
                       </Field>
                     )}
                   />
-                </HStack>
+                </HStack> */}
 
                 <HStack>
                   <Controller

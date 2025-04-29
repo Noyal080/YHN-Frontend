@@ -18,7 +18,6 @@ interface WorkDashboardGraph extends ChartData {
 
 const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
-  // Set the default chartType to "Line"
   const breadcrumbItems = [{ label: "Dashboard", link: "/admin" }];
   const [eventByProvince, setEventByProvince] = useState<EventDashboardGraph[]>(
     []

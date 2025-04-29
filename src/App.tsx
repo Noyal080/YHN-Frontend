@@ -26,8 +26,8 @@ const ChairpersonMessage = lazy(
 );
 const MessageRequest = lazy(() => import("./admin/Home/Message Request"));
 const UsSection = lazy(() => import("./admin/About/UsSection"));
-const TeamSection = lazy(() => import("./admin/About/Teams"));
-const TeamsForms = lazy(() => import("./admin/About/Teams/TeamsForms"));
+const TeamSection = lazy(() => import("./admin/Our Teams/Teams"));
+const TeamsForms = lazy(() => import("./admin/Our Teams/Teams/TeamsForms"));
 const Testimonial = lazy(() => import("./admin/About/Testimonial"));
 const TestimonialForm = lazy(
   () => import("./admin/About/Testimonial/TestimonialForm")
@@ -75,8 +75,9 @@ const ViewInternship = lazy(
 const ViewVolunteer = lazy(
   () => import("./admin/Join Us/Volunteer/ViewVolunteerForm")
 );
-const BOD = lazy(() => import("./admin/About/BOD"));
-const BODForm = lazy(() => import("./admin/About/BOD/BODForm"));
+const BOD = lazy(() => import("./admin/Our Teams/BOD"));
+const BODForm = lazy(() => import("./admin/Our Teams/BOD/BODForm"));
+const Fellow = lazy(() => import("./admin/Our Teams/Fellow"));
 
 const ScrollToTop = memo(() => {
   const { pathname } = useLocation();
@@ -108,17 +109,21 @@ const adminRoutes = [
 
   // About Us Section
   { path: "/admin/about", element: <UsSection /> },
-  { path: "/admin/teams", element: <TeamSection /> },
-  { path: "/admin/teams/add", element: <TeamsForms /> },
-  { path: "/admin/teams/edit/:id", element: <TeamsForms /> },
+
   { path: "/admin/testimonials", element: <Testimonial /> },
   { path: "/admin/testimonials/add", element: <TestimonialForm /> },
   { path: "/admin/testimonials/edit/:id", element: <TestimonialForm /> },
   { path: "/admin/donation", element: <Donations /> },
   { path: "/admin/donation/:id", element: <DonationView /> },
+
+  //Our Team Section
+  { path: "/admin/teams", element: <TeamSection /> },
+  { path: "/admin/teams/add", element: <TeamsForms /> },
+  { path: "/admin/teams/edit/:id", element: <TeamsForms /> },
   { path: "/admin/bod", element: <BOD /> },
   { path: "/admin/bod/add", element: <BODForm /> },
   { path: "/admin/bod/edit/:id", element: <BODForm /> },
+  { path: "/admin/fellows", element: <Fellow /> },
 
   // Projects Section
   { path: "/admin/our-works", element: <ProjectSection /> },

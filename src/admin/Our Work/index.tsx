@@ -20,7 +20,7 @@ const ProjectSection = () => {
       key: "service",
       label: "Sector",
       visible: true,
-      render: (row) => <Text> {row.service.title} </Text>,
+      render: (row) => <Text> {row.service?.title ?? "N/A"} </Text>,
     },
     {
       key: "banner_image",
@@ -40,8 +40,18 @@ const ProjectSection = () => {
         />
       ),
     },
-    { key: "banner_start_date", label: "Start Date", visible: false },
-    { key: "banner_end_date", label: "End Date", visible: false },
+    {
+      key: "banner_start_date",
+      label: "Start Date",
+      visible: false,
+      render: (row) => row.banner_start_date ?? "N/A",
+    },
+    {
+      key: "banner_end_date",
+      label: "End Date",
+      visible: false,
+      render: (row) => row.banner_end_date ?? "N/A",
+    },
     {
       key: "status",
       label: "Status",

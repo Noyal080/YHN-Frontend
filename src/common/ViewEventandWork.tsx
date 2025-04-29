@@ -71,8 +71,9 @@ const EventDetails: React.FC<EventDetailsProps> = ({ event }) => {
           py={1}
         >
           <Text fontSize="lg">
-            📅 {event.banner_start_date} | 📍 {event.banner_location_state},{" "}
-            {event.banner_location_district} ,{event.banner_location_city}
+            {event.banner_start_date && <>📅 {event.banner_start_date}</>} | 📍{" "}
+            {event.banner_location_state}, {event.banner_location_district} ,
+            {event.banner_location_city}
           </Text>
         </Box>
       </Box>

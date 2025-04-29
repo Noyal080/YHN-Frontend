@@ -29,6 +29,7 @@ import {
   FiBookOpen,
   FiSettings,
 } from "react-icons/fi";
+import { RiTeamFill } from "react-icons/ri";
 import { GiNewspaper, GiPublicSpeaker } from "react-icons/gi";
 import { MdGroups, MdOutlineEventAvailable } from "react-icons/md";
 import { PiChartLineUp } from "react-icons/pi";
@@ -46,7 +47,13 @@ import { toggleDropdown, toggleSidebar } from "@/redux/sidebarSlice";
 import { RootState } from "@/redux/store";
 import Logo from "../../assets/YHN_Logo.jpg";
 import SmallLogo from "../../assets/LogoSmall.png";
-import { FaHandsHelping, FaTools, FaUserTie } from "react-icons/fa";
+import {
+  FaHandsHelping,
+  FaTools,
+  // FaUserGraduate,
+  // FaUserNinja,
+  FaUserTie,
+} from "react-icons/fa";
 
 interface MenuItem {
   id: number;
@@ -77,43 +84,48 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
 
   const menuItems = [
     {
-      id: 1,
+      id: 1, // Dashboard
       label: "Dashboard",
       icon: LuLayoutDashboard,
       link: "/admin",
     },
     {
-      id: 22,
+      id: 2, // Messages
       label: "Messages",
       icon: FiMail,
       link: "/admin/messages",
     },
     {
-      id: 95,
+      id: 3, // Donation
       label: "Donation",
       icon: FiDollarSign,
       link: "/admin/donation",
     },
     {
-      id: 2,
+      id: 4, // Home Section (Parent)
       label: "Home Section",
       icon: FiHome,
       children: [
-        { id: 21, label: "Sliders", icon: LuImagePlay, link: "/admin/sliders" },
         {
-          id: 23,
+          id: 401,
+          label: "Sliders",
+          icon: LuImagePlay,
+          link: "/admin/sliders",
+        },
+        {
+          id: 402,
           label: "Partner Slider",
           icon: FiUsers,
           link: "/admin/partners",
         },
         {
-          id: 24,
+          id: 403,
           label: "Chairperson Message",
           icon: GiPublicSpeaker,
           link: "/admin/chairperson-message",
         },
         {
-          id: 25,
+          id: 404,
           label: "Our Impact",
           icon: PiChartLineUp,
           link: "/admin/our-impact",
@@ -121,21 +133,13 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
       ],
     },
     {
-      id: 3,
+      id: 5, // About Us (Parent)
       label: "About Us",
       icon: FiInfo,
       children: [
-        { id: 31, label: "Who are we", icon: FiUser, link: "/admin/about" },
-        { id: 33, label: "Our Team", icon: MdGroups, link: "/admin/teams" },
+        { id: 501, label: "Who we are", icon: FiUser, link: "/admin/about" },
         {
-          id: 34,
-          label: "Board of Directors",
-          icon: FaUserTie,
-          link: "/admin/bod",
-        },
-
-        {
-          id: 94,
+          id: 502,
           label: "Testimonial",
           icon: LuQuote,
           link: "/admin/testimonials",
@@ -143,52 +147,72 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
       ],
     },
     {
-      id: 4,
+      id: 6, // Our Team (Parent)
+      label: "Our Team",
+      icon: MdGroups,
+      children: [
+        { id: 601, label: "Core Team", icon: RiTeamFill, link: "/admin/teams" },
+        {
+          id: 602,
+          label: "Board of Directors",
+          icon: FaUserTie,
+          link: "/admin/bod",
+        },
+        // {
+        //   id: 603,
+        //   label: "Former Interns",
+        //   icon: FaUserGraduate,
+        //   link: "/admin/interns",
+        // },
+        // {
+        //   id: 604,
+        //   label: "Former Fellows",
+        //   icon: FaUserNinja,
+        //   link: "/admin/fellows",
+        // },
+      ],
+    },
+    {
+      id: 7, // What we do (Parent)
       label: "What we do",
       icon: FaHandsHelping,
       children: [
         {
-          id: 41,
+          id: 701,
           label: "Our Works",
           icon: FiFolder,
           link: "/admin/our-works",
         },
-        { id: 42, label: "Sectors", icon: FaTools, link: "/admin/sectors" },
+        { id: 702, label: "Sectors", icon: FaTools, link: "/admin/sectors" },
       ],
     },
-
     {
-      id: 5,
+      id: 8, // News & Events (Parent)
       label: "News & Events",
       icon: FiCalendar,
       children: [
         {
-          id: 51,
+          id: 801,
           label: "Events",
           icon: MdOutlineEventAvailable,
           link: "/admin/events",
         },
-        {
-          id: 52,
-          label: "News",
-          icon: GiNewspaper,
-          link: "/admin/news",
-        },
+        { id: 802, label: "News", icon: GiNewspaper, link: "/admin/news" },
       ],
     },
     {
-      id: 7,
+      id: 9, // Gallery (Parent)
       label: "Gallery",
       icon: FiImage,
       children: [
         {
-          id: 71,
+          id: 901,
           label: "Image",
           icon: FiCamera,
           link: "/admin/gallery/images",
         },
         {
-          id: 72,
+          id: 902,
           label: "Video",
           icon: FiVideo,
           link: "/admin/gallery/videos",
@@ -196,38 +220,37 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
       ],
     },
     {
-      id: 9,
+      id: 10, // Join Us (Parent)
       label: "Join Us",
       icon: FiUserPlus,
       children: [
         {
-          id: 91,
+          id: 1001,
           label: "Volunteer",
           icon: FiUserCheck,
           link: "/admin/volunteer",
         },
         {
-          id: 92,
+          id: 1002,
           label: "Internship",
           icon: FiBookOpen,
           link: "/admin/internship",
         },
       ],
     },
-
     {
-      id: 10,
+      id: 11, // Settings (Parent)
       label: "Settings",
       icon: FiSettings,
       children: [
         {
-          id: 34,
+          id: 1101,
           label: "Contact Information",
           icon: LuContactRound,
           link: "/admin/contact-us",
         },
         {
-          id: 35,
+          id: 1102,
           label: "Organisation Information",
           icon: GoOrganization,
           link: "/admin/organization-details",

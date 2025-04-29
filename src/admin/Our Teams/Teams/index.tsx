@@ -130,7 +130,7 @@ const TeamSection = () => {
         { label: "Our Team" },
       ]}
       title={`Our Team`}
-      activeSidebarItem="Our Team"
+      activeSidebarItem="Core Team"
     >
       <CommonTable
         loading={loading}
