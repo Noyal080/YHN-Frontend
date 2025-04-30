@@ -327,3 +327,20 @@ export type OurImpactType = {
   icon: string;
   status: number;
 };
+
+export type FellowInternDataType = {
+  id?: number;
+  name: string;
+  image: string;
+  joined_date: string;
+  completion_date: string;
+  status: number;
+};
+
+export type FellowInternInput = {
+  name: string;
+  image: File | string;
+  joined_date: string;
+  completion_date: string;
+  status: number;
+};

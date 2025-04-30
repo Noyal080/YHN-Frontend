@@ -50,8 +50,8 @@ import SmallLogo from "../../assets/LogoSmall.png";
 import {
   FaHandsHelping,
   FaTools,
-  // FaUserGraduate,
-  // FaUserNinja,
+  FaUserGraduate,
+  FaUserNinja,
   FaUserTie,
 } from "react-icons/fa";
 
@@ -158,18 +158,18 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
           icon: FaUserTie,
           link: "/admin/bod",
         },
-        // {
-        //   id: 603,
-        //   label: "Former Interns",
-        //   icon: FaUserGraduate,
-        //   link: "/admin/interns",
-        // },
-        // {
-        //   id: 604,
-        //   label: "Former Fellows",
-        //   icon: FaUserNinja,
-        //   link: "/admin/fellows",
-        // },
+        {
+          id: 603,
+          label: "Interns",
+          icon: FaUserGraduate,
+          link: "/admin/interns",
+        },
+        {
+          id: 604,
+          label: "Fellows",
+          icon: FaUserNinja,
+          link: "/admin/fellows",
+        },
       ],
     },
     {

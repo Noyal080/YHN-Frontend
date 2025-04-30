@@ -67,7 +67,7 @@ const Services = () => {
       });
       setModalOpen(false);
       setLoading(true);
-      setTriggerFetch(true);
+      setTriggerFetch((prev) => !prev);
     } catch (e) {
       console.log(e);
       // showToast({
@@ -107,7 +107,7 @@ const Services = () => {
       await axiosInstance.patch(`/service/${id}/status`, {
         status: newStatus,
       });
-      setTriggerFetch(true);
+      setTriggerFetch((prev) => !prev);
     } catch (error) {
       console.error("Error changing status:", error);
     }

@@ -110,7 +110,7 @@ const Testimonial = () => {
       });
       setModalOpen(false);
       setLoading(true);
-      setTriggerFetch(true);
+      setTriggerFetch(false);
     } catch (e) {
       console.log(e);
       // showToast({
@@ -127,7 +127,7 @@ const Testimonial = () => {
       await axiosInstance.patch(`/testimonials/${id}/status`, {
         status: newStatus,
       });
-      setTriggerFetch(true);
+      setTriggerFetch((prev) => !prev);
     } catch (error) {
       console.error("Error changing status:", error);
       // Handle error (e.g., show an error message to the user)

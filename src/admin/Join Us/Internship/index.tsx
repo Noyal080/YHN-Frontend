@@ -57,7 +57,7 @@ const InternshipSection = () => {
       });
       setModalOpen(false);
       setLoading(true);
-      setTriggerFetch(true);
+      setTriggerFetch((prev) => !prev);
     } catch (e) {
       console.log(e);
       // showToast({
@@ -99,7 +99,7 @@ const InternshipSection = () => {
       await axiosInstance.patch(`/internships/${id}/status`, {
         status: newStatus,
       });
-      setTriggerFetch(true);
+      setTriggerFetch((prev) => !prev);
     } catch (error) {
       console.error(error);
       // let errorMessage = "Failed to update volunteer status";

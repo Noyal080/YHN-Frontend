@@ -76,7 +76,7 @@ const VideoSection = () => {
       await axiosInstance.patch(`/video/${id}/status`, {
         status: newStatus,
       });
-      setTriggerFetch(true);
+      setTriggerFetch((prev) => !prev);
     } catch (error) {
       console.error("Error changing status:", error);
       // Handle error (e.g., show an error message to the user)
@@ -116,7 +116,7 @@ const VideoSection = () => {
         type: "success",
       });
       setModalOpen(false);
-      setTriggerFetch(true);
+      setTriggerFetch((prev) => !prev);
     } catch (e) {
       console.log(e);
       // showToast({

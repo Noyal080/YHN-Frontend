@@ -41,18 +41,6 @@ const ProjectSection = () => {
       ),
     },
     {
-      key: "banner_start_date",
-      label: "Start Date",
-      visible: false,
-      render: (row) => row.banner_start_date ?? "N/A",
-    },
-    {
-      key: "banner_end_date",
-      label: "End Date",
-      visible: false,
-      render: (row) => row.banner_end_date ?? "N/A",
-    },
-    {
       key: "status",
       label: "Status",
       visible: true,
@@ -94,7 +82,7 @@ const ProjectSection = () => {
       });
       setModalOpen(false);
       setLoading(true);
-      setTriggerFetch(true);
+      setTriggerFetch((prev) => !prev);
     } catch (e) {
       console.log(e);
       // showToast({
@@ -133,7 +121,7 @@ const ProjectSection = () => {
       await axiosInstance.patch(`/ourwork/${id}/status`, {
         status: newStatus,
       });
-      setTriggerFetch(true);
+      setTriggerFetch((prev) => !prev);
     } catch (error) {
       console.error("Error changing status:", error);
       // Handle error (e.g., show an error message to the user)

@@ -68,7 +68,7 @@ const MessageRequest = () => {
       });
       setModalOpen(false);
       setLoading(true);
-      setTriggerFetch(true);
+      setTriggerFetch((prev) => !prev);
     } catch (e) {
       console.log(e);
       // showToast({

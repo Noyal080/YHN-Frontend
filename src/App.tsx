@@ -78,6 +78,9 @@ const ViewVolunteer = lazy(
 const BOD = lazy(() => import("./admin/Our Teams/BOD"));
 const BODForm = lazy(() => import("./admin/Our Teams/BOD/BODForm"));
 const Fellow = lazy(() => import("./admin/Our Teams/Fellow"));
+const FellowForm = lazy(() => import("./admin/Our Teams/Fellow/FellowForm"));
+const Intern = lazy(() => import("./admin/Our Teams/Interns"));
+const InternForm = lazy(() => import("./admin/Our Teams/Interns/InternForm"));
 
 const ScrollToTop = memo(() => {
   const { pathname } = useLocation();
@@ -124,6 +127,11 @@ const adminRoutes = [
   { path: "/admin/bod/add", element: <BODForm /> },
   { path: "/admin/bod/edit/:id", element: <BODForm /> },
   { path: "/admin/fellows", element: <Fellow /> },
+  { path: "/admin/fellow/add", element: <FellowForm /> },
+  { path: "/admin/fellow/edit/:id", element: <FellowForm /> },
+  { path: "/admin/interns", element: <Intern /> },
+  { path: "/admin/intern/add", element: <InternForm /> },
+  { path: "/admin/intern/edit/:id", element: <InternForm /> },
 
   // Projects Section
   { path: "/admin/our-works", element: <ProjectSection /> },

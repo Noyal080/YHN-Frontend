@@ -118,7 +118,7 @@ const PartnerSlider = () => {
         type: "success",
       });
       setModalOpen(false);
-      setTriggerFetch(true);
+      setTriggerFetch((prev) => !prev);
     } catch (e) {
       console.log(e);
       // showToast({
@@ -135,7 +135,7 @@ const PartnerSlider = () => {
         status: newStatus,
       });
       console.log(`Partner ${id} status changed to ${newStatus}`);
-      setTriggerFetch(true);
+      setTriggerFetch((prev) => !prev);
     } catch (error) {
       console.error("Error changing status:", error);
       // Handle error (e.g., show an error message to the user)

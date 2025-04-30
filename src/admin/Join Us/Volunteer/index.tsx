@@ -58,7 +58,7 @@ const VolunteerSection = () => {
       });
       setModalOpen(false);
       setLoading(true);
-      setTriggerFetch(true);
+      setTriggerFetch((prev) => !prev);
     } catch (e) {
       console.log(e);
       // showToast({
@@ -98,7 +98,7 @@ const VolunteerSection = () => {
       await axiosInstance.patch(`/volunteers/${id}/status`, {
         status: newStatus,
       });
-      setTriggerFetch(true);
+      setTriggerFetch((prev) => !prev);
     } catch (error) {
       console.error(error);
 

@@ -100,6 +100,7 @@ const SliderSection = () => {
         console.log(err);
       } finally {
         setLoading(false);
+        setTriggerFetch(false);
       }
     };
 
@@ -119,13 +120,9 @@ const SliderSection = () => {
       });
       setModalOpen(false);
       setLoading(true);
-      setTriggerFetch(true);
+      setTriggerFetch((prev) => !prev);
     } catch (e) {
       console.log(e);
-      // showToast({
-      //   description: "Error while removing slider data",
-      //   type: "error",
-      // });
       setLoading(false);
     }
   };
@@ -136,7 +133,7 @@ const SliderSection = () => {
       await axiosInstance.patch(`/sliders/${id}/status`, {
         status: newStatus,
       });
-      setTriggerFetch(true);
+      setTriggerFetch((prev) => !prev);
     } catch (error) {
       console.error("Error changing status:", error);
     }

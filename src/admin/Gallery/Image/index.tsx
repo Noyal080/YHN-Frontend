@@ -95,7 +95,7 @@ const ImageSection = () => {
         type: "success",
       });
       setModalOpen(false);
-      setTriggerFetch(true);
+      setTriggerFetch((prev) => !prev);
     } catch (e) {
       console.log(e);
       // showToast({
@@ -116,7 +116,7 @@ const ImageSection = () => {
         title,
         status: newStatus,
       });
-      setTriggerFetch(true);
+      setTriggerFetch((prev) => !prev);
     } catch (error) {
       console.error("Error changing status:", error);
       // Handle error (e.g., show an error message to the user)
