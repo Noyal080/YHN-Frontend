@@ -1,4 +1,6 @@
 import AdminLayout from "@/admin/Layout";
+import { axiosInstance } from "@/api/axios";
+import useCommonToast from "@/common/CommonToast";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { Switch } from "@/components/ui/switch";
@@ -16,7 +18,7 @@ import {
   Image,
   Input,
 } from "@chakra-ui/react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { FiPlus } from "react-icons/fi";
 import { useNavigate, useParams } from "react-router-dom";
@@ -27,31 +29,88 @@ const FellowForms = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { showToast } = useCommonToast();
 
   const [fellowData, setFellowData] = useState<FellowInternInput>({
     name: "",
     image: "",
-    joined_date: "",
+    joining_date: "",
     completion_date: "",
     status: 1,
   });
 
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const res = await axiosInstance.get(`/Fellow_details/${id}`);
+        const result = res.data.data.FellowDetail;
+        setFellowData(result);
+      } catch (e) {
+        console.log(e);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchData();
+    }
+  }, [id]);
+
   const {
     control,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<FellowInternInput>({
     values: {
       name: fellowData.name,
       image: fellowData.image,
-      joined_date: fellowData.joined_date,
+      joining_date: fellowData.joining_date,
       completion_date: fellowData.completion_date,
       status: fellowData.status,
     },
   });
 
-  const onSubmit = (data: FellowInternInput) => {
-    console.log(data);
+  const joiningDate = watch("joining_date");
+
+  const onSubmit = async (data: FellowInternInput) => {
+    setIsLoading(true);
+    try {
+      const submissionData = { ...data };
+
+      const formData = new FormData();
+      Object.entries(submissionData).forEach(([key, value]) => {
+        if (key === "image" && typeof value === "string") {
+          formData.append(key, "");
+        } else {
+          formData.append(key, value as Blob);
+        }
+      });
+      if (id) {
+        await axiosInstance.post(`/Fellow_details/${id}`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        showToast({
+          description: "Fellow Detail updated successfully",
+          type: "success",
+        });
+      } else {
+        await axiosInstance.post("/Fellow_details", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        showToast({
+          description: "Fellow Details added successfully",
+          type: "success",
+        });
+      }
+      navigate("/admin/fellows");
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -59,9 +118,9 @@ const FellowForms = () => {
       breadcrumbItems={[
         { label: "Dashboard", link: "/admin" },
         { label: "Fellows", link: "/admin/fellows" },
-        { label: "Add Fellow" },
+        { label: `${id ? "Edit" : "Add"} Fellow` },
       ]}
-      title={`Add Fellow`}
+      title={`${id ? "Edit" : "Add"} Fellow`}
       activeSidebarItem="Fellows"
     >
       <Box position="relative">
@@ -183,12 +242,54 @@ const FellowForms = () => {
                           <Input
                             {...field}
                             placeholder="Enter fellow name"
+                            value={field.value}
                             size={"md"}
                             onChange={(e) => field.onChange(e.target.value)}
                           />
                           {errors.name && (
                             <Text textStyle="sm" color="red">
                               {errors.name.message}
+                            </Text>
+                          )}
+                        </Field>
+                      )}
+                    />
+                    <Controller
+                      name="joining_date"
+                      control={control}
+                      render={({ field }) => (
+                        <Field label="Joined Date">
+                          <Input
+                            {...field}
+                            type="date"
+                            size={"md"}
+                            value={field.value}
+                            onChange={(value) => field.onChange(value)}
+                          />
+                          {errors.joining_date && (
+                            <Text textStyle="sm" color="red">
+                              {errors.joining_date.message}
+                            </Text>
+                          )}
+                        </Field>
+                      )}
+                    />
+                    <Controller
+                      name="completion_date"
+                      control={control}
+                      render={({ field }) => (
+                        <Field label="Completion Date">
+                          <Input
+                            {...field}
+                            min={joiningDate}
+                            value={field.value}
+                            type="date"
+                            size={"md"}
+                            onChange={(value) => field.onChange(value)}
+                          />
+                          {errors.completion_date && (
+                            <Text textStyle="sm" color="red">
+                              {errors.completion_date.message}
                             </Text>
                           )}
                         </Field>

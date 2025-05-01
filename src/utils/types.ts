@@ -332,7 +332,7 @@ export type FellowInternDataType = {
   id?: number;
   name: string;
   image: string;
-  joined_date: string;
+  joining_date: string;
   completion_date: string;
   status: number;
 };
@@ -340,7 +340,7 @@ export type FellowInternDataType = {
 export type FellowInternInput = {
   name: string;
   image: File | string;
-  joined_date: string;
+  joining_date: string;
   completion_date: string;
   status: number;
 };

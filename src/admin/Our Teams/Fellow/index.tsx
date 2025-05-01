@@ -1,6 +1,7 @@
 import AdminLayout from "@/admin/Layout";
 import { axiosInstance } from "@/api/axios";
 import CommonModal from "@/common/CommonModal";
+import useCommonToast from "@/common/CommonToast";
 import CommonTable from "@/common/Table/CommonTable";
 import { Switch } from "@/components/ui/switch";
 import useDebounce from "@/helper/debounce";
@@ -17,6 +18,7 @@ const Fellows = () => {
     null
   );
   const [triggerFetch, setTriggerFetch] = useState(false);
+  const { showToast } = useCommonToast();
 
   const [paginationData, setPaginationData] = useState<PaginationProps>();
   const [page, setPage] = useState<number>(1);
@@ -41,10 +43,10 @@ const Fellows = () => {
       ),
     },
     {
-      key: "joined_date",
+      key: "joining_date",
       label: "Joined Date",
       visible: true,
-      render: (row) => row.joined_date ?? "N/A",
+      render: (row) => row.joining_date ?? "N/A",
     },
     {
       key: "completion_date",
@@ -60,9 +62,9 @@ const Fellows = () => {
         <Switch
           colorPalette={"green"}
           checked={row.status === 1}
-          // onCheckedChange={() => {
-          //   handleStatusChange(String(row.id), row.status);
-          // }}
+          onCheckedChange={() => {
+            handleStatusChange(String(row.id), row.status);
+          }}
         />
       ),
     },
@@ -72,8 +74,8 @@ const Fellows = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const res = await axiosInstance.get("/fellows", {
-          params: { page, name: debouncedSearch, role: "BOD" },
+        const res = await axiosInstance.get("/Fellow_details", {
+          params: { page, search: debouncedSearch },
         });
         const data = res.data.data;
         setRows(data.data);
@@ -87,9 +89,33 @@ const Fellows = () => {
     fetchData();
   }, [triggerFetch, page, debouncedSearch]);
 
-  const handleDelete = async (rows: FellowInternDataType) => {
-    console.log(rows);
-    setTriggerFetch((prev) => !prev);
+  const handleDelete = async (row: FellowInternDataType) => {
+    try {
+      await axiosInstance.delete(`/Fellow_details/${row.id}`);
+      showToast({
+        description: `${row.name} deleted succesfully`,
+        type: "success",
+      });
+      setModalOpen(false);
+      setLoading(true);
+      setTriggerFetch((prev) => !prev);
+    } catch (e) {
+      console.log(e);
+      setLoading(false);
+    }
+  };
+
+  const handleStatusChange = async (id: string, status: number) => {
+    //Change this
+    const newStatus = status === 1 ? 0 : 1;
+    try {
+      await axiosInstance.patch(`/Fellow_details/${id}/status`, {
+        status: newStatus,
+      });
+      setTriggerFetch((prev) => !prev);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -106,7 +132,7 @@ const Fellows = () => {
         title="Fellow List"
         columns={columns}
         rows={rows}
-        onEdit={(row) => navigate(`/fellow/edit/${row.id}`)}
+        onEdit={(row) => navigate(`/admin/fellow/edit/${row.id}`)}
         onDelete={(row) => {
           setModalOpen(true);
           setSelectedRow(row);
@@ -125,7 +151,7 @@ const Fellows = () => {
       <CommonModal
         open={modalOpen}
         onOpenChange={() => setModalOpen(false)}
-        title={"Remove BOD"}
+        title={"Remove Fellow"}
         onButtonClick={() => handleDelete(selectedRow as FellowInternDataType)}
       >
         <Text>
