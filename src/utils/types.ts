@@ -54,6 +54,8 @@ export type TestimonialInput = {
   description: string;
   designation_id?: number | null;
   // designation: string;
+  type_id: number | null;
+  type_type: string;
   description2: string;
   category: string;
 };
@@ -342,5 +344,16 @@ export type FellowInternInput = {
   image: File | string;
   joining_date: string;
   completion_date: string;
+  status: number;
+};
+
+export type JobApplicationType = {
+  id?: number;
+  title: string;
+  description: string;
+  apply_link: string;
+  job_position: string;
+  start_date: string;
+  end_date: string;
   status: number;
 };

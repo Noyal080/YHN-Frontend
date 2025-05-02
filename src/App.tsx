@@ -81,6 +81,13 @@ const Fellow = lazy(() => import("./admin/Our Teams/Fellow"));
 const FellowForm = lazy(() => import("./admin/Our Teams/Fellow/FellowForm"));
 const Intern = lazy(() => import("./admin/Our Teams/Interns"));
 const InternForm = lazy(() => import("./admin/Our Teams/Interns/InternForm"));
+const JobApplication = lazy(() => import("./admin/Join Us"));
+const JobApplicationForm = lazy(
+  () => import("./admin/Join Us/JobApplicationForm")
+);
+const JobApplicationView = lazy(
+  () => import("./admin/Join Us/ViewJobApplication")
+);
 
 const ScrollToTop = memo(() => {
   const { pathname } = useLocation();
@@ -146,6 +153,11 @@ const adminRoutes = [
   { path: "/admin/events/view/:id", element: <ViewEvent /> },
 
   // Join Us Section
+  { path: "/admin/join-us", element: <JobApplication /> },
+  { path: "/admin/join-us/add", element: <JobApplicationForm /> },
+  { path: "/admin/join-us/edit/:id", element: <JobApplicationForm /> },
+  { path: "/admin/join-us/view/:id", element: <JobApplicationView /> },
+
   { path: "/admin/volunteer", element: <VolunteerSection /> },
   { path: "/admin/volunteer/add", element: <VolunteerForm /> },
   { path: "/admin/volunteer/edit/:id", element: <VolunteerForm /> },

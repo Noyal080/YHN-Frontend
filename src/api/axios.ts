@@ -48,31 +48,39 @@ axiosInstance.interceptors.response.use(
         return Promise.reject(error);
       }
 
-      // Handle other error responses
-      let errorMessage = "An unexpected error occurred";
+      let errorMessage = "";
 
       if (error.response) {
         const responseData = error.response.data;
 
-        if (responseData.message) {
-          errorMessage = responseData.message;
-          console.log("herer2");
-        }
-        // Case 1: Field-specific errors (like services_id)
-        else if (responseData.error && typeof responseData.error === "object") {
-          // Join all error messages from different fields
-          errorMessage = Object.values(responseData.error)
-            .flatMap((errors) => (Array.isArray(errors) ? errors : [errors]))
-            .join("\n");
-          console.log("herer1");
-        }
-        // Case 2: Simple message
+        const messages: string[] = [];
 
-        // Case 3: Fallback to status text or generic message
-        else {
-          errorMessage = error.response.statusText || errorMessage;
-          console.log("herer3");
+        if (responseData.message) {
+          messages.push(responseData.message);
+          console.log("here2");
         }
+
+        if (
+          responseData.error &&
+          typeof responseData.error === "object" &&
+          Object.keys(responseData.error).length > 0
+        ) {
+          const fieldErrors = Object.values(responseData.error).flatMap((val) =>
+            Array.isArray(val) ? val : [val]
+          );
+          messages.push(...fieldErrors);
+          console.log("here1");
+        }
+
+        if (messages.length === 0) {
+          errorMessage =
+            error.response.statusText || "An unexpected error occurred";
+          console.log("here3");
+        } else {
+          errorMessage = messages.join("\n");
+        }
+      } else {
+        errorMessage = "An unexpected error occurred";
       }
 
       showErrorToast(errorMessage);

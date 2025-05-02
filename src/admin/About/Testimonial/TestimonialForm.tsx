@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { Switch } from "@/components/ui/switch";
 import { TestimonialInput } from "@/utils/types";
+import Select from "react-select";
+
 import {
   Box,
   CardBody,
@@ -14,7 +16,9 @@ import {
   HStack,
   Image,
   Input,
+  Separator,
   Spinner,
+  Stack,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -23,11 +27,19 @@ import { Controller, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { compressImage } from "@/helper/imageCompressor";
 import { FiPlus } from "react-icons/fi";
+import { Radio, RadioGroup } from "@/components/ui/radio";
+import { Checkbox } from "@/components/ui/checkbox";
+import useDebounce from "@/helper/debounce";
 
-// interface DesignationOptions {
-//   label: string;
-//   value: number;
-// }
+interface TypeOptions {
+  label: string;
+  value: number;
+}
+
+type OptionType = {
+  label: string;
+  value: string;
+};
 
 const TestimonialForm = () => {
   const { id } = useParams();
@@ -36,14 +48,27 @@ const TestimonialForm = () => {
   const { showToast } = useCommonToast();
   const [selectedImage, setSelectedImage] = useState<string | null>();
   const [isLoading, setIsLoading] = useState(false);
-  // const [designationOption, setDesignationOption] = useState<
-  //   DesignationOptions[]
-  // >([]);
+  const [showTypeOptions, setShowTypeOptions] = useState(false);
+  const [typeOptions, setTypeOptions] = useState<TypeOptions[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+  const debouncedSearch = useDebounce(searchQuery, 500);
+
+  const types: OptionType[] = [
+    { label: "Events", value: "events" },
+    { label: "News", value: "news" },
+    { label: "Our Work", value: "ourwork" },
+  ];
+
+  // Then in your component
+  const [selectedType, setSelectedType] = useState<string>("");
+
   const navigate = useNavigate();
   const [testimonialData, setTestimonialData] = useState<TestimonialInput>({
     name: "",
     description: "",
-
+    type_id: null,
+    type_type: "",
     category: "",
     description2: "",
     image: "",
@@ -53,6 +78,7 @@ const TestimonialForm = () => {
   const {
     control,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<TestimonialInput>({
     values: {
@@ -63,8 +89,12 @@ const TestimonialForm = () => {
       description2: testimonialData.description2 || "",
       category: testimonialData.category || "",
       status: testimonialData.status || 1,
+      type_id: testimonialData.type_id,
+      type_type: testimonialData.type_type,
     },
   });
+
+  const typeType = watch("type_type");
 
   useEffect(() => {
     const fetchTestimonialData = async () => {
@@ -73,6 +103,12 @@ const TestimonialForm = () => {
         const res = await axiosInstance.get(`/testimonials/${id}`);
         const result = res.data.data.data;
         setTestimonialData(result);
+        console.log(result);
+
+        if (result.type_type) {
+          setShowTypeOptions(true);
+          setSelectedType(result.type_type);
+        }
       } catch (e) {
         console.error(e);
       } finally {
@@ -84,24 +120,51 @@ const TestimonialForm = () => {
     }
   }, [id]);
 
-  // useEffect(() => {
-  //   const fetchDesignation = async () => {
-  //     try {
-  //       const res = await axiosInstance.get("/designations");
-  //       const result = res.data.data.data;
-  //       setDesignationOption(
-  //         result.map((position: { name: string; id: number }) => ({
-  //           label: position.name,
-  //           value: position.id,
-  //         }))
-  //       );
-  //     } catch (e) {
-  //       console.log(e);
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchDataForType = async () => {
+      try {
+        if (!selectedType) {
+          setTypeOptions([]);
+          return;
+        }
 
-  //   fetchDesignation();
-  // }, []);
+        setIsSearching(true);
+        let endpoint = "";
+        switch (selectedType) {
+          case "events":
+            endpoint = `/events?search=${debouncedSearch}`;
+            break;
+          case "news":
+            endpoint = `/news?search=${debouncedSearch}`;
+            break;
+          case "ourwork":
+            endpoint = `/ourwork?search=${debouncedSearch}`;
+            break;
+          default:
+            return;
+        }
+
+        const res = await axiosInstance.get(endpoint);
+        const result = res.data.data.data;
+
+        setTypeOptions(
+          result.map((item: { title: string; id: number }) => ({
+            label: item.title,
+            value: item.id,
+          }))
+        );
+      } catch (e) {
+        console.error("Error fetching data:", e);
+        setTypeOptions([]);
+      } finally {
+        setIsSearching(false);
+      }
+    };
+
+    fetchDataForType();
+  }, [selectedType, debouncedSearch]);
+
+  console.log(typeOptions);
 
   const handleFieldChange = (
     field: keyof TestimonialInput,
@@ -176,6 +239,26 @@ const TestimonialForm = () => {
       // });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleTypeChange = (type: string) => {
+    setSelectedType(type);
+    // Reset type_id when type changes
+    setTestimonialData((prev) => ({ ...prev, type_type: type, type_id: null }));
+  };
+
+  const handleCheckboxChange = (checked: boolean) => {
+    setShowTypeOptions(checked);
+    if (!checked) {
+      setTestimonialData((prev) => ({
+        ...prev,
+        type_id: null,
+        type_type: "",
+      }));
+      setSelectedType("");
+      setTypeOptions([]);
+      setSearchQuery("");
     }
   };
 
@@ -420,6 +503,127 @@ const TestimonialForm = () => {
                     />
                   </VStack>
                 </HStack>
+                <Box
+                  border="1px solid"
+                  borderColor="gray.200"
+                  borderRadius="md"
+                  p={4}
+                  mb={4}
+                  spaceY={3}
+                >
+                  <HStack
+                    justifyContent="space-between"
+                    mb={showTypeOptions ? 4 : 0}
+                  >
+                    <Text fontWeight="semibold">
+                      Link Testominial (Optional)
+                    </Text>
+                    <Checkbox
+                      checked={showTypeOptions}
+                      variant={"outline"}
+                      onCheckedChange={(e) => handleCheckboxChange(!!e.checked)}
+                    />
+                  </HStack>
+                  {showTypeOptions && (
+                    <>
+                      <Controller
+                        name="type_type"
+                        control={control}
+                        render={({ field }) => (
+                          <Field label="Type">
+                            <RadioGroup
+                              value={field.value}
+                              onValueChange={(e) => {
+                                console.log(e.value);
+                                field.onChange(e.value);
+                                handleTypeChange(e.value);
+                              }}
+                            >
+                              <Stack mt={2} direction="row" gap={5}>
+                                {types.map((type) => (
+                                  <Radio
+                                    key={type.value}
+                                    value={type.value}
+                                    // colorScheme="blue"
+                                    colorPalette={"blue"}
+                                  >
+                                    {type.label}
+                                  </Radio>
+                                ))}
+                              </Stack>
+                            </RadioGroup>
+                            {errors.type_type && (
+                              <Text textStyle="sm" color="red">
+                                {errors.type_type.message}
+                              </Text>
+                            )}
+                          </Field>
+                        )}
+                      />
+                      <Separator />
+                      <Controller
+                        name="type_id"
+                        control={control}
+                        render={({ field }) => (
+                          <Field label={`Select the ${typeType}`}>
+                            <Select
+                              {...field}
+                              options={typeOptions}
+                              value={typeOptions.find(
+                                (option) => option.value === field.value
+                              )}
+                              onChange={(selectedOption) => {
+                                field.onChange(selectedOption?.value);
+                                handleFieldChange(
+                                  "type_id",
+                                  selectedOption?.value || ""
+                                );
+                              }}
+                              isLoading={isSearching}
+                              placeholder={`Search ${selectedType}...`}
+                              noOptionsMessage={() =>
+                                isSearching
+                                  ? "Searching..."
+                                  : "No options found"
+                              }
+                              styles={{
+                                container: (base) => ({
+                                  ...base,
+                                  width: "100%",
+                                  zIndex: 1000,
+                                }),
+                                control: (base) => ({
+                                  ...base,
+                                  width: "100%",
+                                  borderColor: errors.type_id
+                                    ? "red"
+                                    : base.borderColor,
+                                }),
+                                menu: (base) => ({
+                                  ...base,
+                                  width: "100%",
+                                }),
+                                valueContainer: (base) => ({
+                                  ...base,
+                                  width: "100%",
+                                }),
+                                input: (base) => ({
+                                  ...base,
+                                  width: "100%",
+                                }),
+                              }}
+                            />
+                            {errors.type_id && (
+                              <Text textStyle="sm" color="red">
+                                {errors.type_id.message}
+                              </Text>
+                            )}
+                          </Field>
+                        )}
+                      />
+                    </>
+                  )}
+                </Box>
 
                 <Controller
                   name="description"
