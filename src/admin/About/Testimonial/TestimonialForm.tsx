@@ -55,7 +55,7 @@ const TestimonialForm = () => {
   const debouncedSearch = useDebounce(searchQuery, 500);
 
   const types: OptionType[] = [
-    { label: "Events", value: "events" },
+    { label: "Events", value: "event" },
     { label: "News", value: "news" },
     { label: "Our Work", value: "ourwork" },
   ];
@@ -68,7 +68,7 @@ const TestimonialForm = () => {
     name: "",
     description: "",
     type_id: null,
-    type_type: "",
+    type_type: null,
     category: "",
     description2: "",
     image: "",
@@ -89,8 +89,8 @@ const TestimonialForm = () => {
       description2: testimonialData.description2 || "",
       category: testimonialData.category || "",
       status: testimonialData.status || 1,
-      type_id: testimonialData.type_id,
-      type_type: testimonialData.type_type,
+      type_id: testimonialData.type_id || null,
+      type_type: testimonialData.type_type || null,
     },
   });
 
@@ -131,7 +131,7 @@ const TestimonialForm = () => {
         setIsSearching(true);
         let endpoint = "";
         switch (selectedType) {
-          case "events":
+          case "event":
             endpoint = `/events?search=${debouncedSearch}`;
             break;
           case "news":
@@ -143,10 +143,8 @@ const TestimonialForm = () => {
           default:
             return;
         }
-
         const res = await axiosInstance.get(endpoint);
         const result = res.data.data.data;
-
         setTypeOptions(
           result.map((item: { title: string; id: number }) => ({
             label: item.title,
@@ -164,7 +162,6 @@ const TestimonialForm = () => {
     fetchDataForType();
   }, [selectedType, debouncedSearch]);
 
-  console.log(typeOptions);
 
   const handleFieldChange = (
     field: keyof TestimonialInput,
@@ -188,19 +185,6 @@ const TestimonialForm = () => {
     try {
       const submissionData = { ...data };
       const formData = new FormData();
-
-      // Check if the position is a new one (a string value)
-      // if (typeof submissionData.designation_id === "string") {
-      //   // Create new position first
-      //   const positionResponse = await axiosInstance.post("/designations", {
-      //     name: submissionData.designation_id,
-      //   });
-
-      //   // Extract the new position ID from the response
-      //   const newPositionId = positionResponse.data.data.id;
-      //   // Update the submission data with the new position ID
-      //   submissionData.designation_id = newPositionId;
-      // }
 
       Object.entries(submissionData).forEach(([key, value]) => {
         if (key === "image" && typeof value === "string") {
@@ -231,12 +215,6 @@ const TestimonialForm = () => {
       }
     } catch (e) {
       console.error(e);
-      // showToast({
-      //   description: id
-      //     ? `Failed to update the Testimonial`
-      //     : "Failed to add Testimonial",
-      //   type: "error",
-      // });
     } finally {
       setIsLoading(false);
     }
@@ -325,7 +303,6 @@ const TestimonialForm = () => {
                   <Controller
                     name="image"
                     control={control}
-                    rules={{ required: "Image is required" }}
                     render={({ field }) => (
                       <Box position="relative">
                         {!field.value && !selectedImage ? (
@@ -404,66 +381,7 @@ const TestimonialForm = () => {
                       rules={{ required: "Designation is required" }}
                       render={({ field }) => (
                         <Field label=" Designation">
-                          {/* <CreatableSelect
-                            {...field}
-                            placeholder="Create or select designation"
-                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                            options={designationOption as any}
-                            value={
-                              // Find the matching option object if field.value is a number
-                              typeof field.value === "number"
-                                ? designationOption.find(
-                                    (option) => option.value === field.value
-                                  )
-                                : // If it's a custom value (string) or null, handle accordingly
-                                field.value
-                                ? {
-                                    label: String(field.value),
-                                    value: field.value,
-                                  }
-                                : null
-                            }
-                            onChange={(selectedOption) => {
-                              // Update both React Hook Form state and local state
-                              field.onChange(selectedOption?.value || null);
-                              handleFieldChange(
-                                "designation_id",
-                                selectedOption?.value || null
-                              );
-                            }}
-                            // onBlur={field.onBlur}
-                            styles={{
-                              container: (base) => ({
-                                ...base,
-                                width: "100%",
-                                zIndex: 1000,
-                              }),
-                              control: (base) => ({
-                                ...base,
-                                width: "100%",
-                                borderColor: errors.designation_id
-                                  ? "red"
-                                  : base.borderColor,
-                              }),
-                              menu: (base) => ({
-                                ...base,
-                                width: "100%",
-                              }),
-                              valueContainer: (base) => ({
-                                ...base,
-                                width: "100%",
-                              }),
-                              input: (base) => ({
-                                ...base,
-                                width: "100%",
-                              }),
-                            }}
-                          />
-                          {errors.designation_id && (
-                            <Text textStyle="sm" color="red">
-                              {errors.designation_id.message}
-                            </Text>
-                          )} */}
+
                           <Input
                             {...field}
                             placeholder="Enter designation name"
@@ -534,8 +452,8 @@ const TestimonialForm = () => {
                             <RadioGroup
                               value={field.value}
                               onValueChange={(e) => {
-                                console.log(e.value);
                                 field.onChange(e.value);
+                                handleFieldChange("type_id", e.value)
                                 handleTypeChange(e.value);
                               }}
                             >
@@ -579,6 +497,7 @@ const TestimonialForm = () => {
                                   selectedOption?.value || ""
                                 );
                               }}
+                              isClearable
                               isLoading={isSearching}
                               placeholder={`Search ${selectedType}...`}
                               noOptionsMessage={() =>

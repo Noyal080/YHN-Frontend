@@ -41,7 +41,7 @@ import {
   LuQuote,
 } from "react-icons/lu";
 import { SidebarProps } from "@/utils";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleDropdown, toggleSidebar } from "@/redux/sidebarSlice";
 import { RootState } from "@/redux/store";
@@ -223,20 +223,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
       id: 10, // Join Us (Parent)
       label: "Join Us",
       icon: FiUserPlus,
-      children: [
-        {
-          id: 1001,
-          label: "Volunteer",
-          icon: FiUserCheck,
-          link: "/admin/volunteer",
-        },
-        {
-          id: 1002,
-          label: "Internship",
-          icon: FiBookOpen,
-          link: "/admin/internship",
-        },
-      ],
+      link: "/admin/join-us"
     },
     {
       id: 11, // Settings (Parent)
@@ -272,19 +259,38 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
 
     return (
       <Box key={item.id} w="100%">
-        <Flex
-          alignContent="center"
-          justifyContent="space-between"
-          onClick={() => item?.link && handleLinkClick(item.link)}
-          _hover={{ color: "teal.600" }}
-          p={2}
-          borderRadius="md"
-          transition="background 0.2s"
-          cursor="pointer"
-          color={item.label === activeSidebarItem ? "teal.500" : "black.300"}
-        >
-          {menuItemContent}
-        </Flex>
+        {item.link ?
+          <Link to={item?.link}>
+            <Flex
+              alignContent="center"
+              justifyContent="space-between"
+              _hover={{ color: "teal.600" }}
+              p={2}
+              borderRadius="md"
+              transition="background 0.2s"
+              cursor="pointer"
+              color={item.label === activeSidebarItem ? "teal.500" : "black.300"}
+            >
+              {menuItemContent}
+            </Flex>
+          </Link>
+          :
+          <Flex
+            alignContent="center"
+            justifyContent="space-between"
+            // onClick={() => item?.link && handleLinkClick(item.link)}
+            _hover={{ color: "teal.600" }}
+            p={2}
+            borderRadius="md"
+            transition="background 0.2s"
+            cursor="pointer"
+            color={item.label === activeSidebarItem ? "teal.500" : "black.300"}
+          >
+            {menuItemContent}
+          </Flex>
+        }
+
+
       </Box>
     );
   };

@@ -38,6 +38,7 @@ export interface CommonModalProps {
   onButtonClick: () => void;
   buttonName?: string;
   type?: "primary" | "danger";
+  loading? : boolean;
 }
 
 export interface Column<T> {

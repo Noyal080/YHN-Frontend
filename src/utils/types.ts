@@ -55,7 +55,7 @@ export type TestimonialInput = {
   designation_id?: number | null;
   // designation: string;
   type_id: number | null;
-  type_type: string;
+  type_type: string | null;
   description2: string;
   category: string;
 };
@@ -342,8 +342,8 @@ export type FellowInternDataType = {
 export type FellowInternInput = {
   name: string;
   image: File | string;
-  joining_date: string;
-  completion_date: string;
+  joining_date: string | null;
+  completion_date: string | null;
   status: number;
 };
 
@@ -353,6 +353,10 @@ export type JobApplicationType = {
   description: string;
   apply_link: string;
   job_position: string;
+  job_open_position_id:number | null;
+  job_open_position?: {
+    name : string
+  }
   start_date: string;
   end_date: string;
   status: number;

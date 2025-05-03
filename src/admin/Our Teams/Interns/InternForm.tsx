@@ -34,8 +34,8 @@ const InternForms = () => {
   const [internData, setInternData] = useState<FellowInternInput>({
     name: "",
     image: "",
-    joining_date: "",
-    completion_date: "",
+    joining_date: null,
+    completion_date: null,
     status: 1,
   });
 
@@ -67,8 +67,8 @@ const InternForms = () => {
     values: {
       name: internData.name,
       image: internData.image,
-      joining_date: internData.joining_date,
-      completion_date: internData.completion_date,
+      joining_date: internData.joining_date || null,
+      completion_date: internData.completion_date || null,
       status: internData.status,
     },
   });
@@ -86,6 +86,12 @@ const InternForms = () => {
           formData.append(key, "");
         } else {
           formData.append(key, value as Blob);
+        }
+        if (
+          (key === "joining_date" || key === "completion_date") &&
+          (value === null || value === "")
+        ) {
+          formData.append(key, "");
         }
       });
       if (id) {

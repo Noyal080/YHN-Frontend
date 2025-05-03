@@ -1,4 +1,7 @@
 import AdminLayout from "@/admin/Layout";
+import { axiosInstance } from "@/api/axios";
+import { Skeleton, SkeletonText } from "@/components/ui/skeleton";
+import { JobApplicationType } from "@/utils/types";
 
 import {
   Badge,
@@ -10,39 +13,36 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 import { FiBriefcase, FiCalendar, FiExternalLink } from "react-icons/fi";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
-type JobApplicationType = {
-  id?: number;
-  title: string;
-  description: string;
-  apply_link: string;
-  job_position: string;
-  start_date: string;
-  end_date: string;
-  status: "active" | "inactive"; // Changed to string literal type
-};
 
-const statusMap = {
-  active: { label: "Active", color: "green" },
-  inactive: { label: "Inactive", color: "red" },
-};
-
-const sampleApplication: JobApplicationType = {
-  id: 1,
-  title: "Senior Frontend Developer",
-  description: "We are looking for an experienced frontend developer...",
-  apply_link: "https://example.com/apply",
-  job_position: "Senior Developer",
-  start_date: "2023-06-01",
-  end_date: "2023-07-15",
-  status: "active", // or 'inactive'
-};
 
 const JobApplicationView = () => {
-  const application = sampleApplication;
-  const statusInfo = statusMap[application.status];
+  const [jobApplicationData, setJobApplicationData] = useState<JobApplicationType>()
+  const { id } = useParams();
+  const [isLoading, setIsLoading] = useState(false);
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const res = await axiosInstance.get(`/JobApplications/${id}`);
+        setJobApplicationData(res.data.data);
+      } catch (e) {
+        console.log(e);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchData();
+    }
+  }, [id]);
+
 
   return (
     <AdminLayout
@@ -55,77 +55,99 @@ const JobApplicationView = () => {
       title={`View Job Application`}
     >
       <Box mx="auto" p={4} bg={"white"}>
-        <Flex justify="space-between" align="flex-start" mb={6}>
-          <Box>
-            <Heading as="h1" size="xl" mb={2}>
-              {application.title}
-            </Heading>
-            <Text fontSize="lg" color="gray.500" mb={4}>
-              {application.job_position}
-            </Text>
-          </Box>
-          <Badge colorScheme={statusInfo.color} px={3} py={1} fontSize="md">
-            {statusInfo.label}
+      {isLoading ? (
+        <>
+          <Skeleton height="40px" mb={4} />
+          <SkeletonText mt="4" noOfLines={2} gap="4" />
+          <Separator my={6} />
+          <Stack gap={6}>
+            <Box>
+              <Skeleton height="25px" width="150px" mb={3} />
+              <SkeletonText noOfLines={4} gap="3" />
+            </Box>
+            <Box>
+              <Skeleton height="25px" width="200px" mb={3} />
+              <Stack gap={4}>
+                {Array(4)
+                  .fill(null)
+                  .map((_, idx) => (
+                    <Flex align="center" key={idx}>
+                      <Skeleton boxSize={5} mr={3} />
+                      <Skeleton height="16px" width="80%" />
+                    </Flex>
+                  ))}
+              </Stack>
+            </Box>
+          </Stack>
+        </>
+      ) : (
+        <>
+          <Flex justify="space-between" align="flex-start" mb={6}>
+            <Box>
+              <Heading as="h1" size="xl" mb={2}>
+                {jobApplicationData?.title}
+              </Heading>
+              <Text fontSize="lg" color="gray.500" mb={4}>
+                {jobApplicationData?.job_open_position?.name}
+              </Text>
+            </Box>
+          <Badge colorPalette={jobApplicationData?.status === 1 ? "green" : "red"} px={3} py={1} fontSize="md">
+            {jobApplicationData?.status === 1 ? "Active" : "Inactive"}
           </Badge>
-        </Flex>
+          </Flex>
 
-        <Separator my={4} />
+          <Separator my={4} />
 
-        <Stack gap={6}>
-          <Box>
-            <Heading as="h2" size="md" mb={3}>
-              Job Description
-            </Heading>
-            <Text whiteSpace="pre-line">{application.description}</Text>
-          </Box>
+          <Stack gap={6}>
+            <Box>
+              <Heading as="h2" size="md" mb={3}>
+                Job Description
+              </Heading>
+              <Text whiteSpace="pre-line" dangerouslySetInnerHTML={{ __html: jobApplicationData?.description ?? ""}} />
+            </Box>
 
-          <Box>
-            <Heading as="h2" size="md" mb={3}>
-              Application Details
-            </Heading>
-            <Stack gap={4}>
-              <Flex align="center">
-                <Icon as={FiCalendar} mr={3} boxSize={5} />
-                <Text>
-                  <Text as="span" fontWeight="semibold">
-                    Start Date:{" "}
+            <Box>
+              <Heading as="h2" size="md" mb={3}>
+                Job Application Details
+              </Heading>
+              <Stack gap={4}>
+                <Flex align="center">
+                  <Icon as={FiCalendar} mr={3} boxSize={5} />
+                  <Text>
+                    <Text as="span" fontWeight="semibold">Start Date: </Text>
+                   {jobApplicationData?.start_date}
                   </Text>
-                  {new Date(application.start_date).toLocaleDateString()}
-                </Text>
-              </Flex>
-              <Flex align="center">
-                <Icon as={FiCalendar} mr={3} boxSize={5} />
-                <Text>
-                  <Text as="span" fontWeight="semibold">
-                    End Date:{" "}
+                </Flex>
+                <Flex align="center">
+                  <Icon as={FiCalendar} mr={3} boxSize={5} />
+                  <Text>
+                    <Text as="span" fontWeight="semibold">End Date: </Text>
+                    {jobApplicationData?.end_date}
+                
                   </Text>
-                  {new Date(application.end_date).toLocaleDateString()}
-                </Text>
-              </Flex>
-              <Flex align="center">
-                <Icon as={FiBriefcase} mr={3} boxSize={5} />
-                <Text>
-                  <Text as="span" fontWeight="semibold">
-                    Position:{" "}
+                </Flex>
+                <Flex align="center">
+                  <Icon as={FiBriefcase} mr={3} boxSize={5} />
+                  <Text>
+                    <Text as="span" fontWeight="semibold">Position: </Text>
+                    {jobApplicationData?.job_open_position?.name}
                   </Text>
-                  {application.job_position}
-                </Text>
-              </Flex>
-              <Flex align="center">
-                <Icon as={FiExternalLink} mr={3} boxSize={5} />
-                <Text>
-                  <Text as="span" fontWeight="semibold">
-                    Apply Link:{" "}
+                </Flex>
+                <Flex align="center">
+                  <Icon as={FiExternalLink} mr={3} boxSize={5} />
+                  <Text>
+                    <Text as="span" fontWeight="semibold">Apply Link: </Text>
+                    <Link to={jobApplicationData?.apply_link ?? ""} color="blue">
+                      {jobApplicationData?.apply_link}
+                    </Link>
                   </Text>
-                  <Link to={application.apply_link} color="blue.500">
-                    {application.apply_link}
-                  </Link>
-                </Text>
-              </Flex>
-            </Stack>
-          </Box>
-        </Stack>
-      </Box>
+                </Flex>
+              </Stack>
+            </Box>
+          </Stack>
+        </>
+      )}
+    </Box>
     </AdminLayout>
   );
 };

@@ -7,13 +7,14 @@ import { Switch } from "@/components/ui/switch";
 import useDebounce from "@/helper/debounce";
 import { Column } from "@/utils";
 import { FellowInternDataType, PaginationProps } from "@/utils/types";
-import { Image, Text } from "@chakra-ui/react";
+import { Image, Text  } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 const Interns = () => {
   const navigate = useNavigate();
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
   const [selectedRow, setSelectedRow] = useState<FellowInternDataType | null>(
     null
   );
@@ -90,6 +91,7 @@ const Interns = () => {
   }, [triggerFetch, page, debouncedSearch]);
 
   const handleDelete = async (row: FellowInternDataType) => {
+    setDeleteLoading(true);
     try {
       await axiosInstance.delete(`/intern_details/${row.id}`);
       showToast({
@@ -101,6 +103,8 @@ const Interns = () => {
       setTriggerFetch((prev) => !prev);
     } catch (e) {
       console.log(e);
+    }finally {
+      setDeleteLoading(false);
       setLoading(false);
     }
   };
@@ -153,6 +157,7 @@ const Interns = () => {
         onOpenChange={() => setModalOpen(false)}
         title={"Remove Interns"}
         onButtonClick={() => handleDelete(selectedRow as FellowInternDataType)}
+        loading={deleteLoading}
       >
         <Text>
           {" "}

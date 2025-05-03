@@ -19,6 +19,7 @@ const CommonModal: React.FC<CommonModalProps> = ({
   title,
   onButtonClick,
   buttonName,
+  loading,
   type = "danger",
 }) => {
   return (
@@ -41,6 +42,8 @@ const CommonModal: React.FC<CommonModalProps> = ({
             bgColor={type === "danger" ? "red.600" : "blue.500"}
             color={"white"}
             onPress={onButtonClick}
+            loading={loading}
+            disabled={loading}
           />
         </DialogFooter>
       </DialogContent>

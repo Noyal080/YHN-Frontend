@@ -285,7 +285,7 @@ const EventForm = () => {
                 <Controller
                   name="title"
                   control={control}
-                  rules={{ required: "Title is requried" }}
+                  rules={{ required: "Title is required" }}
                   render={({ field }) => (
                     <Field label="Title">
                       <Input
@@ -454,7 +454,7 @@ const EventForm = () => {
                   <Controller
                     name="banner_start_date"
                     control={control}
-                    rules={{ required: "Start Date is requried" }}
+                    // rules={{ required: "Start Date is requried" }}
                     render={({ field }) => (
                       <Field label="Start Date">
                         <Input

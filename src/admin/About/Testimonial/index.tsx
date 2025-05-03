@@ -110,7 +110,7 @@ const Testimonial = () => {
       });
       setModalOpen(false);
       setLoading(true);
-      setTriggerFetch(false);
+      setTriggerFetch((prev) => !prev);
     } catch (e) {
       console.log(e);
       // showToast({

@@ -31,8 +31,8 @@ const JobApplication = () => {
     { key: "id", label: "Id", visible: true },
     { key: "title", label: "Title", visible: true },
     { key: "end_date", label: "Deadline", visible: true },
-    { key: "apply_link", label: "Application Link", visible: true },
-    { key: "job_position", label: "Open Position", visible: true },
+    // { key: "apply_link", label: "Application Link", visible: true },
+    { key: "job_open_position", label: "Open Position", visible: true , render :(row) => <Text> {row.job_open_position.name} </Text>},
     {
       key: "status",
       label: "Status",

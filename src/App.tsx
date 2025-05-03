@@ -40,14 +40,6 @@ const ViewWork = lazy(() => import("./admin/Our Work/ViewWork"));
 const EventSection = lazy(() => import("./admin/Events"));
 const EventForm = lazy(() => import("./admin/Events/EventForm"));
 const ViewEvent = lazy(() => import("./admin/Events/ViewEvents"));
-const VolunteerSection = lazy(() => import("./admin/Join Us/Volunteer"));
-const VolunteerForm = lazy(
-  () => import("./admin/Join Us/Volunteer/VolunteerForm")
-);
-const InternshipSection = lazy(() => import("./admin/Join Us/Internship"));
-const InternshipForm = lazy(
-  () => import("./admin/Join Us/Internship/InternshipForm")
-);
 const Services = lazy(() => import("./admin/Services"));
 const ServiceForms = lazy(() => import("./admin/Services/ServiceForm"));
 const ImageSection = lazy(() => import("./admin/Gallery/Image"));
@@ -68,12 +60,6 @@ const OrganizationDetails = lazy(
 const OurImpact = lazy(() => import("./admin/Home/Our Impact"));
 const OurImpactForm = lazy(
   () => import("./admin/Home/Our Impact/OurImpactForm")
-);
-const ViewInternship = lazy(
-  () => import("./admin/Join Us/Internship/ViewInternship")
-);
-const ViewVolunteer = lazy(
-  () => import("./admin/Join Us/Volunteer/ViewVolunteerForm")
 );
 const BOD = lazy(() => import("./admin/Our Teams/BOD"));
 const BODForm = lazy(() => import("./admin/Our Teams/BOD/BODForm"));
@@ -157,15 +143,6 @@ const adminRoutes = [
   { path: "/admin/join-us/add", element: <JobApplicationForm /> },
   { path: "/admin/join-us/edit/:id", element: <JobApplicationForm /> },
   { path: "/admin/join-us/view/:id", element: <JobApplicationView /> },
-
-  { path: "/admin/volunteer", element: <VolunteerSection /> },
-  { path: "/admin/volunteer/add", element: <VolunteerForm /> },
-  { path: "/admin/volunteer/edit/:id", element: <VolunteerForm /> },
-  { path: "/admin/internship", element: <InternshipSection /> },
-  { path: "/admin/internship/add", element: <InternshipForm /> },
-  { path: "/admin/internship/edit/:id", element: <InternshipForm /> },
-  { path: "/admin/internship/view/:id", element: <ViewInternship /> },
-  { path: "/admin/volunteer/view/:id", element: <ViewVolunteer /> },
 
   // Services Section
   { path: "/admin/sectors", element: <Services /> },

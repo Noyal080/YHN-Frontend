@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
 import { Switch } from "@/components/ui/switch";
 import { JobApplicationType } from "@/utils/types";
+import CreatableSelect from "react-select/creatable";
+
 import {
   Box,
   CardBody,
@@ -21,14 +23,22 @@ import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 
+interface PositionOption {
+  label: string;
+  value: number;
+}
+
 const JobApplicationForm = () => {
+  const [positionOption, setPositionOption] = useState<PositionOption[]>([]);
+
   const [jobApplicationData, setJobApplicationData] =
     useState<JobApplicationType>({
       title: "",
       description: "",
       apply_link: "",
       job_position: "",
-      status: 0,
+      job_open_position_id : null,
+      status: 1,
       start_date: new Date().toISOString().split("T")[0],
       end_date: "",
     });
@@ -41,6 +51,7 @@ const JobApplicationForm = () => {
   const {
     control,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<JobApplicationType>({
     values: {
@@ -50,11 +61,32 @@ const JobApplicationForm = () => {
       apply_link: jobApplicationData?.apply_link || "",
       status: jobApplicationData.status,
       job_position: jobApplicationData.job_position,
+      job_open_position_id : jobApplicationData.job_open_position_id,
       start_date:
         jobApplicationData.start_date || new Date().toISOString().split("T")[0],
       end_date: jobApplicationData.end_date || "",
     },
   });
+
+  const startDate = watch("start_date");
+
+  useEffect(() => {
+    const fetchPositionData = async () => {
+      try {
+        const res = await axiosInstance.get("/jobopenposition");
+        const result = res.data.data.data;
+        setPositionOption(
+          result.map((position: { name: string; id: number }) => ({
+            label: position.name,
+            value: position.id,
+          }))
+        );
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    fetchPositionData();
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -77,20 +109,35 @@ const JobApplicationForm = () => {
   const onSubmit = async (data: JobApplicationType) => {
     setIsLoading(true);
     try {
+      const submissionData = { ...data };
+
+      // Check if the position is a new one (a string value)
+      if (typeof submissionData.job_open_position_id === "string") {
+        // Create new position first
+        const positionResponse = await axiosInstance.post("/jobopenposition", {
+          name: submissionData.job_open_position_id,
+        });
+
+        // Extract the new position ID from the response
+        const newPositionId = positionResponse.data.data.id;
+
+        // Update the submission data with the new position ID
+        submissionData.job_open_position_id = newPositionId;
+      }
       if (id) {
-        const res = await axiosInstance.patch(`/JobApplications/${id}`, data);
+        const res = await axiosInstance.patch(`/JobApplications/${id}`, submissionData);
         showToast({
           type: "success",
           description: res.data.message,
         });
       } else {
-        const res = await axiosInstance.post("/JobApplications", data);
+        const res = await axiosInstance.post("/JobApplications", submissionData);
         showToast({
           type: "success",
           description: res.data.message,
         });
       }
-      navigate("/admin/volunteer");
+      navigate("/admin/join-us");
     } catch (error) {
       console.error(error);
     } finally {
@@ -155,6 +202,7 @@ const JobApplicationForm = () => {
                 />
               </HStack>
               <VStack gap={4} align={"stretch"}>
+                <HStack>
                 <Controller
                   name="title"
                   control={control}
@@ -175,12 +223,77 @@ const JobApplicationForm = () => {
                     </Field>
                   )}
                 />
+                <Controller
+                      name="job_open_position_id"
+                      control={control}
+                      rules={{ required: "Position is required" }}
+                      render={({ field }) => (
+                        <Field label="Job Position">
+                          <CreatableSelect
+                            {...field}
+                            placeholder="Create or add job user position"
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                            options={positionOption as any}
+                            onChange={(selectedOption) => {
+                              // Update both React Hook Form state and local state
+                              field.onChange(selectedOption?.value || null);
+                            }}
+                            value={
+                              // Find the matching option object if field.value is a number
+                              typeof field.value === "number"
+                                ? positionOption.find(
+                                    (option) => option.value === field.value
+                                  )
+                                : // If it's a custom value (string) or null, handle accordingly
+                                field.value
+                                ? {
+                                    label: String(field.value),
+                                    value: field.value,
+                                  }
+                                : null
+                            }
+                            styles={{
+                              container: (base) => ({
+                                ...base,
+                                width: "100%",
+                                zIndex: 1000,
+                              }),
+                              control: (base) => ({
+                                ...base,
+                                width: "100%",
+                                borderColor: errors.job_open_position_id
+                                  ? "red"
+                                  : base.borderColor,
+                              }),
+                              menu: (base) => ({
+                                ...base,
+                                width: "100%",
+                              }),
+                              valueContainer: (base) => ({
+                                ...base,
+                                width: "100%",
+                              }),
+                              input: (base) => ({
+                                ...base,
+                                width: "100%",
+                              }),
+                            }}
+                          />
+                          {errors.job_open_position_id && (
+                            <Text textStyle="sm" color="red">
+                              {errors.job_open_position_id.message}
+                            </Text>
+                          )}
+                        </Field>
+                      )}
+                    />
+                </HStack>
 
                 <Controller
                   name="apply_link"
                   control={control}
                   rules={{
-                    required: "Volunteer Application Link is required",
+                    required: "Job Application Link is required",
                     pattern: {
                       value: /^https:\/\/[\w.-]+\.[a-z]{2,6}([/\w.-]*)*\/?$/,
                       message:
@@ -188,7 +301,7 @@ const JobApplicationForm = () => {
                     },
                   }}
                   render={({ field }) => (
-                    <Field label="Volunteer Application Link">
+                    <Field label="Job Application Link">
                       <Input
                         {...field}
                         placeholder="Enter the link url"
@@ -203,6 +316,7 @@ const JobApplicationForm = () => {
                     </Field>
                   )}
                 />
+                
                 <HStack>
                   <Controller
                     name="start_date"
@@ -232,7 +346,7 @@ const JobApplicationForm = () => {
                       <Field label="Deadline">
                         <Input
                           {...field}
-                          min={jobApplicationData.start_date}
+                          min={startDate}
                           type="date"
                           size={"md"}
                           onChange={(value) => field.onChange(value)}
