@@ -353,10 +353,10 @@ export type JobApplicationType = {
   description: string;
   apply_link: string;
   job_position: string;
-  job_open_position_id:number | null;
+  job_open_position_id: number | null;
   job_open_position?: {
-    name : string
-  }
+    name: string;
+  };
   start_date: string;
   end_date: string;
   status: number;

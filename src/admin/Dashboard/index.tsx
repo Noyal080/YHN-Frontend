@@ -36,59 +36,98 @@ const AdminDashboard = () => {
         const res = await axiosInstance.get("/dashboard/graphs");
         const result = res.data.data;
 
-        const eventDataByCity: EventDashboardGraph[] = Object.entries(
-          result.event_location_counts_by_category
-            .banner_location_cityordistrict
-        ).map(([name, events]) => ({
-          name,
-          events: events as number,
-        }));
+        // Initialize empty arrays as fallback
+        const emptyEventGraph: EventDashboardGraph[] = [];
+        const emptyWorkGraph: WorkDashboardGraph[] = [];
 
-        const eventDataByProvince: EventDashboardGraph[] = Object.entries(
-          result.event_location_counts_by_category
-            .banner_location_stateorprovince
-        ).map(([name, events]) => ({
-          name,
-          events: events as number,
-        }));
+        // Process event data with null checks
+        const eventDataByCity: EventDashboardGraph[] = result
+          ?.event_location_counts_by_category?.banner_location_city
+          ? Object.entries(
+              result.event_location_counts_by_category.banner_location_city
+            ).map(([name, events]) => ({
+              name,
+              events: events as number,
+            }))
+          : emptyEventGraph;
 
-        const eventDataByDate: EventDashboardGraph[] = Object.entries(
-          result.event_date_counts
-        ).map(([name, events]) => ({
-          name,
-          events: events as number,
-        }));
+        const eventDataByProvince: EventDashboardGraph[] = result
+          ?.event_location_counts_by_category?.banner_location_state
+          ? Object.entries(
+              result.event_location_counts_by_category.banner_location_state
+            ).map(([name, events]) => ({
+              name,
+              events: events as number,
+            }))
+          : emptyEventGraph;
 
-        const workDataByCity: WorkDashboardGraph[] = Object.entries(
-          result.work_location_counts_by_category.banner_location_cityordistrict
-        ).map(([name, events]) => ({
-          name,
-          works: events as number,
-        }));
+        const eventDataByDate: EventDashboardGraph[] = result?.event_date_counts
+          ? Object.entries(result.event_date_counts).map(([name, events]) => ({
+              name,
+              events: events as number,
+            }))
+          : emptyEventGraph;
 
-        const workDataByProvince: WorkDashboardGraph[] = Object.entries(
-          result.work_location_counts_by_category
-            .banner_location_stateorprovince
-        ).map(([name, events]) => ({
-          name,
-          works: events as number,
-        }));
+        // Process work data with null checks
+        const workDataByCity: WorkDashboardGraph[] = result
+          ?.work_location_counts_by_category?.banner_location_city
+          ? Object.entries(
+              result.work_location_counts_by_category.banner_location_city
+            ).map(([name, works]) => ({
+              name,
+              works: works as number,
+            }))
+          : emptyWorkGraph;
 
-        const workDataByDate: WorkDashboardGraph[] = Object.entries(
-          result.work_date_counts
-        ).map(([name, events]) => ({
-          name,
-          works: events as number,
-        }));
+        const workDataByProvince: WorkDashboardGraph[] = result
+          ?.work_location_counts_by_category?.banner_location_state
+          ? Object.entries(
+              result.work_location_counts_by_category.banner_location_state
+            ).map(([name, works]) => ({
+              name,
+              works: works as number,
+            }))
+          : emptyWorkGraph;
+
+        const workDataByDate: WorkDashboardGraph[] = result?.work_date_counts
+          ? Object.entries(result.work_date_counts).map(([name, works]) => ({
+              name,
+              works: works as number,
+            }))
+          : emptyWorkGraph;
+
+        // Filter out empty string keys (like in work_date_counts)
+        const filteredWorkDataByDate = workDataByDate.filter(
+          (item) => item.name !== ""
+        );
+        const filteredEventDataByDate = eventDataByDate.filter(
+          (item) => item.name !== ""
+        );
+
+        console.log({
+          eventDataByCity,
+          eventDataByProvince,
+          filteredEventDataByDate,
+          workDataByCity,
+          workDataByProvince,
+          filteredWorkDataByDate,
+        });
 
         setEventByCity(eventDataByCity);
         setEventByProvince(eventDataByProvince);
-        setEventByDate(eventDataByDate);
+        setEventByDate(filteredEventDataByDate);
         setWorkByCity(workDataByCity);
         setWorkByProvince(workDataByProvince);
-        setWorkByDate(workDataByDate);
+        setWorkByDate(filteredWorkDataByDate);
       } catch (e) {
         console.error(e);
+        // Set empty arrays in case of error
+        setEventByCity([]);
+        setEventByProvince([]);
+        setEventByDate([]);
+        setWorkByCity([]);
+        setWorkByProvince([]);
+        setWorkByDate([]);
       } finally {
         setLoading(false);
       }

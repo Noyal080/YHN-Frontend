@@ -130,8 +130,8 @@ const WorkForms = () => {
     setCityOptions(
       selectedOption
         ? nepalData
-          .find((item) => item.state === selectedOption.value)
-          ?.cities.map((city) => ({ value: city, label: city })) || []
+            .find((item) => item.state === selectedOption.value)
+            ?.cities.map((city) => ({ value: city, label: city })) || []
         : []
     );
   };
@@ -337,15 +337,15 @@ const WorkForms = () => {
                             // Find the matching option object if field.value is a number
                             typeof field.value === "number"
                               ? sectorOptions.find(
-                                (option) => option.value === field.value
-                              )
+                                  (option) => option.value === field.value
+                                )
                               : // If it's a custom value (string) or null, handle accordingly
                               field.value
-                                ? {
+                              ? {
                                   label: String(field.value),
                                   value: field.value,
                                 }
-                                : null
+                              : null
                           }
                           onChange={(selectedOption) => {
                             // Update both React Hook Form state and local state
@@ -451,7 +451,6 @@ const WorkForms = () => {
                     )}
                   />
                 </HStack>
-
 
                 <HStack>
                   <Controller
