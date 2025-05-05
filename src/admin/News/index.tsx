@@ -25,7 +25,6 @@ const NewsSection = () => {
   const navigate = useNavigate();
 
   const columns: Column<NewsType>[] = [
-    { key: "id", label: "Id", visible: true },
     { key: "title", label: "Title", visible: true },
     {
       key: "image",

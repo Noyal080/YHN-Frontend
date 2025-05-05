@@ -15,11 +15,6 @@ import EditorTextView from "@/common/EditorTextView";
 const Testimonial = () => {
   const columns: Column<TestimonialData>[] = [
     {
-      key: "id",
-      label: "Id",
-      visible: true,
-    },
-    {
       key: "name",
       label: "Name",
       visible: true,

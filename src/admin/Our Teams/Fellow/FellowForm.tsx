@@ -242,7 +242,7 @@ const FellowForms = () => {
                           <Input
                             {...field}
                             placeholder="Enter fellow name"
-                            value={field.value}
+                            value={field.value || ""}
                             size={"md"}
                             onChange={(e) => field.onChange(e.target.value)}
                           />
@@ -263,7 +263,7 @@ const FellowForms = () => {
                             {...field}
                             type="date"
                             size={"md"}
-                            value={field.value}
+                            value={field.value || ""}
                             onChange={(value) => field.onChange(value)}
                           />
                           {errors.joining_date && (
@@ -281,8 +281,8 @@ const FellowForms = () => {
                         <Field label="Completion Date">
                           <Input
                             {...field}
-                            min={joiningDate}
-                            value={field.value}
+                            min={joiningDate || ""}
+                            value={field.value || ""}
                             type="date"
                             size={"md"}
                             onChange={(value) => field.onChange(value)}

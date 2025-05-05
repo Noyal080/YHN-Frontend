@@ -28,11 +28,6 @@ const VideoSection = () => {
 
   const columns: Column<VideoInputTypes>[] = [
     {
-      key: "id",
-      label: "Id",
-      visible: true,
-    },
-    {
       key: "title",
       label: "Title",
       visible: true,

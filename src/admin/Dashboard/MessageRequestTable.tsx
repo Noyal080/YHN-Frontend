@@ -26,11 +26,6 @@ const DashboardMessageRequest = () => {
   const navigate = useNavigate();
   const columns: Column<MessageRequestType>[] = [
     {
-      key: "id",
-      label: "Id",
-      visible: true,
-    },
-    {
       key: "name",
       label: "Full Name",
       visible: true,

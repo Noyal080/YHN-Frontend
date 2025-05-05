@@ -25,8 +25,6 @@ import {
   FiCamera,
   FiVideo,
   FiUserPlus,
-  FiUserCheck,
-  FiBookOpen,
   FiSettings,
 } from "react-icons/fi";
 import { RiTeamFill } from "react-icons/ri";
@@ -41,7 +39,7 @@ import {
   LuQuote,
 } from "react-icons/lu";
 import { SidebarProps } from "@/utils";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleDropdown, toggleSidebar } from "@/redux/sidebarSlice";
 import { RootState } from "@/redux/store";
@@ -68,11 +66,6 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
   const { isExpanded, openDropdowns } = useSelector(
     (state: RootState) => state.sidebar
   );
-
-  const navigate = useNavigate();
-  const handleLinkClick = (link: string) => {
-    navigate(link);
-  };
 
   const handleSidebarToggle = () => {
     dispatch(toggleSidebar());
@@ -223,7 +216,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
       id: 10, // Join Us (Parent)
       label: "Join Us",
       icon: FiUserPlus,
-      link: "/admin/join-us"
+      link: "/admin/join-us",
     },
     {
       id: 11, // Settings (Parent)
@@ -259,7 +252,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
 
     return (
       <Box key={item.id} w="100%">
-        {item.link ?
+        {item.link ? (
           <Link to={item?.link}>
             <Flex
               alignContent="center"
@@ -269,12 +262,14 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
               borderRadius="md"
               transition="background 0.2s"
               cursor="pointer"
-              color={item.label === activeSidebarItem ? "teal.500" : "black.300"}
+              color={
+                item.label === activeSidebarItem ? "teal.500" : "black.300"
+              }
             >
               {menuItemContent}
             </Flex>
           </Link>
-          :
+        ) : (
           <Flex
             alignContent="center"
             justifyContent="space-between"
@@ -288,9 +283,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeSidebarItem }) => {
           >
             {menuItemContent}
           </Flex>
-        }
-
-
+        )}
       </Box>
     );
   };

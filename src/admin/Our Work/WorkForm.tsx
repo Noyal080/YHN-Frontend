@@ -99,8 +99,6 @@ const WorkForms = () => {
       services_id: pageData.services_id,
       description: pageData.description || "",
       banner_image: pageData.banner_image || "",
-      // banner_start_date: pageData.banner_start_date || "",
-      // banner_end_date: pageData.banner_end_date || "",
       banner_location_district: pageData.banner_location_district || "",
       banner_location_state: pageData.banner_location_state || "",
       banner_location_city: pageData.banner_location_city || "",

@@ -27,11 +27,6 @@ const ImageSection = () => {
 
   const columns: Column<ImageInputTypes>[] = [
     {
-      key: "id",
-      label: "Id",
-      visible: true,
-    },
-    {
       key: "title",
       label: "Title",
       visible: true,

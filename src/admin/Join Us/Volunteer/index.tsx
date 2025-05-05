@@ -27,7 +27,6 @@ const VolunteerSection = () => {
   const debouncedSearch = useDebounce(searchQuery, 500);
 
   const columns: Column<InternshipType>[] = [
-    { key: "id", label: "Id", visible: true },
     { key: "title", label: "Title", visible: true },
     { key: "end_date", label: "Deadline", visible: true },
     { key: "apply_link", label: "Application Link", visible: true },

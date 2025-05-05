@@ -27,11 +27,6 @@ const OurImpact = () => {
 
   const columns: Column<OurImpactType>[] = [
     {
-      key: "id",
-      label: "Id",
-      visible: true,
-    },
-    {
       key: "name",
       label: "Impact Name",
       visible: true,

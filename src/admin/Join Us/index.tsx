@@ -28,11 +28,15 @@ const JobApplication = () => {
   const debouncedSearch = useDebounce(searchQuery, 500);
 
   const columns: Column<JobApplicationType>[] = [
-    { key: "id", label: "Id", visible: true },
     { key: "title", label: "Title", visible: true },
     { key: "end_date", label: "Deadline", visible: true },
     // { key: "apply_link", label: "Application Link", visible: true },
-    { key: "job_open_position", label: "Open Position", visible: true , render :(row) => <Text> {row.job_open_position.name} </Text>},
+    {
+      key: "job_open_position",
+      label: "Open Position",
+      visible: true,
+      render: (row) => <Text> {row.job_open_position?.name} </Text>,
+    },
     {
       key: "status",
       label: "Status",

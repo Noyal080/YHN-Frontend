@@ -26,11 +26,6 @@ const PartnerSlider = () => {
 
   const columns: Column<PartnerSliderType>[] = [
     {
-      key: "id",
-      label: "Id",
-      visible: true,
-    },
-    {
       key: "title",
       label: "Partner Name",
       visible: true,

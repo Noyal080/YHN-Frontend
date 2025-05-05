@@ -21,7 +21,6 @@ const Services = () => {
   const { showToast } = useCommonToast();
 
   const columns: Column<ServicesType>[] = [
-    { key: "id", label: "Id", visible: true },
     { key: "title", label: "Title", visible: true },
     {
       key: "description",

@@ -269,7 +269,7 @@ const InternForms = () => {
                             {...field}
                             type="date"
                             size={"md"}
-                            value={field.value}
+                            value={field.value || ""}
                             onChange={(value) => field.onChange(value)}
                           />
                           {errors.joining_date && (
@@ -287,8 +287,8 @@ const InternForms = () => {
                         <Field label="Completion Date">
                           <Input
                             {...field}
-                            min={joiningDate}
-                            value={field.value}
+                            min={joiningDate || ""}
+                            value={field.value || ""}
                             type="date"
                             size={"md"}
                             onChange={(value) => field.onChange(value)}
