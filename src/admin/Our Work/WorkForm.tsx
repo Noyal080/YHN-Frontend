@@ -2,8 +2,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import AdminLayout from "../Layout";
 import { useEffect, useState } from "react";
 import Select from "react-select";
-import { ImageInputTypes, OurWorkType } from "@/utils/types";
-import { Controller, useForm } from "react-hook-form";
+import { ImageInputTypes, MultipleLocation, OurWorkType } from "@/utils/types";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 import {
   Box,
   CardBody,
@@ -11,6 +11,7 @@ import {
   Heading,
   HStack,
   Icon,
+  IconButton,
   Image,
   Input,
   Spinner,
@@ -33,6 +34,7 @@ import { Switch } from "@/components/ui/switch";
 import useCommonToast from "@/common/CommonToast";
 import nepalData from "../../common/cities.json";
 import { CiFileOn } from "react-icons/ci";
+import { FaPlus, FaTrash } from "react-icons/fa";
 
 interface SectorOptions {
   label: string;
@@ -85,6 +87,13 @@ const WorkForms = () => {
     activities: "",
     upload_pdf: "",
     status: 1,
+    additional_location_details: [
+      {
+        district: "",
+        state: "",
+        city: "",
+      },
+    ],
   });
   const navigate = useNavigate();
 
@@ -107,7 +116,23 @@ const WorkForms = () => {
       activities: pageData.activities || "",
       upload_pdf: pageData.upload_pdf || "",
       status: pageData.status || 1,
+      additional_location_details: pageData.additional_location_details || [
+        {
+          district: "",
+          state: "",
+          city: "",
+        },
+      ],
     },
+  });
+
+  const {
+    fields: locationFields,
+    append: appendLocation,
+    remove: removeLocation,
+  } = useFieldArray({
+    control,
+    name: "additional_location_details",
   });
 
   const stateOptions = nepalData.map((item) => ({
@@ -115,23 +140,35 @@ const WorkForms = () => {
     label: item.state,
   }));
 
-  const [cityOptions, setCityOptions] = useState<
-    { value: string; label: string }[]
+  const [locationCityOptions, setLocationCityOptions] = useState<
+    { value: string; label: string }[][]
   >([]);
 
-  // Handle state selection
-  const handleStateChange = (
+  const addNewLocation = () => {
+    appendLocation({
+      district: "",
+      state: "",
+      city: "",
+    });
+    setLocationCityOptions([...locationCityOptions, []]);
+  };
+
+  // Handle state selection for additional locations
+  const handleLocationStateChange = (
     selectedOption: { value: string; label: string } | null,
+    index: number,
     onChange: (value: string | undefined) => void
   ) => {
     onChange(selectedOption?.value || "");
-    setCityOptions(
-      selectedOption
-        ? nepalData
-            .find((item) => item.state === selectedOption.value)
-            ?.cities.map((city) => ({ value: city, label: city })) || []
-        : []
-    );
+
+    const newCityOptions = [...locationCityOptions];
+    newCityOptions[index] = selectedOption
+      ? nepalData
+          .find((item) => item.state === selectedOption.value)
+          ?.cities.map((city) => ({ value: city, label: city })) || []
+      : [];
+
+    setLocationCityOptions(newCityOptions);
   };
 
   useEffect(() => {
@@ -172,14 +209,16 @@ const WorkForms = () => {
         const res = await axiosInstance.get(`/ourwork/${id}`);
         const result = res.data.data;
         setPageData(result);
-        const selectedState = result.banner_location_state;
-        if (selectedState) {
-          const cities =
-            nepalData
-              .find((item) => item.state === selectedState)
-              ?.cities.map((city) => ({ value: city, label: city })) || [];
-          setCityOptions(cities);
-        }
+        const initialCityOptions =
+          result.additional_location_details?.map((loc: MultipleLocation) => {
+            return (
+              nepalData
+                .find((item) => item.state === loc.state)
+                ?.cities.map((city) => ({ value: city, label: city })) || []
+            );
+          }) || [];
+
+        setLocationCityOptions(initialCityOptions);
       } catch (e) {
         console.log(e);
       } finally {
@@ -194,6 +233,7 @@ const WorkForms = () => {
 
   const onSubmit = async (data: OurWorkType) => {
     setIsLoading(true);
+
     try {
       const submissionData = { ...data };
 
@@ -206,6 +246,7 @@ const WorkForms = () => {
 
       const formData = new FormData();
       Object.entries(submissionData).forEach(([key, value]) => {
+        if (key === "additional_location_details") return;
         if (
           (key === "banner_image" || key === "upload_pdf") &&
           typeof value === "string"
@@ -215,6 +256,18 @@ const WorkForms = () => {
           formData.append(key, value as Blob);
         }
       });
+
+      submissionData.additional_location_details.forEach((location) => {
+        formData.append(
+          "additional_location_details[]",
+          JSON.stringify({
+            additional_location_details_district: location.district,
+            additional_location_details_state: location.state,
+            additional_location_details_city: location.city,
+          })
+        );
+      });
+
       if (id) {
         await axiosInstance.post(`/ourwork/${id}`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
@@ -450,7 +503,129 @@ const WorkForms = () => {
                   />
                 </HStack>
 
-                <HStack>
+                {/* Additional Locations Section */}
+                <Heading size="md" mt={4}>
+                  Locations
+                </Heading>
+                {locationFields.map((field, index) => (
+                  <Box
+                    key={field.id}
+                    p={4}
+                    borderWidth="1px"
+                    borderRadius="lg"
+                    mb={4}
+                  >
+                    <HStack justify="space-between" mb={2}>
+                      <Text fontWeight="bold">Location {index + 1}</Text>
+                      <IconButton
+                        size="sm"
+                        variant="ghost"
+                        colorPalette="red"
+                        onClick={() => removeLocation(index)}
+                      >
+                        <FaTrash />
+                      </IconButton>
+                    </HStack>
+
+                    <HStack mb={2}>
+                      <Controller
+                        name={`additional_location_details.${index}.state`}
+                        control={control}
+                        render={({ field }) => (
+                          <Field>
+                            State
+                            <Select
+                              options={stateOptions}
+                              value={stateOptions.find(
+                                (option) => option.value === field.value
+                              )}
+                              onChange={(selectedOption) => {
+                                handleLocationStateChange(
+                                  selectedOption,
+                                  index,
+                                  field.onChange
+                                );
+                              }}
+                              placeholder="Select State"
+                              styles={{
+                                container: (base) => ({
+                                  ...base,
+                                  width: "100%",
+                                  zIndex: 1000 - index, // Adjust z-index for stacking
+                                }),
+                                control: (base) => ({
+                                  ...base,
+                                  width: "100%",
+                                }),
+                              }}
+                            />
+                          </Field>
+                        )}
+                      />
+
+                      <Controller
+                        name={`additional_location_details.${index}.district`}
+                        control={control}
+                        render={({ field }) => (
+                          <Field>
+                            District
+                            <Select
+                              options={locationCityOptions[index] || []}
+                              value={(locationCityOptions[index] || []).find(
+                                (option) => option.value === field.value
+                              )}
+                              onChange={(selectedOption) => {
+                                field.onChange(selectedOption?.value || "");
+                              }}
+                              placeholder="Select District"
+                              isDisabled={!locationCityOptions[index]?.length}
+                              styles={{
+                                container: (base) => ({
+                                  ...base,
+                                  width: "100%",
+                                  zIndex: 1000 - index, // Adjust z-index for stacking
+                                }),
+                                control: (base) => ({
+                                  ...base,
+                                  width: "100%",
+                                }),
+                              }}
+                            />
+                          </Field>
+                        )}
+                      />
+                    </HStack>
+
+                    <Controller
+                      name={`additional_location_details.${index}.city`}
+                      control={control}
+                      render={({ field }) => (
+                        <Field>
+                          City
+                          <Input
+                            width={"1/2"}
+                            {...field}
+                            placeholder="Enter City"
+                            value={field.value}
+                            size={"md"}
+                            onChange={(e) => field.onChange(e.target.value)}
+                          />
+                        </Field>
+                      )}
+                    />
+                  </Box>
+                ))}
+
+                <Button
+                  type="button"
+                  onClick={addNewLocation}
+                  variant="outline"
+                >
+                  <FaPlus />
+                  Add Location
+                </Button>
+
+                {/* <HStack>
                   <Controller
                     name={"banner_location_state"}
                     control={control}
@@ -582,7 +757,7 @@ const WorkForms = () => {
                   <Text textStyle="sm" color="red">
                     {errors.banner_location_city.message}
                   </Text>
-                )}
+                )} */}
                 <Controller
                   name="description"
                   control={control}

@@ -171,6 +171,12 @@ export type OurWorks = {
   status: number;
 };
 
+export type MultipleLocation = {
+  district: string;
+  state: string;
+  city: string;
+};
+
 export type OurWorkType = {
   id?: number;
   title: string;
@@ -188,6 +194,7 @@ export type OurWorkType = {
   activities?: string;
   upload_pdf?: File | string | null;
   status: number;
+  additional_location_details: MultipleLocation[];
 };
 
 export type EventType = {

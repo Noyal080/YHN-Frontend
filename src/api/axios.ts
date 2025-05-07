@@ -57,7 +57,6 @@ axiosInstance.interceptors.response.use(
 
         if (responseData.message) {
           messages.push(responseData.message);
-          console.log("here2");
         }
 
         if (
@@ -69,13 +68,11 @@ axiosInstance.interceptors.response.use(
             Array.isArray(val) ? val : [val]
           );
           messages.push(...fieldErrors);
-          console.log("here1");
         }
 
         if (messages.length === 0) {
           errorMessage =
             error.response.statusText || "An unexpected error occurred";
-          console.log("here3");
         } else {
           errorMessage = messages.join("\n");
         }

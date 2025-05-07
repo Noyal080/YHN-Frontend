@@ -129,7 +129,6 @@ const PartnerSlider = () => {
       await axiosInstance.patch(`/partner/${id}/status`, {
         status: newStatus,
       });
-      console.log(`Partner ${id} status changed to ${newStatus}`);
       setTriggerFetch((prev) => !prev);
     } catch (error) {
       console.error("Error changing status:", error);

@@ -58,7 +58,6 @@ const OrganizationDetails = () => {
         setIsLoading(true);
         const response = await axiosInstance.get("/organisation_information");
         const resData = response.data.data.information;
-        console.log(resData);
 
         setInitialData(resData[0]);
       } catch (error) {

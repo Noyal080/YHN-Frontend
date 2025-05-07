@@ -104,15 +104,6 @@ const AdminDashboard = () => {
           (item) => item.name !== ""
         );
 
-        console.log({
-          eventDataByCity,
-          eventDataByProvince,
-          filteredEventDataByDate,
-          workDataByCity,
-          workDataByProvince,
-          filteredWorkDataByDate,
-        });
-
         setEventByCity(eventDataByCity);
         setEventByProvince(eventDataByProvince);
         setEventByDate(filteredEventDataByDate);

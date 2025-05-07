@@ -103,7 +103,6 @@ const TestimonialForm = () => {
         const res = await axiosInstance.get(`/testimonials/${id}`);
         const result = res.data.data.data;
         setTestimonialData(result);
-        console.log(result);
 
         if (result.type_type) {
           setShowTypeOptions(true);
@@ -161,7 +160,6 @@ const TestimonialForm = () => {
 
     fetchDataForType();
   }, [selectedType, debouncedSearch]);
-
 
   const handleFieldChange = (
     field: keyof TestimonialInput,
@@ -381,7 +379,6 @@ const TestimonialForm = () => {
                       rules={{ required: "Designation is required" }}
                       render={({ field }) => (
                         <Field label=" Designation">
-
                           <Input
                             {...field}
                             placeholder="Enter designation name"
@@ -453,7 +450,7 @@ const TestimonialForm = () => {
                               value={field.value}
                               onValueChange={(e) => {
                                 field.onChange(e.value);
-                                handleFieldChange("type_id", e.value)
+                                handleFieldChange("type_id", e.value);
                                 handleTypeChange(e.value);
                               }}
                             >
