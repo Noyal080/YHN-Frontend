@@ -46,6 +46,7 @@ export interface Column<T> {
   label: string;
   visible: boolean;
   render?: (row: T) => React.ReactNode;
+  width?: string | number; 
 }
 
 export interface CommonTableProps<T> {
@@ -60,7 +61,6 @@ export interface CommonTableProps<T> {
   onAdd?: () => void;
   addName?: string;
   filterComponent?: React.ReactNode;
-
   count?: number;
   onPageChange?: (page: number) => void;
   currentPage?: number;

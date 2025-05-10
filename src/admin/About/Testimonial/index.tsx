@@ -22,7 +22,8 @@ const Testimonial = () => {
     {
       key: "description",
       label: "Description",
-      visible: false,
+      width: "500px",
+      visible: true,
       render: (row) => <EditorTextView message={row.description} />,
     },
     {
@@ -49,6 +50,7 @@ const Testimonial = () => {
       key: "status",
       label: "Status",
       visible: true,
+      width: "50px",
       render: (row) => (
         <Switch
           colorPalette={"green"}

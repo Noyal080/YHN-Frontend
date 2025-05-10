@@ -40,6 +40,10 @@ const OurImpact = () => {
       key: "icon",
       label: "Icon",
       visible: true,
+      render: (row) => <i className={`${row.icon}`} style={{
+        fontSize: "24px",
+        verticalAlign: "middle"
+      }} />,
     },
     {
       key: "status",

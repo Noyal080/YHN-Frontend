@@ -7,14 +7,15 @@ interface CommonButtonProps extends ButtonProps {
   onPress?: () => void;
   className?: string;
   variant?:
-    | "outline"
-    | "solid"
-    | "subtle"
-    | "surface"
-    | "ghost"
-    | "plain"
-    | undefined;
+  | "outline"
+  | "solid"
+  | "subtle"
+  | "surface"
+  | "ghost"
+  | "plain"
+  | undefined;
 }
+
 
 const CommonButton: React.FC<CommonButtonProps> = ({
   label,

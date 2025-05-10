@@ -116,6 +116,7 @@ const CommonTable = <T,>({
                       cursor="pointer"
                       alignItems="center"
                       // width={`${100 / visibleColumns.length}%`}
+                      width={column.width || "auto"}
                     >
                       <Flex align={"center"}>
                         <Text mr={4}>{column.label}</Text>
@@ -148,7 +149,7 @@ const CommonTable = <T,>({
                       icon={<HiSwatch />}
                       title="No data found"
                       size={"lg"}
-                      // description="Try adjusting your search"
+                    // description="Try adjusting your search"
                     />
                   </TableCell>
                 </TableRow>
@@ -158,7 +159,7 @@ const CommonTable = <T,>({
                     {visibleColumns
                       .filter((column) => column.visible) // Only render visible columns
                       .map((column) => (
-                        <TableCell key={String(column.key)}>
+                        <TableCell key={String(column.key)} width={column.width || "auto"} >
                           {column.render
                             ? column.render(row)
                             : String(row[column.key])}

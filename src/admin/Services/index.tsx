@@ -25,6 +25,7 @@ const Services = () => {
     {
       key: "description",
       label: "Description",
+      width: "500px",
       visible: true,
       render: (row) => <EditorTextView message={row.description} />,
     },
@@ -32,11 +33,16 @@ const Services = () => {
       key: "icon",
       label: "Icon",
       visible: true,
+      render: (row) => <i className={`${row.icon}`} style={{
+        fontSize: "24px",
+        verticalAlign: "middle"
+      }} />,
     },
     {
       key: "status",
       label: "Status",
       visible: true,
+
       render: (row) => (
         <Switch
           checked={row.status === 1}

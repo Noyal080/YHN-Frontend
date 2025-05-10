@@ -420,6 +420,7 @@ const CommonEditor = ({
             )}
           </div>
         </div>
+
       </div>
     </div>
   );

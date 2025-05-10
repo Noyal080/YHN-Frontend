@@ -54,8 +54,8 @@ export type TestimonialInput = {
   description: string;
   designation_id?: number | null;
   // designation: string;
-  type_id: number | null;
-  type_type: string | null;
+  type_id?: number | null;
+  type_type?: string | null;
   description2: string;
   category: string;
 };

@@ -183,6 +183,14 @@ const TestimonialForm = () => {
     try {
       const submissionData = { ...data };
       const formData = new FormData();
+      if (id) {
+        if (submissionData.type_type === null) {
+          delete submissionData?.type_type;
+        }
+        if (submissionData.type_id === null) {
+          delete submissionData.type_id;
+        }
+      }
 
       Object.entries(submissionData).forEach(([key, value]) => {
         if (key === "image" && typeof value === "string") {

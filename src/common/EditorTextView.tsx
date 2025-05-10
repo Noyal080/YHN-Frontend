@@ -47,7 +47,7 @@ const EditorTextView = ({ message }: { message: string }) => {
             <Text
               display="inline"
               dangerouslySetInnerHTML={{
-                __html: truncateHTML(message, 100),
+                __html: truncateHTML(message, 350),
               }}
               whiteSpace="normal"
               wordBreak="break-word"

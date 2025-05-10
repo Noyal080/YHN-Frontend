@@ -37,7 +37,7 @@ const JobApplicationForm = () => {
       description: "",
       apply_link: "",
       job_position: "",
-      job_open_position_id : null,
+      job_open_position_id: null,
       status: 1,
       start_date: new Date().toISOString().split("T")[0],
       end_date: "",
@@ -61,7 +61,7 @@ const JobApplicationForm = () => {
       apply_link: jobApplicationData?.apply_link || "",
       status: jobApplicationData.status,
       job_position: jobApplicationData.job_position,
-      job_open_position_id : jobApplicationData.job_open_position_id,
+      job_open_position_id: jobApplicationData.job_open_position_id,
       start_date:
         jobApplicationData.start_date || new Date().toISOString().split("T")[0],
       end_date: jobApplicationData.end_date || "",
@@ -108,6 +108,14 @@ const JobApplicationForm = () => {
 
   const onSubmit = async (data: JobApplicationType) => {
     setIsLoading(true);
+    const plainTextLength = data.description
+      .replace(/<[^>]*>/g, '') // Remove HTML tags
+      .replace(/\s+/g, ' ')    // Collapse multiple spaces
+      .trim()                  // Remove whitespace
+      .length;
+
+    console.log(plainTextLength, data.description.length, data.description);
+
     try {
       const submissionData = { ...data };
 
@@ -203,90 +211,90 @@ const JobApplicationForm = () => {
               </HStack>
               <VStack gap={4} align={"stretch"}>
                 <HStack>
-                <Controller
-                  name="title"
-                  control={control}
-                  rules={{ required: "Title is requried" }}
-                  render={({ field }) => (
-                    <Field label="Title">
-                      <Input
-                        {...field}
-                        placeholder="Enter a title"
-                        size={"md"}
-                        onChange={(value) => field.onChange(value)}
-                      />
-                      {errors.title && (
-                        <Text textStyle="sm" color="red">
-                          {errors.title.message}
-                        </Text>
-                      )}
-                    </Field>
-                  )}
-                />
-                <Controller
-                      name="job_open_position_id"
-                      control={control}
-                      rules={{ required: "Position is required" }}
-                      render={({ field }) => (
-                        <Field label="Job Position">
-                          <CreatableSelect
-                            {...field}
-                            placeholder="Create or add job user position"
-                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                            options={positionOption as any}
-                            onChange={(selectedOption) => {
-                              // Update both React Hook Form state and local state
-                              field.onChange(selectedOption?.value || null);
-                            }}
-                            value={
-                              // Find the matching option object if field.value is a number
-                              typeof field.value === "number"
-                                ? positionOption.find(
-                                    (option) => option.value === field.value
-                                  )
-                                : // If it's a custom value (string) or null, handle accordingly
-                                field.value
+                  <Controller
+                    name="title"
+                    control={control}
+                    rules={{ required: "Title is requried" }}
+                    render={({ field }) => (
+                      <Field label="Title">
+                        <Input
+                          {...field}
+                          placeholder="Enter a title"
+                          size={"md"}
+                          onChange={(value) => field.onChange(value)}
+                        />
+                        {errors.title && (
+                          <Text textStyle="sm" color="red">
+                            {errors.title.message}
+                          </Text>
+                        )}
+                      </Field>
+                    )}
+                  />
+                  <Controller
+                    name="job_open_position_id"
+                    control={control}
+                    rules={{ required: "Position is required" }}
+                    render={({ field }) => (
+                      <Field label="Job Position">
+                        <CreatableSelect
+                          {...field}
+                          placeholder="Create or add job user position"
+                          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                          options={positionOption as any}
+                          onChange={(selectedOption) => {
+                            // Update both React Hook Form state and local state
+                            field.onChange(selectedOption?.value || null);
+                          }}
+                          value={
+                            // Find the matching option object if field.value is a number
+                            typeof field.value === "number"
+                              ? positionOption.find(
+                                (option) => option.value === field.value
+                              )
+                              : // If it's a custom value (string) or null, handle accordingly
+                              field.value
                                 ? {
-                                    label: String(field.value),
-                                    value: field.value,
-                                  }
+                                  label: String(field.value),
+                                  value: field.value,
+                                }
                                 : null
-                            }
-                            styles={{
-                              container: (base) => ({
-                                ...base,
-                                width: "100%",
-                                zIndex: 1000,
-                              }),
-                              control: (base) => ({
-                                ...base,
-                                width: "100%",
-                                borderColor: errors.job_open_position_id
-                                  ? "red"
-                                  : base.borderColor,
-                              }),
-                              menu: (base) => ({
-                                ...base,
-                                width: "100%",
-                              }),
-                              valueContainer: (base) => ({
-                                ...base,
-                                width: "100%",
-                              }),
-                              input: (base) => ({
-                                ...base,
-                                width: "100%",
-                              }),
-                            }}
-                          />
-                          {errors.job_open_position_id && (
-                            <Text textStyle="sm" color="red">
-                              {errors.job_open_position_id.message}
-                            </Text>
-                          )}
-                        </Field>
-                      )}
-                    />
+                          }
+                          styles={{
+                            container: (base) => ({
+                              ...base,
+                              width: "100%",
+                              zIndex: 1000,
+                            }),
+                            control: (base) => ({
+                              ...base,
+                              width: "100%",
+                              borderColor: errors.job_open_position_id
+                                ? "red"
+                                : base.borderColor,
+                            }),
+                            menu: (base) => ({
+                              ...base,
+                              width: "100%",
+                            }),
+                            valueContainer: (base) => ({
+                              ...base,
+                              width: "100%",
+                            }),
+                            input: (base) => ({
+                              ...base,
+                              width: "100%",
+                            }),
+                          }}
+                        />
+                        {errors.job_open_position_id && (
+                          <Text textStyle="sm" color="red">
+                            {errors.job_open_position_id.message}
+                          </Text>
+                        )}
+                      </Field>
+                    )}
+                  />
                 </HStack>
 
                 <Controller
@@ -316,7 +324,7 @@ const JobApplicationForm = () => {
                     </Field>
                   )}
                 />
-                
+
                 <HStack>
                   <Controller
                     name="start_date"
