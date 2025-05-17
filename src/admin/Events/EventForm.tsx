@@ -55,7 +55,7 @@ const EventForm = () => {
     phone: "",
     banner_start_time: "",
     banner_end_time: "",
-    status: 1,
+    status: "1",
   });
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -82,7 +82,7 @@ const EventForm = () => {
       register_link: pageData.register_link || "",
       mail: pageData.mail || "",
       phone: pageData.phone || "",
-      status: pageData.status || 1,
+      status: pageData.status || "1",
     },
   });
 
@@ -265,12 +265,12 @@ const EventForm = () => {
                   render={({ field }) => (
                     <HStack justify="space-between" align="center">
                       <Text fontWeight="500" textStyle="md">
-                        {field.value === 1 ? "Active" : "Inactive"}
+                        {field.value === "1" ? "Show" : "Hide"}
                       </Text>
                       <Switch
-                        checked={field.value === 1}
+                        checked={field.value === "1"}
                         onCheckedChange={(value) => {
-                          const numericValue = value.checked ? 1 : 0; // Convert `true`/`false` to `1`/`0`
+                          const numericValue = value.checked ? "1" : "0"; // Convert `true`/`false` to `1`/`0`
                           field.onChange(numericValue);
                           handleFieldChange("status", numericValue);
                         }}

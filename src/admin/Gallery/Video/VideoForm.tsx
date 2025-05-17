@@ -28,7 +28,7 @@ const VideoForm = () => {
   const [videoData, setVideoData] = useState<VideoInputTypes>({
     title: "",
     video_url: "",
-    status: 1,
+    status: "1",
   });
 
   const {
@@ -40,7 +40,7 @@ const VideoForm = () => {
       id: videoData.id,
       title: videoData.title || "",
       video_url: videoData.video_url || "",
-      status: videoData.status || 1,
+      status: videoData.status || "1",
     },
   });
 
@@ -142,12 +142,12 @@ const VideoForm = () => {
                   render={({ field }) => (
                     <HStack justify="space-between" align="center">
                       <Text fontWeight="500" textStyle="md">
-                        {field.value === 1 ? "Active" : "Inactive"}
+                        {field.value === "1" ? "Show" : "Hide"}
                       </Text>
                       <Switch
-                        checked={field.value === 1}
+                        checked={field.value === "1"}
                         onCheckedChange={(value) => {
-                          const statusValue = value.checked ? 1 : 0;
+                          const statusValue = value.checked ? "1" : "0";
                           field.onChange(statusValue);
                           handleFieldChange("status", statusValue);
                         }}

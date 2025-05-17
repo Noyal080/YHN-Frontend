@@ -41,12 +41,12 @@ const ProjectSection = () => {
     },
     {
       key: "status",
-      label: "Status",
+      label: "Show/Hide",
       visible: true,
       render: (row) => {
         return (
           <Switch
-            checked={row.status === 1}
+            checked={row.status.toString() === "1"}
             onCheckedChange={() =>
               handleStatusChange(String(row.id), row.status)
             }
@@ -114,8 +114,8 @@ const ProjectSection = () => {
     fetchWorkData();
   }, [triggerFetch, page, debouncedSearch]);
 
-  const handleStatusChange = async (id: string, status: number) => {
-    const newStatus = status === 1 ? 0 : 1;
+  const handleStatusChange = async (id: string, status: string) => {
+    const newStatus = status === "1" ? "0" : "1";
     try {
       await axiosInstance.patch(`/ourwork/${id}/status`, {
         status: newStatus,

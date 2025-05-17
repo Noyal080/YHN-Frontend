@@ -38,7 +38,7 @@ const JobApplicationForm = () => {
       apply_link: "",
       job_position: "",
       job_open_position_id: null,
-      status: 1,
+      status: "1",
       start_date: new Date().toISOString().split("T")[0],
       end_date: "",
     });
@@ -109,10 +109,9 @@ const JobApplicationForm = () => {
   const onSubmit = async (data: JobApplicationType) => {
     setIsLoading(true);
     const plainTextLength = data.description
-      .replace(/<[^>]*>/g, '') // Remove HTML tags
-      .replace(/\s+/g, ' ')    // Collapse multiple spaces
-      .trim()                  // Remove whitespace
-      .length;
+      .replace(/<[^>]*>/g, "") // Remove HTML tags
+      .replace(/\s+/g, " ") // Collapse multiple spaces
+      .trim().length; // Remove whitespace
 
     console.log(plainTextLength, data.description.length, data.description);
 
@@ -133,13 +132,19 @@ const JobApplicationForm = () => {
         submissionData.job_open_position_id = newPositionId;
       }
       if (id) {
-        const res = await axiosInstance.patch(`/JobApplications/${id}`, submissionData);
+        const res = await axiosInstance.patch(
+          `/JobApplications/${id}`,
+          submissionData
+        );
         showToast({
           type: "success",
           description: res.data.message,
         });
       } else {
-        const res = await axiosInstance.post("/JobApplications", submissionData);
+        const res = await axiosInstance.post(
+          "/JobApplications",
+          submissionData
+        );
         showToast({
           type: "success",
           description: res.data.message,
@@ -194,12 +199,12 @@ const JobApplicationForm = () => {
                   render={({ field }) => (
                     <HStack justify="space-between" align="center">
                       <Text fontWeight="500" textStyle="md">
-                        {field.value === 1 ? "Active" : "Inactive"}
+                        {field.value === "1" ? "Show" : "Hide"}
                       </Text>
                       <Switch
-                        checked={field.value === 1}
+                        checked={field.value === "1"}
                         onCheckedChange={(value) => {
-                          const statusValue = value.checked ? 1 : 0;
+                          const statusValue = value.checked ? "1" : "0";
                           field.onChange(statusValue);
                         }}
                         color="black"
@@ -250,15 +255,15 @@ const JobApplicationForm = () => {
                             // Find the matching option object if field.value is a number
                             typeof field.value === "number"
                               ? positionOption.find(
-                                (option) => option.value === field.value
-                              )
+                                  (option) => option.value === field.value
+                                )
                               : // If it's a custom value (string) or null, handle accordingly
                               field.value
-                                ? {
+                              ? {
                                   label: String(field.value),
                                   value: field.value,
                                 }
-                                : null
+                              : null
                           }
                           styles={{
                             container: (base) => ({

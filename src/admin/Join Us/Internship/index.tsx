@@ -31,11 +31,11 @@ const InternshipSection = () => {
     { key: "end_date", label: "Deadline", visible: true },
     {
       key: "status",
-      label: "Status",
+      label: "Show/Hide",
       visible: true,
       render: (row) => (
         <Switch
-          checked={row.status === 1}
+          checked={row.status.toString() === "1"}
           onCheckedChange={() => handleStatusChange(String(row.id), row.status)}
           colorPalette={"green"}
         />
@@ -91,9 +91,9 @@ const InternshipSection = () => {
     fetchIntershipData();
   }, [triggerFetch, page, debouncedSearch]);
 
-  const handleStatusChange = async (id: string, status: number) => {
+  const handleStatusChange = async (id: string, status: string) => {
     //Change this
-    const newStatus = status === 1 ? 0 : 1;
+    const newStatus = status === "1" ? "0" : "1";
     try {
       await axiosInstance.patch(`/internships/${id}/status`, {
         status: newStatus,

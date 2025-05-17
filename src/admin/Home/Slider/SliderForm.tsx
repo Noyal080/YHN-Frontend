@@ -40,7 +40,7 @@ const SliderForm = () => {
     sub_title: "",
     priority_order: "",
     image: "",
-    status: 1,
+    status: "1",
     buttons: [{ button_name: "", button_link: "" }],
   });
   const {
@@ -54,7 +54,7 @@ const SliderForm = () => {
       sub_title: sliderData.sub_title || "",
       priority_order: sliderData.priority_order || "",
       image: sliderData.image || "",
-      status: sliderData.status || 0,
+      status: sliderData.status || "0",
       buttons: sliderData.buttons || [],
     },
   });
@@ -240,12 +240,12 @@ const SliderForm = () => {
                   render={({ field }) => (
                     <HStack>
                       <Text fontWeight="500" textStyle="md">
-                        {field.value === 1 ? "Active" : "Inactive"}
+                        {field.value === "1" ? "Show" : "Hide"}
                       </Text>
                       <Switch
-                        checked={field.value === 1}
+                        checked={field.value === "1"}
                         onCheckedChange={(value) => {
-                          const statusValue = value.checked ? 1 : 0;
+                          const statusValue = value.checked ? "1" : "0";
                           field.onChange(statusValue);
                           handleFieldChange("status", statusValue);
                         }}

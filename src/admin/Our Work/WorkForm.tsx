@@ -86,7 +86,7 @@ const WorkForms = () => {
     objectives: "",
     activities: "",
     upload_pdf: "",
-    status: 1,
+    status: "1",
     additional_location_details: [
       {
         district: "",
@@ -115,7 +115,7 @@ const WorkForms = () => {
       objectives: pageData.objectives || "",
       activities: pageData.activities || "",
       upload_pdf: pageData.upload_pdf || "",
-      status: pageData.status || 1,
+      status: pageData.status || "1",
       additional_location_details: pageData.additional_location_details || [
         {
           district: "",
@@ -335,12 +335,12 @@ const WorkForms = () => {
                   render={({ field }) => (
                     <HStack>
                       <Text fontWeight="500" textStyle="md">
-                        {field.value === 1 ? "Active" : "Inactive"}
+                        {field.value === "1" ? "Show" : "Hide"}
                       </Text>
                       <Switch
-                        checked={field.value === 1}
+                        checked={field.value === "1"}
                         onCheckedChange={(value) => {
-                          const statusValue = value.checked ? 1 : 0;
+                          const statusValue = value.checked ? "1" : "0";
                           field.onChange(statusValue);
                         }}
                         color="black"

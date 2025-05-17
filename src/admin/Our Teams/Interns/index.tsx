@@ -7,7 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import useDebounce from "@/helper/debounce";
 import { Column } from "@/utils";
 import { FellowInternDataType, PaginationProps } from "@/utils/types";
-import { Image, Text  } from "@chakra-ui/react";
+import { Image, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 const Interns = () => {
@@ -57,12 +57,12 @@ const Interns = () => {
     },
     {
       key: "status",
-      label: "Status",
+      label: "Show/Hide",
       visible: true,
       render: (row) => (
         <Switch
           colorPalette={"green"}
-          checked={row.status === 1}
+          checked={row.status.toString() === "1"}
           onCheckedChange={() => {
             handleStatusChange(String(row.id), row.status);
           }}
@@ -103,15 +103,15 @@ const Interns = () => {
       setTriggerFetch((prev) => !prev);
     } catch (e) {
       console.log(e);
-    }finally {
+    } finally {
       setDeleteLoading(false);
       setLoading(false);
     }
   };
 
-  const handleStatusChange = async (id: string, status: number) => {
+  const handleStatusChange = async (id: string, status: string) => {
     //Change this
-    const newStatus = status === 1 ? 0 : 1;
+    const newStatus = status === "1" ? "0" : "1";
     try {
       await axiosInstance.patch(`/intern_details/${id}/status`, {
         status: newStatus,

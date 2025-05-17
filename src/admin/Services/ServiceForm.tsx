@@ -103,7 +103,7 @@ const ServiceForms = () => {
     title: "",
     description: "",
     icon: "",
-    status: 1,
+    status: "1",
   });
 
   const {
@@ -116,7 +116,7 @@ const ServiceForms = () => {
       title: pageData.title,
       description: pageData.description,
       icon: pageData.icon,
-      status: pageData.status || 1,
+      status: pageData.status || "1",
     },
   });
 
@@ -212,12 +212,12 @@ const ServiceForms = () => {
                   render={({ field }) => (
                     <HStack justify="space-between" align="center">
                       <Text fontWeight="500" textStyle="md">
-                        {field.value === 1 ? "Active" : "Inactive"}
+                        {field.value === "1" ? "Show" : "Hide"}
                       </Text>
                       <Switch
-                        checked={field.value === 1}
+                        checked={field.value === "1"}
                         onCheckedChange={(value) => {
-                          const statusValue = value.checked ? 1 : 0;
+                          const statusValue = value.checked ? "1" : "0";
                           field.onChange(statusValue);
                         }}
                         color="black"

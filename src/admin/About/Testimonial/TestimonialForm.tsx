@@ -72,7 +72,7 @@ const TestimonialForm = () => {
     category: "",
     description2: "",
     image: "",
-    status: 1,
+    status: "1",
   });
 
   const {
@@ -88,7 +88,7 @@ const TestimonialForm = () => {
       image: testimonialData.image || "",
       description2: testimonialData.description2 || "",
       category: testimonialData.category || "",
-      status: testimonialData.status || 1,
+      status: testimonialData.status || "1",
       type_id: testimonialData.type_id || null,
       type_type: testimonialData.type_type || null,
     },
@@ -288,12 +288,12 @@ const TestimonialForm = () => {
                   render={({ field }) => (
                     <HStack justify="space-between" align="center">
                       <Text fontWeight="500" textStyle="md">
-                        {field.value === 1 ? "Active" : "Inactive"}
+                        {field.value === "1" ? "Show" : "Hide"}
                       </Text>
                       <Switch
-                        checked={field.value === 1}
+                        checked={field.value === "1"}
                         onCheckedChange={(value) => {
-                          const statusValue = value.checked ? 1 : 0;
+                          const statusValue = value.checked ? "1" : "0";
                           field.onChange(statusValue);
                           handleFieldChange("status", statusValue);
                         }}

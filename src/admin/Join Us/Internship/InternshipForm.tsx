@@ -26,7 +26,7 @@ const InternshipForm = () => {
     title: "",
     description: "",
     apply_link: "",
-    status: 0,
+    status: "0",
     start_date: new Date().toISOString().split("T")[0],
     end_date: "",
   });
@@ -150,12 +150,12 @@ const InternshipForm = () => {
                   render={({ field }) => (
                     <HStack justify="space-between" align="center">
                       <Text fontWeight="500" textStyle="md">
-                        {field.value === 1 ? "Active" : "Inactive"}
+                        {field.value === "1" ? "Show" : "Hide"}
                       </Text>
                       <Switch
-                        checked={field.value === 1}
+                        checked={field.value === "1"}
                         onCheckedChange={(value) => {
-                          const statusValue = value.checked ? 1 : 0;
+                          const statusValue = value.checked ? "1" : "0";
                           field.onChange(statusValue);
                         }}
                         color="black"

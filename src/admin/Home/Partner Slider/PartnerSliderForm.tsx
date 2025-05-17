@@ -35,7 +35,7 @@ const PartnerSliderForm = () => {
     image: "",
     title: "",
     link: "",
-    status: 1,
+    status: "1",
   });
   const navigate = useNavigate();
   const {
@@ -171,13 +171,13 @@ const PartnerSliderForm = () => {
                   render={({ field }) => (
                     <HStack>
                       <Text fontWeight="500" textStyle="md">
-                        {field.value === 1 ? "Active" : "Inactive"}
+                        {field.value === "1" ? "Show" : "Hide"}
                       </Text>
                       <Switch
-                        checked={field.value === 1}
+                        checked={field.value === "1"}
                         colorPalette="green"
                         onCheckedChange={(value) => {
-                          const numericValue = value.checked ? 1 : 0; // Convert `true`/`false` to `1`/`0`
+                          const numericValue = value.checked ? "1" : "0"; // Convert `true`/`false` to `1`/`0`
                           field.onChange(numericValue);
                           handleFieldChange("status", numericValue);
                         }}

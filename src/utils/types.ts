@@ -27,7 +27,7 @@ export type SliderInput = {
   sub_title: string;
   priority_order: string;
   image: string | File;
-  status: number;
+  status: string;
   button_title?: string;
   button_route?: string;
   buttons?: SliderButton[];
@@ -43,13 +43,13 @@ export type PartnerSliderType = {
   title: string;
   link: string;
   image: string | File; // Allow both string and File
-  status: number;
+  status: string;
 };
 
 export type TestimonialInput = {
   id?: number;
   name: string;
-  status: number;
+  status: string;
   image: string | File;
   description: string;
   designation_id?: number | null;
@@ -63,7 +63,7 @@ export type TestimonialInput = {
 export type TestimonialData = {
   id?: number;
   name: string;
-  status: number;
+  status: string;
   image: string;
   description: string;
   // designation_id: number | null;
@@ -83,7 +83,7 @@ export type ImageInputTypes = {
   id?: number;
   title: string;
   images: Gallery[];
-  status: number;
+  status: string;
 };
 
 export type Gallery = {
@@ -96,7 +96,7 @@ export type ImageType = {
   id?: number;
   title: string;
   images: File[];
-  status: number;
+  status: string;
 };
 
 export type ChartData = {
@@ -112,7 +112,7 @@ export type TeamsInput = {
   priority_order: number | null;
   image_url?: string;
   role: string;
-  status: number;
+  status: string;
 };
 
 export type TeamsData = {
@@ -124,7 +124,7 @@ export type TeamsData = {
     Name: string;
   };
   role: string;
-  status: number;
+  status: string;
 };
 
 export type MessageRequestType = {
@@ -141,7 +141,7 @@ export type InternshipType = {
   title: string;
   description: string;
   apply_link: string;
-  status: number;
+  status: string;
   start_date: string;
   end_date: string;
 };
@@ -168,7 +168,7 @@ export type OurWorks = {
   gallery: GallerEventType;
   objectives: string;
   activities: string;
-  status: number;
+  status: string;
 };
 
 export type MultipleLocation = {
@@ -193,7 +193,7 @@ export type OurWorkType = {
   objectives?: string;
   activities?: string;
   upload_pdf?: File | string | null;
-  status: number;
+  status: string;
   additional_location_details: MultipleLocation[];
 };
 
@@ -213,14 +213,14 @@ export type EventType = {
   register_link?: string;
   mail?: string;
   phone?: string;
-  status: number;
+  status: string;
 };
 
 export type GallerEventType = {
   id?: number;
   title: string;
   gallery_images: Gallery[];
-  status: number;
+  status: string;
 };
 
 export type EventInputs = {
@@ -239,7 +239,7 @@ export type EventInputs = {
   register_link?: string;
   mail?: string;
   phone?: string;
-  status: number;
+  status: string;
 };
 
 export type PaginationProps = {
@@ -254,7 +254,7 @@ export type VideoInputTypes = {
   id?: number;
   title: string;
   video_url: string;
-  status: number;
+  status: string;
 };
 
 export type ServicesType = {
@@ -262,7 +262,7 @@ export type ServicesType = {
   title: string;
   description: string;
   icon: IconProp;
-  status: number;
+  status: string;
 };
 
 export type ServiceInput = {
@@ -270,7 +270,7 @@ export type ServiceInput = {
   title: string;
   description: string;
   icon: string;
-  status: number;
+  status: string;
 };
 
 export type DonationsType = {
@@ -317,7 +317,7 @@ export type NewsType = {
   description: string;
   image: string;
   publish_date: string;
-  status: number;
+  status: string;
 };
 
 export type NewsInputType = {
@@ -326,7 +326,7 @@ export type NewsInputType = {
   description: string;
   image: File | string;
   publish_date: string;
-  status: number;
+  status: string;
 };
 
 export type OurImpactType = {
@@ -334,7 +334,7 @@ export type OurImpactType = {
   name: string;
   number: string;
   icon: string;
-  status: number;
+  status: string;
 };
 
 export type FellowInternDataType = {
@@ -343,7 +343,7 @@ export type FellowInternDataType = {
   image: string;
   joining_date: string;
   completion_date: string;
-  status: number;
+  status: string;
 };
 
 export type FellowInternInput = {
@@ -351,7 +351,7 @@ export type FellowInternInput = {
   image: File | string;
   joining_date: string | null;
   completion_date: string | null;
-  status: number;
+  status: string;
 };
 
 export type JobApplicationType = {
@@ -366,5 +366,5 @@ export type JobApplicationType = {
   };
   start_date: string;
   end_date: string;
-  status: number;
+  status: string;
 };

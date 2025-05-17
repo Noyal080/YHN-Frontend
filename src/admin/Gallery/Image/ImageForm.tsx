@@ -33,7 +33,7 @@ const ImageForm = () => {
   const [imageData, setImageData] = useState<ImageType>({
     title: "",
     images: [],
-    status: 1,
+    status: "1",
   });
   const [previewImages, setPreviewImages] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
@@ -48,7 +48,7 @@ const ImageForm = () => {
       id: imageData.id,
       title: imageData.title || "",
       images: imageData.images || [],
-      status: imageData.status || 1,
+      status: imageData.status || "1",
     },
   });
 
@@ -157,9 +157,9 @@ const ImageForm = () => {
                         Status
                       </Text>
                       <Switch
-                        checked={field.value === 1}
+                        checked={field.value === "1"}
                         onCheckedChange={(value) => {
-                          const statusValue = value.checked ? 1 : 0;
+                          const statusValue = value.checked ? "1" : "0";
                           field.onChange(statusValue);
                           handleFieldChange("status", statusValue);
                         }}

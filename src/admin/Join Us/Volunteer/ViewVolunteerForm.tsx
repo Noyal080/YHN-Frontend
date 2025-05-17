@@ -26,7 +26,7 @@ const ViewVolunteer = () => {
     title: "",
     description: "",
     apply_link: "",
-    status: 0,
+    status: "0",
     start_date: "",
     end_date: "",
   });
@@ -59,18 +59,18 @@ const ViewVolunteer = () => {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
-  const getStatusBadge = (status: number) => {
+  const getStatusBadge = (status: string) => {
     switch (status) {
-      case 0:
+      case "0":
         return (
           <Badge colorPalette="red" size={"lg"}>
-            Inactive
+            Hide
           </Badge>
         );
-      case 1:
+      case "1":
         return (
           <Badge colorPalette="green" size={"lg"}>
-            Active
+            Show
           </Badge>
         );
     }

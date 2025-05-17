@@ -39,7 +39,7 @@ const NewsForm = () => {
     description: "",
     image: "",
     publish_date: "",
-    status: 1,
+    status: "1",
   });
   const navigate = useNavigate();
 
@@ -54,7 +54,7 @@ const NewsForm = () => {
       description: pageData.description || "",
       image: pageData.image || "",
       publish_date: pageData.publish_date || "",
-      status: pageData.status || 1,
+      status: pageData.status || "1",
     },
   });
 
@@ -183,12 +183,12 @@ const NewsForm = () => {
                   render={({ field }) => (
                     <HStack justify="space-between" align="center">
                       <Text fontWeight="500" textStyle="md">
-                        {field.value === 1 ? "Active" : "Inactive"}
+                        {field.value === "1" ? "Show" : "Hide"}
                       </Text>
                       <Switch
-                        checked={field.value === 1}
+                        checked={field.value === "1"}
                         onCheckedChange={(value) => {
-                          const numericValue = value.checked ? 1 : 0; // Convert `true`/`false` to `1`/`0`
+                          const numericValue = value.checked ? "1" : "0"; // Convert `true`/`false` to `1`/`0`
                           field.onChange(numericValue);
                           handleFieldChange("status", numericValue);
                         }}
